@@ -30,10 +30,10 @@ public final class EdgeToEdge implements Application.ActivityLifecycleCallbacks 
             return;
         }
         View root = ((ViewGroup) decor).getChildAt(0);
-        if (root.getTag(android.R.id.content) != null) {
+        if (root.getTag(net.sourceforge.servestream.R.id.edge_to_edge_applied) != null) {
             return;
         }
-        root.setTag(android.R.id.content, Boolean.TRUE);
+        root.setTag(net.sourceforge.servestream.R.id.edge_to_edge_applied, Boolean.TRUE);
 
         WindowCompat.setDecorFitsSystemWindows(activity.getWindow(), false);
         boolean night = (activity.getResources().getConfiguration().uiMode
