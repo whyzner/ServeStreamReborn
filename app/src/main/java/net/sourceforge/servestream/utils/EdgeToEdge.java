@@ -49,6 +49,21 @@ public final class EdgeToEdge implements Application.ActivityLifecycleCallbacks 
             v.setPadding(bars.left, bars.top, bars.right, Math.max(bars.bottom, ime.bottom));
             return WindowInsetsCompat.CONSUMED;
         });
+
+        // AppCompat's window action bar (not a Toolbar in the layout) no longer
+        // pushes the content down once insets are handled here, so keep the
+        // content below it by its current height.
+        final View bar = activity.findViewById(androidx.appcompat.R.id.action_bar_container);
+        final View content = activity.findViewById(android.R.id.content);
+        if (bar != null && content != null) {
+            bar.addOnLayoutChangeListener((b, l, t, r, btm, ol, ot, or, ob) -> {
+                int h = b.getVisibility() == View.VISIBLE ? b.getHeight() : 0;
+                if (content.getPaddingTop() != h) {
+                    content.setPadding(content.getPaddingLeft(), h,
+                            content.getPaddingRight(), content.getPaddingBottom());
+                }
+            });
+        }
         ViewCompat.requestApplyInsets(root);
     }
 
