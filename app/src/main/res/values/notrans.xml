@@ -21,6 +21,8 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     
 	<string name="app_name">ServeStream</string>
+	<!-- name on the home screen and in the app list -->
+	<string name="classic_app_name">ServeStream Classic</string>
 	
 	<string name="url_hint">http://</string>
 	

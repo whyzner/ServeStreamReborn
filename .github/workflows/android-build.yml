@@ -1,9 +1,12 @@
-name: ServeStream Android Build
+name: ServeStream Classic Build
 
 on:
   workflow_dispatch:
   push:
-    branches: [master, main]
+    branches: [classic]
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -62,6 +65,20 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: ServeStream-debug
+          name: ServeStreamClassic
           path: '**/build/outputs/apk/debug/*.apk'
           if-no-files-found: error
+
+      - name: Publish release (ServeStream Classic)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ver=$(grep -m1 'versionName' app/build.gradle | sed -E 's/.*"(.*)".*/\1/')
+          src=$(find . -path '*build/outputs/apk/debug/*.apk' | head -1)
+          file="ServeStreamClassic-$ver.apk"
+          cp "$src" "$file"
+          REPO="${{ github.repository }}"
+          gh release delete "classic-v$ver" --repo "$REPO" --cleanup-tag --yes || true
+          printf 'ServeStream Classic %s\n\nThe app as it was right before the new look (Material 3 and later): the Before of a Before & After.\nInstalls next to ServeStream (package net.sourceforge.servestream.classic).\n\nBuild commit %s\n' "$ver" "${GITHUB_SHA::7}" > notes.md
+          gh release create "classic-v$ver" "$file" --repo "$REPO" --target "$GITHUB_SHA" \
+            --title "ServeStream Classic $ver" --notes-file notes.md --latest=false

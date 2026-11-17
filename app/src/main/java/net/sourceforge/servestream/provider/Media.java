@@ -24,7 +24,7 @@ import android.provider.BaseColumns;
  * Convenience definitions for MediaProvider
  */
 public final class Media {
-    public static final String AUTHORITY = "net.sourceforge.servestream.provider.Media";
+    public static final String AUTHORITY = "net.sourceforge.servestream.classic.provider.Media";
 
     /**
      * The string that is used when a media attribute is not known.
