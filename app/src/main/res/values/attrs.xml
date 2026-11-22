@@ -37,4 +37,8 @@
     <attr name="now_playing_item_color" format="color" />
     
     <attr name="nav_drawer_background" format="color"/>
+
+    <!-- theme-dependent shapes (square in the classic theme) -->
+    <attr name="stationImageShape" format="reference" />
+    <attr name="playerArtCorner" format="dimension" />
 </resources>

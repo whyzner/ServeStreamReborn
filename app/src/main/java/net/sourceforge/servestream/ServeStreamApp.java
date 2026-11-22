@@ -28,7 +28,16 @@ public class ServeStreamApp extends Application {
 		super.onCreate();
 		net.sourceforge.servestream.utils.CrashReporter.install(this);
 		net.sourceforge.servestream.utils.EdgeToEdge.install(this);
-		com.google.android.material.color.DynamicColors.applyToActivitiesIfAvailable(this);
+		// wallpaper colours, except in the classic look which has fixed colours
+		com.google.android.material.color.DynamicColors.applyToActivitiesIfAvailable(this,
+				new com.google.android.material.color.DynamicColorsOptions.Builder()
+						.setPrecondition(new com.google.android.material.color.DynamicColors.Precondition() {
+							@Override
+							public boolean shouldApplyDynamicColors(android.app.Activity activity, int theme) {
+								return !net.sourceforge.servestream.utils.AppearanceSettings.isClassic();
+							}
+						}).build());
+		net.sourceforge.servestream.utils.AppearanceSettings.install(this);
 		UserPreferences.createInstance(this);
 		net.sourceforge.servestream.utils.AppearanceSettings.applyTheme(
 				android.preference.PreferenceManager.getDefaultSharedPreferences(this).getString(

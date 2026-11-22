@@ -259,6 +259,7 @@
     <string name="store_playlist_entries">Enregistrer chaque entrée de la playlist</string>
     <string name="text_nickname_label">Saisissez un nom (facultatif) :</string>
     <string name="theme_dark">Sombre</string>
+    <string name="theme_classic">Classique (PC des années 90)</string>
     <string name="theme_light">Clair</string>
     <string name="theme_system">Valeur par défaut du système</string>
     <string name="togglepause_action_title">Lecture/Pause</string>

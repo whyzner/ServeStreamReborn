@@ -270,6 +270,7 @@
     <string name="skip_button_label">Überspringen</string>
     <string name="stop">Stopp</string>
     <string name="theme_dark">Dunkel</string>
+    <string name="theme_classic">Klassisch (90er-PC)</string>
     <string name="theme_light">Hell</string>
     <string name="theme_system">Systemstandard</string>
     <string name="pref_pauseonfocusloss_title">Bei Audio anderer Apps pausieren</string>

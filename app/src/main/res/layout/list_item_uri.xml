@@ -29,7 +29,7 @@
         android:background="?attr/colorSurfaceContainerHighest"
         android:contentDescription="@null"
         android:scaleType="centerCrop"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.ServeStream.StationImage" />
+        app:shapeAppearanceOverlay="?attr/stationImageShape" />
 
     <ImageView
         android:id="@+id/overflow_menu_button"

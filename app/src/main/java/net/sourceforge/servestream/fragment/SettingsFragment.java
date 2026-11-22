@@ -99,7 +99,17 @@ public class SettingsFragment extends net.sourceforge.servestream.preference.Pre
 			themePref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					net.sourceforge.servestream.utils.AppearanceSettings.applyTheme((String) newValue);
+					boolean wasClassic = net.sourceforge.servestream.utils.AppearanceSettings.isClassic();
+					boolean modeChanged = net.sourceforge.servestream.utils.AppearanceSettings.applyTheme((String) newValue);
+					if (wasClassic != net.sourceforge.servestream.utils.AppearanceSettings.isClassic() && !modeChanged) {
+						// same day/night mode: redraw this screen ourselves (after the choice is saved)
+						final android.app.Activity activity = getActivity();
+						new android.os.Handler(android.os.Looper.getMainLooper()).post(new Runnable() {
+							public void run() {
+								if (activity != null && !activity.isFinishing()) activity.recreate();
+							}
+						});
+					}
 					return true;
 				}
 			});

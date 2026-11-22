@@ -258,6 +258,7 @@
     <string name="store_playlist_entries">Guardar cada entrada de la lista</string>
     <string name="text_nickname_label">Escribe un nombre (opcional):</string>
     <string name="theme_dark">Oscuro</string>
+    <string name="theme_classic">Clásico (PC de los 90)</string>
     <string name="theme_light">Claro</string>
     <string name="theme_system">Predeterminado del sistema</string>
     <string name="togglepause_action_title">Reproducir/Pausa</string>

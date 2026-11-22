@@ -11,9 +11,21 @@ public final class AppearanceSettings {
     private AppearanceSettings() {
     }
 
-    public static void applyTheme(String value) {
+    private static volatile boolean sClassic;
+
+    /** True while the "classic" (late-90s desktop) look is selected. */
+    public static boolean isClassic() {
+        return sClassic;
+    }
+
+    /**
+     * Applies the theme choice. Returns true when the day/night mode changed,
+     * in which case AppCompat recreates the open screens by itself.
+     */
+    public static boolean applyTheme(String value) {
+        sClassic = "classic".equals(value);
         int mode;
-        if ("light".equals(value)) {
+        if ("light".equals(value) || sClassic) {
             mode = AppCompatDelegate.MODE_NIGHT_NO;
         } else if ("dark".equals(value)) {
             mode = AppCompatDelegate.MODE_NIGHT_YES;
@@ -22,7 +34,59 @@ public final class AppearanceSettings {
         }
         if (AppCompatDelegate.getDefaultNightMode() != mode) {
             AppCompatDelegate.setDefaultNightMode(mode);
+            return true;
         }
+        return false;
+    }
+
+    /**
+     * Puts the classic look on every screen as it is created, and recreates a
+     * screen that comes back to the front after the look was switched.
+     */
+    public static void install(android.app.Application app) {
+        app.registerActivityLifecycleCallbacks(new android.app.Application.ActivityLifecycleCallbacks() {
+            private final java.util.WeakHashMap<android.app.Activity, Boolean> applied =
+                    new java.util.WeakHashMap<android.app.Activity, Boolean>();
+
+            private void style(android.app.Activity a) {
+                if (!(a instanceof androidx.appcompat.app.AppCompatActivity)) {
+                    return;
+                }
+                boolean classic = sClassic;
+                if (classic) {
+                    a.getTheme().applyStyle(net.sourceforge.servestream.R.style.ThemeOverlay_ServeStream_Classic, true);
+                }
+                applied.put(a, classic);
+            }
+
+            @Override
+            public void onActivityPreCreated(android.app.Activity a, android.os.Bundle b) {
+                style(a);
+            }
+
+            @Override
+            public void onActivityCreated(android.app.Activity a, android.os.Bundle b) {
+                if (android.os.Build.VERSION.SDK_INT < 29) {
+                    style(a);
+                }
+            }
+
+            @Override
+            public void onActivityResumed(android.app.Activity a) {
+                Boolean was = applied.get(a);
+                if (was != null && was != sClassic) {
+                    a.recreate();
+                }
+            }
+
+            @Override public void onActivityStarted(android.app.Activity a) { }
+            @Override public void onActivityPaused(android.app.Activity a) { }
+            @Override public void onActivityStopped(android.app.Activity a) { }
+            @Override public void onActivitySaveInstanceState(android.app.Activity a, android.os.Bundle b) { }
+            @Override public void onActivityDestroyed(android.app.Activity a) {
+                applied.remove(a);
+            }
+        });
     }
 
     public static void applyLanguage(String value) {

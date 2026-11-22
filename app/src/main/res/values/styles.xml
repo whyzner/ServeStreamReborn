@@ -50,6 +50,8 @@
 
         <item name="divider_horizontal">@drawable/m3_divider</item>
         <item name="nav_drawer_background">?attr/colorSurfaceContainerLow</item>
+        <item name="stationImageShape">@style/ShapeAppearance.ServeStream.StationImage</item>
+        <item name="playerArtCorner">28dp</item>
     </style>
 
     <!-- Names kept from the original app so the manifest and code still resolve. -->

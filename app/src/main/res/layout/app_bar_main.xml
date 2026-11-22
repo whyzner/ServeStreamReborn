@@ -13,10 +13,10 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
-            style="@style/Widget.Material3.Toolbar.Surface"
+            style="?attr/toolbarStyle"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:titleTextAppearance="?attr/textAppearanceTitleLarge" />
+            />
 
     </com.google.android.material.appbar.AppBarLayout>
 
