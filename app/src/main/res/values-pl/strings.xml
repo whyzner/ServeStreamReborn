@@ -343,6 +343,8 @@
     <string name="theme_dark">Ciemny</string>
     <string name="theme_classic">Klasyczny (PC z lat 90.)</string>
     <string name="theme_platinum">Platyna (styl Maca z lat 90.)</string>
+    <string name="theme_metro_dark">Metro ciemny (styl mobilny z lat 2010.)</string>
+    <string name="theme_metro_light">Metro jasny (styl mobilny z lat 2010.)</string>
     <string name="theme_light">Jasny</string>
     <string name="theme_system">Ustawienie systemowe</string>
     <string name="pref_pauseonfocusloss_title">Pauza przy dźwięku innych aplikacji</string>

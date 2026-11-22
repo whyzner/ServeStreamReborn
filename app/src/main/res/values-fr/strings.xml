@@ -261,6 +261,8 @@
     <string name="theme_dark">Sombre</string>
     <string name="theme_classic">Classique (PC des années 90)</string>
     <string name="theme_platinum">Platine (style Mac des années 90)</string>
+    <string name="theme_metro_dark">Metro sombre (mobile des années 2010)</string>
+    <string name="theme_metro_light">Metro clair (mobile des années 2010)</string>
     <string name="theme_light">Clair</string>
     <string name="theme_system">Valeur par défaut du système</string>
     <string name="togglepause_action_title">Lecture/Pause</string>

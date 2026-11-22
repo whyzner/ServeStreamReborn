@@ -260,6 +260,8 @@
     <string name="theme_dark">Тёмная</string>
     <string name="theme_classic">Классика (ПК 90-х)</string>
     <string name="theme_platinum">Платина (в стиле Mac 90-х)</string>
+    <string name="theme_metro_dark">Metro тёмная (мобильный стиль 2010-х)</string>
+    <string name="theme_metro_light">Metro светлая (мобильный стиль 2010-х)</string>
     <string name="theme_light">Светлая</string>
     <string name="theme_system">Как в системе</string>
     <string name="togglepause_action_title">Воспроизведение/пауза</string>

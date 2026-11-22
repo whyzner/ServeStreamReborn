@@ -113,6 +113,8 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
          "ClassicThemeTest#switchingBackRestoresTheNormalLook Theme: switching back from classic" \
          "ClassicThemeTest#platinumThemeIsApplied Theme: platinum look applied" \
          "ClassicThemeTest#homeScreenIconFollowsTheTheme Theme: home screen icon follows the theme" \
+         "ClassicThemeTest#metroDarkThemeIsApplied Theme: metro dark look applied" \
+         "ClassicThemeTest#metroLightThemeIsApplied Theme: metro light look applied" \
          "FixesTest#themeChangeDoesNotCloseTheApp Theme change keeps the app open (icon switched after leaving)" \
          "FixesTest#bluetoothOptionsWithoutPermission Bluetooth options without permission: no crash" \
          "Tier3Test#listScrollPositionSurvivesRecreation Tier 3: list scroll position kept" \
@@ -129,7 +131,7 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
 done
 
 $T adb shell pm grant $PKG android.permission.BLUETOOTH_CONNECT
-for n in classic_main classic_settings platinum_main platinum_settings; do
+for n in classic_main classic_settings platinum_main platinum_settings metro_dark_main metro_dark_settings metro_light_main metro_light_settings; do
   $T adb exec-out cat /sdcard/Download/$n.png > /tmp/$n.png 2>/dev/null
   echo "=====SHOT $n BEGIN====="; base64 -w 3000 /tmp/$n.png; echo "=====SHOT $n END====="
 done

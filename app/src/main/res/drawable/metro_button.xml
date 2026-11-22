@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Flat button: outline in the text colour, filled with the accent while pressed -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape><solid android:color="@color/metro_accent" /></shape>
+    </item>
+    <item>
+        <shape>
+            <solid android:color="@android:color/transparent" />
+            <stroke android:width="2dp" android:color="?attr/colorOnSurface" />
+        </shape>
+    </item>
+</selector>

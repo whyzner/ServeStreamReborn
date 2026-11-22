@@ -116,6 +116,8 @@
     <string name="theme_dark">다크</string>
     <string name="theme_classic">클래식 (90년대 PC)</string>
     <string name="theme_platinum">플래티넘 (90년대 Mac 풍)</string>
+    <string name="theme_metro_dark">메트로 다크 (2010년대 모바일 풍)</string>
+    <string name="theme_metro_light">메트로 라이트 (2010년대 모바일 풍)</string>
     <string name="pref_language_title">언어</string>
     <string name="language_system">시스템 설정 따르기</string>
 

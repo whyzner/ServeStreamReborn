@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Metro" themes: 2010s mobile tile look (flat, square, one accent colour,
+     large light titles). Dark = black background, light = white background.
+     Applied on top of the normal theme as an overlay. -->
+<resources>
+    <color name="metro_accent">#0167E1</color>
+
+    <style name="TextAppearance.ServeStream.Metro.Title" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <!-- shared by both: shapes, widgets -->
+    <style name="ThemeOverlay.ServeStream.MetroBase" parent="">
+        <item name="colorPrimary">@color/metro_accent</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorPrimaryContainer">@color/metro_accent</item>
+        <item name="colorOnPrimaryContainer">@android:color/white</item>
+        <item name="colorSecondary">@color/metro_accent</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+        <item name="colorSecondaryContainer">@color/metro_accent</item>
+        <item name="colorOnSecondaryContainer">@android:color/white</item>
+        <item name="colorTertiary">@color/metro_accent</item>
+        <item name="colorControlActivated">@color/metro_accent</item>
+        <item name="elevationOverlayEnabled">false</item>
+
+        <item name="shapeAppearanceCornerExtraSmall">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceCornerSmall">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceCornerMedium">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceCornerLarge">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceCornerExtraLarge">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="stationImageShape">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="playerArtCorner">0dp</item>
+        <item name="appLogo">@drawable/app_logo_metro</item>
+
+        <item name="toolbarStyle">@style/Widget.ServeStream.Metro.Toolbar</item>
+        <item name="actionBarStyle">@style/Widget.ServeStream.Metro.ActionBar</item>
+        <item name="materialButtonStyle">@style/Widget.ServeStream.Metro.Button</item>
+        <item name="borderlessButtonStyle">@style/Widget.ServeStream.Metro.Button</item>
+        <item name="floatingActionButtonStyle">@style/Widget.ServeStream.Metro.Fab</item>
+        <item name="navigationViewStyle">@style/Widget.ServeStream.Metro.NavigationView</item>
+        <item name="android:listDivider">@drawable/metro_divider</item>
+        <item name="divider_horizontal">@drawable/metro_divider</item>
+        <item name="now_playing_item_color">@color/metro_accent</item>
+    </style>
+
+    <style name="ThemeOverlay.ServeStream.MetroDark" parent="ThemeOverlay.ServeStream.MetroBase">
+        <item name="colorSurface">#000000</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+        <item name="colorSurfaceVariant">#000000</item>
+        <item name="colorOnSurfaceVariant">#A0A0A0</item>
+        <item name="colorSurfaceContainerLowest">#000000</item>
+        <item name="colorSurfaceContainerLow">#000000</item>
+        <item name="colorSurfaceContainer">#1F1F1F</item>
+        <item name="colorSurfaceContainerHigh">#1F1F1F</item>
+        <item name="colorSurfaceContainerHighest">#2B2B2B</item>
+        <item name="colorSurfaceBright">#1F1F1F</item>
+        <item name="colorSurfaceDim">#000000</item>
+        <item name="colorOutline">#555555</item>
+        <item name="colorOutlineVariant">#333333</item>
+        <item name="android:colorBackground">#000000</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="android:textColorSecondary">#A0A0A0</item>
+        <item name="nav_drawer_background">#000000</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.ServeStream.MetroDark.Dialog</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.ServeStream.MetroDark.Dialog</item>
+    </style>
+
+    <style name="ThemeOverlay.ServeStream.MetroLight" parent="ThemeOverlay.ServeStream.MetroBase">
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="colorOnSurface">#000000</item>
+        <item name="colorSurfaceVariant">#FFFFFF</item>
+        <item name="colorOnSurfaceVariant">#666666</item>
+        <item name="colorSurfaceContainerLowest">#FFFFFF</item>
+        <item name="colorSurfaceContainerLow">#FFFFFF</item>
+        <item name="colorSurfaceContainer">#F2F2F2</item>
+        <item name="colorSurfaceContainerHigh">#F2F2F2</item>
+        <item name="colorSurfaceContainerHighest">#E6E6E6</item>
+        <item name="colorSurfaceBright">#FFFFFF</item>
+        <item name="colorSurfaceDim">#F2F2F2</item>
+        <item name="colorOutline">#AAAAAA</item>
+        <item name="colorOutlineVariant">#DDDDDD</item>
+        <item name="android:colorBackground">#FFFFFF</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:textColorPrimary">#000000</item>
+        <item name="android:textColorSecondary">#666666</item>
+        <item name="nav_drawer_background">#FFFFFF</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.ServeStream.MetroLight.Dialog</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.ServeStream.MetroLight.Dialog</item>
+    </style>
+
+    <style name="Widget.ServeStream.Metro.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">?attr/colorSurface</item>
+        <item name="titleTextAppearance">@style/TextAppearance.ServeStream.Metro.Title</item>
+        <item name="titleTextColor">?attr/colorOnSurface</item>
+        <item name="navigationIconTint">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="Widget.ServeStream.Metro.ActionBar" parent="Widget.Material3.ActionBar.Solid">
+        <item name="background">?attr/colorSurface</item>
+        <item name="elevation">0dp</item>
+        <item name="titleTextStyle">@style/TextAppearance.ServeStream.Metro.Title</item>
+    </style>
+
+    <style name="Widget.ServeStream.Metro.Button" parent="Widget.Material3.Button">
+        <item name="android:background">@drawable/metro_button</item>
+        <item name="backgroundTint">@null</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="iconTint">?attr/colorOnSurface</item>
+        <item name="rippleColor">@android:color/transparent</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:minHeight">44dp</item>
+        <item name="cornerRadius">0dp</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="Widget.ServeStream.Metro.Fab" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="backgroundTint">@color/metro_accent</item>
+        <item name="tint">@android:color/white</item>
+        <item name="elevation">0dp</item>
+        <item name="pressedTranslationZ">0dp</item>
+        <item name="hoveredFocusedTranslationZ">0dp</item>
+    </style>
+
+    <style name="Widget.ServeStream.Metro.NavigationView" parent="Widget.Material3.NavigationView">
+        <item name="android:background">?attr/colorSurface</item>
+        <item name="drawerLayoutCornerSize">0dp</item>
+        <item name="itemShapeAppearanceOverlay">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="itemShapeFillColor">@color/metro_nav_fill</item>
+        <item name="itemTextColor">@color/metro_nav_text</item>
+        <item name="itemIconTint">@color/metro_nav_text</item>
+    </style>
+
+    <style name="ThemeOverlay.ServeStream.MetroDark.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">#1F1F1F</item>
+        <item name="colorSurfaceContainerHigh">#1F1F1F</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+        <item name="colorOnSurfaceVariant">#FFFFFF</item>
+        <item name="colorPrimary">@color/metro_accent</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceCornerExtraLarge">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.ServeStream.Metro.DialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.ServeStream.Metro.DialogButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.ServeStream.Metro.DialogButton</item>
+    </style>
+
+    <style name="ThemeOverlay.ServeStream.MetroLight.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="colorSurfaceContainerHigh">#FFFFFF</item>
+        <item name="colorOnSurface">#000000</item>
+        <item name="colorOnSurfaceVariant">#000000</item>
+        <item name="colorPrimary">@color/metro_accent</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceCornerExtraLarge">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.ServeStream.Metro.DialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.ServeStream.Metro.DialogButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.ServeStream.Metro.DialogButton</item>
+    </style>
+
+    <style name="Widget.ServeStream.Metro.DialogButton" parent="Widget.ServeStream.Metro.Button">
+        <item name="android:minWidth">96dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+    </style>
+</resources>

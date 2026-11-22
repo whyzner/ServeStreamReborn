@@ -151,7 +151,8 @@ public class ClassicThemeTest {
         android.content.Context c = inst.getTargetContext();
         android.content.pm.PackageManager pm = c.getPackageManager();
         String[][] cases = {{"dark", "Dark"}, {"classic", "Classic"}, {"platinum", "Platinum"},
-                {"light", "Default"}, {"system", "Default"}};
+                {"light", "Default"}, {"metro_dark", "Metro"}, {"metro_light", "Metro"},
+                {"system", "Default"}};
         for (String[] k : cases) {
             AppearanceSettings.applyIcon(c, k[0]);
             android.content.Intent launcher = new android.content.Intent(android.content.Intent.ACTION_MAIN)
@@ -161,5 +162,34 @@ public class ClassicThemeTest {
             assertEquals(c.getPackageName() + ".Launcher" + k[1], found.get(0).activityInfo.name);
             assertTrue(found.get(0).loadIcon(pm) != null);
         }
+    }
+
+    private void checkMetro(String value, int surfaceColour, String shotPrefix) throws Exception {
+        setTheme(value);
+        final Activity main = start(MainActivity.class);
+        inst.waitForIdleSync();
+        final int[] colour = new int[1];
+        inst.runOnMainSync(new Runnable() {
+            public void run() {
+                colour[0] = surface(main);
+            }
+        });
+        screenshot(shotPrefix + "_main");
+        finish(main);
+        assertEquals(value + " window colour", surfaceColour, colour[0]);
+        Activity settings = start(SettingsActivity.class);
+        inst.waitForIdleSync();
+        screenshot(shotPrefix + "_settings");
+        finish(settings);
+    }
+
+    @Test
+    public void metroDarkThemeIsApplied() throws Exception {
+        checkMetro("metro_dark", 0xFF000000, "metro_dark");
+    }
+
+    @Test
+    public void metroLightThemeIsApplied() throws Exception {
+        checkMetro("metro_light", 0xFFFFFFFF, "metro_light");
     }
 }

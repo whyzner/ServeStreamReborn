@@ -169,6 +169,18 @@
 			</intent-filter>
 		</activity-alias>
 
+		<activity-alias
+		    android:name=".LauncherMetro"
+		    android:targetActivity=".activity.MainActivity"
+		    android:icon="@drawable/ic_launcher_metro"
+		    android:enabled="false"
+		    android:exported="true">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity-alias>
+
 
 		<activity
             android:name=".activity.CrashReportActivity"

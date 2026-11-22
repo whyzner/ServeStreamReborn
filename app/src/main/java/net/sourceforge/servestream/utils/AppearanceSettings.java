@@ -30,6 +30,12 @@ public final class AppearanceSettings {
         if ("platinum".equals(value)) {
             return net.sourceforge.servestream.R.style.ThemeOverlay_ServeStream_Platinum;
         }
+        if ("metro_dark".equals(value)) {
+            return net.sourceforge.servestream.R.style.ThemeOverlay_ServeStream_MetroDark;
+        }
+        if ("metro_light".equals(value)) {
+            return net.sourceforge.servestream.R.style.ThemeOverlay_ServeStream_MetroLight;
+        }
         return 0;
     }
 
@@ -40,10 +46,10 @@ public final class AppearanceSettings {
     public static boolean applyTheme(String value) {
         sRetroStyle = retroStyleFor(value);
         int mode;
-        if ("light".equals(value) || sRetroStyle != 0) {
-            mode = AppCompatDelegate.MODE_NIGHT_NO;
-        } else if ("dark".equals(value)) {
+        if ("dark".equals(value) || "metro_dark".equals(value)) {
             mode = AppCompatDelegate.MODE_NIGHT_YES;
+        } else if ("light".equals(value) || sRetroStyle != 0) {
+            mode = AppCompatDelegate.MODE_NIGHT_NO;
         } else {
             mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
         }
@@ -54,7 +60,7 @@ public final class AppearanceSettings {
         return false;
     }
 
-    private static final String[] LAUNCHERS = {"Default", "Dark", "Classic", "Platinum"};
+    private static final String[] LAUNCHERS = {"Default", "Dark", "Classic", "Platinum", "Metro"};
 
     private static volatile String sPendingIcon;
     private static int sStartedScreens;
@@ -114,6 +120,7 @@ public final class AppearanceSettings {
         if ("dark".equals(value)) wanted = "Dark";
         else if ("classic".equals(value)) wanted = "Classic";
         else if ("platinum".equals(value)) wanted = "Platinum";
+        else if ("metro_dark".equals(value) || "metro_light".equals(value)) wanted = "Metro";
         android.content.pm.PackageManager pm = c.getPackageManager();
         // enable the new icon first so the app never has no launcher entry
         for (int pass = 0; pass < 2; pass++) {

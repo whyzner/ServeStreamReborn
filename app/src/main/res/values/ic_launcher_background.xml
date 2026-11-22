@@ -5,4 +5,5 @@
     <!-- desktop colours of the era behind the retro icons -->
     <color name="ic_launcher_classic_background">#008080</color>
     <color name="ic_launcher_platinum_background">#9999CC</color>
+    <color name="ic_launcher_metro_background">#0167E1</color>
 </resources>

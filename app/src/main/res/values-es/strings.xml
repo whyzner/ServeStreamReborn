@@ -260,6 +260,8 @@
     <string name="theme_dark">Oscuro</string>
     <string name="theme_classic">Clásico (PC de los 90)</string>
     <string name="theme_platinum">Platino (estilo Mac de los 90)</string>
+    <string name="theme_metro_dark">Metro oscuro (estilo móvil de los 2010)</string>
+    <string name="theme_metro_light">Metro claro (estilo móvil de los 2010)</string>
     <string name="theme_light">Claro</string>
     <string name="theme_system">Predeterminado del sistema</string>
     <string name="togglepause_action_title">Reproducir/Pausa</string>
