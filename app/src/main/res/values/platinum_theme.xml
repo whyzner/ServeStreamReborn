@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Platinum" theme: late-90s Mac look (light grey windows, pinstriped title
+     bars with centred titles, softly rounded 3D buttons, lavender-blue accents).
+     Applied on top of the normal theme as an overlay. -->
+<resources>
+    <color name="platinum_face">#DDDDDD</color>
+    <color name="platinum_white">#FFFFFF</color>
+    <color name="platinum_button_low">#CCCCCC</color>
+    <color name="platinum_line">#AAAAAA</color>
+    <color name="platinum_shadow">#888888</color>
+    <color name="platinum_dark">#555555</color>
+    <color name="platinum_black">#000000</color>
+    <color name="platinum_accent">#6363CE</color>
+    <color name="platinum_highlight">#CCCCFF</color>
+
+    <style name="ShapeAppearance.ServeStream.Platinum.Small" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">4dp</item>
+    </style>
+
+    <style name="ThemeOverlay.ServeStream.Platinum" parent="">
+        <item name="colorPrimary">@color/platinum_accent</item>
+        <item name="colorOnPrimary">@color/platinum_white</item>
+        <item name="colorPrimaryContainer">@color/platinum_highlight</item>
+        <item name="colorOnPrimaryContainer">@color/platinum_black</item>
+        <item name="colorSecondary">@color/platinum_accent</item>
+        <item name="colorOnSecondary">@color/platinum_white</item>
+        <item name="colorSecondaryContainer">@color/platinum_highlight</item>
+        <item name="colorOnSecondaryContainer">@color/platinum_black</item>
+        <item name="colorTertiary">@color/platinum_accent</item>
+        <item name="colorSurface">@color/platinum_face</item>
+        <item name="colorOnSurface">@color/platinum_black</item>
+        <item name="colorSurfaceVariant">@color/platinum_face</item>
+        <item name="colorOnSurfaceVariant">#333333</item>
+        <item name="colorSurfaceContainerLowest">@color/platinum_white</item>
+        <item name="colorSurfaceContainerLow">@color/platinum_face</item>
+        <item name="colorSurfaceContainer">@color/platinum_face</item>
+        <item name="colorSurfaceContainerHigh">@color/platinum_face</item>
+        <item name="colorSurfaceContainerHighest">@color/platinum_face</item>
+        <item name="colorSurfaceBright">@color/platinum_face</item>
+        <item name="colorSurfaceDim">@color/platinum_face</item>
+        <item name="colorOutline">@color/platinum_shadow</item>
+        <item name="colorOutlineVariant">@color/platinum_line</item>
+        <item name="android:colorBackground">@color/platinum_face</item>
+        <item name="android:windowBackground">@color/platinum_face</item>
+        <item name="android:textColorPrimary">@color/platinum_black</item>
+        <item name="android:textColorSecondary">#333333</item>
+        <item name="colorControlActivated">@color/platinum_accent</item>
+        <item name="elevationOverlayEnabled">false</item>
+
+        <!-- square windows, softly rounded controls -->
+        <item name="shapeAppearanceCornerExtraSmall">@style/ShapeAppearance.ServeStream.Platinum.Small</item>
+        <item name="shapeAppearanceCornerSmall">@style/ShapeAppearance.ServeStream.Platinum.Small</item>
+        <item name="shapeAppearanceCornerMedium">@style/ShapeAppearance.ServeStream.Platinum.Small</item>
+        <item name="shapeAppearanceCornerLarge">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceCornerExtraLarge">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.ServeStream.Platinum.Small</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.ServeStream.Platinum.Small</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="stationImageShape">@style/ShapeAppearance.ServeStream.Platinum.Small</item>
+        <item name="playerArtCorner">4dp</item>
+
+        <!-- title bars -->
+        <item name="toolbarStyle">@style/Widget.ServeStream.Platinum.Toolbar</item>
+        <item name="actionBarStyle">@style/Widget.ServeStream.Platinum.ActionBar</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.ServeStream.Platinum.TitleBar</item>
+
+        <!-- controls -->
+        <item name="materialButtonStyle">@style/Widget.ServeStream.Platinum.Button</item>
+        <item name="borderlessButtonStyle">@style/Widget.ServeStream.Platinum.Button</item>
+        <item name="floatingActionButtonStyle">@style/Widget.ServeStream.Platinum.Fab</item>
+        <item name="navigationViewStyle">@style/Widget.ServeStream.Platinum.NavigationView</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.ServeStream.Platinum.Dialog</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.ServeStream.Platinum.Dialog</item>
+        <item name="android:listDivider">@drawable/platinum_divider</item>
+        <item name="divider_horizontal">@drawable/platinum_divider</item>
+        <item name="nav_drawer_background">@color/platinum_face</item>
+        <item name="now_playing_item_color">@color/platinum_accent</item>
+    </style>
+
+    <style name="ThemeOverlay.ServeStream.Platinum.TitleBar" parent="ThemeOverlay.Material3.Light">
+        <item name="colorOnSurface">@color/platinum_black</item>
+        <item name="colorOnSurfaceVariant">@color/platinum_black</item>
+        <item name="colorControlNormal">@color/platinum_black</item>
+        <item name="android:textColorPrimary">@color/platinum_black</item>
+    </style>
+
+    <style name="TextAppearance.ServeStream.Platinum.Title" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textColor">@color/platinum_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.ServeStream.Platinum.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">@drawable/platinum_titlebar</item>
+        <item name="titleCentered">true</item>
+        <item name="titleTextColor">@color/platinum_black</item>
+        <item name="subtitleTextColor">@color/platinum_black</item>
+        <item name="navigationIconTint">@color/platinum_black</item>
+        <item name="titleTextAppearance">@style/TextAppearance.ServeStream.Platinum.Title</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.ServeStream.Platinum.TitleBar</item>
+    </style>
+
+    <style name="Widget.ServeStream.Platinum.ActionBar" parent="Widget.Material3.ActionBar.Solid">
+        <item name="background">@drawable/platinum_titlebar</item>
+        <item name="elevation">0dp</item>
+        <item name="titleTextStyle">@style/TextAppearance.ServeStream.Platinum.Title</item>
+    </style>
+
+    <style name="Widget.ServeStream.Platinum.Button" parent="Widget.Material3.Button">
+        <item name="android:background">@drawable/platinum_button</item>
+        <item name="backgroundTint">@null</item>
+        <item name="android:textColor">@color/platinum_black</item>
+        <item name="iconTint">@color/platinum_black</item>
+        <item name="rippleColor">@android:color/transparent</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:minHeight">40dp</item>
+        <item name="cornerRadius">4dp</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="Widget.ServeStream.Platinum.Fab" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.ServeStream.Platinum.Small</item>
+        <item name="backgroundTint">#EEEEEE</item>
+        <item name="tint">@color/platinum_black</item>
+        <item name="rippleColor">@color/platinum_line</item>
+        <item name="elevation">3dp</item>
+    </style>
+
+    <style name="Widget.ServeStream.Platinum.NavigationView" parent="Widget.Material3.NavigationView">
+        <item name="android:background">@color/platinum_face</item>
+        <item name="drawerLayoutCornerSize">0dp</item>
+        <item name="itemShapeAppearanceOverlay">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="itemShapeFillColor">@color/platinum_nav_fill</item>
+        <item name="itemTextColor">@color/platinum_nav_text</item>
+        <item name="itemIconTint">@color/platinum_nav_text</item>
+    </style>
+
+    <style name="ThemeOverlay.ServeStream.Platinum.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">@color/platinum_face</item>
+        <item name="colorSurfaceContainerHigh">@color/platinum_face</item>
+        <item name="colorOnSurface">@color/platinum_black</item>
+        <item name="colorOnSurfaceVariant">@color/platinum_black</item>
+        <item name="colorPrimary">@color/platinum_accent</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceCornerExtraLarge">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.ServeStream.Platinum.DialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.ServeStream.Platinum.DialogButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.ServeStream.Platinum.DialogButton</item>
+    </style>
+
+    <style name="Widget.ServeStream.Platinum.DialogButton" parent="Widget.ServeStream.Platinum.Button">
+        <item name="android:minWidth">88dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+    </style>
+</resources>

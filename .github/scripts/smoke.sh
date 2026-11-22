@@ -102,7 +102,8 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
          "BackupImageTest#leftoverPicturesAreCleanedUp Backup: leftover pictures cleaned up" \
          "BackupImageTest#tenStationsAllImagesComeBack Backup: ten stations, all images restored" \
          "ClassicThemeTest#classicThemeIsApplied Theme: classic look applied" \
-         "ClassicThemeTest#switchingBackRestoresTheNormalLook Theme: switching back from classic"; do
+         "ClassicThemeTest#switchingBackRestoresTheNormalLook Theme: switching back from classic" \
+         "ClassicThemeTest#platinumThemeIsApplied Theme: platinum look applied"; do
   set -- $t; m=$1; shift
   case "$m" in *#*) ;; *) m="AutoBrowseTest#$m" ;; esac
   out=$(timeout 180 adb shell am instrument -w -e class net.sourceforge.servestream.$m \
@@ -113,7 +114,7 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
   RESULTS="$RESULTS\n$res  $*"
 done
 
-for n in classic_main classic_settings; do
+for n in classic_main classic_settings platinum_main platinum_settings; do
   $T adb exec-out cat /sdcard/Download/$n.png > /tmp/$n.png 2>/dev/null
   echo "=====SHOT $n BEGIN====="; base64 -w 3000 /tmp/$n.png; echo "=====SHOT $n END====="
 done

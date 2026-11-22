@@ -11,11 +11,26 @@ public final class AppearanceSettings {
     private AppearanceSettings() {
     }
 
-    private static volatile boolean sClassic;
+    /** Overlay style of the selected retro look, or 0 for the normal Material look. */
+    private static volatile int sRetroStyle;
 
-    /** True while the "classic" (late-90s desktop) look is selected. */
-    public static boolean isClassic() {
-        return sClassic;
+    /** True while a retro look ("classic" 90s PC or "platinum" 90s Mac) is selected. */
+    public static boolean isRetro() {
+        return sRetroStyle != 0;
+    }
+
+    public static int retroStyle() {
+        return sRetroStyle;
+    }
+
+    private static int retroStyleFor(String value) {
+        if ("classic".equals(value)) {
+            return net.sourceforge.servestream.R.style.ThemeOverlay_ServeStream_Classic;
+        }
+        if ("platinum".equals(value)) {
+            return net.sourceforge.servestream.R.style.ThemeOverlay_ServeStream_Platinum;
+        }
+        return 0;
     }
 
     /**
@@ -23,9 +38,9 @@ public final class AppearanceSettings {
      * in which case AppCompat recreates the open screens by itself.
      */
     public static boolean applyTheme(String value) {
-        sClassic = "classic".equals(value);
+        sRetroStyle = retroStyleFor(value);
         int mode;
-        if ("light".equals(value) || sClassic) {
+        if ("light".equals(value) || sRetroStyle != 0) {
             mode = AppCompatDelegate.MODE_NIGHT_NO;
         } else if ("dark".equals(value)) {
             mode = AppCompatDelegate.MODE_NIGHT_YES;
@@ -45,18 +60,18 @@ public final class AppearanceSettings {
      */
     public static void install(android.app.Application app) {
         app.registerActivityLifecycleCallbacks(new android.app.Application.ActivityLifecycleCallbacks() {
-            private final java.util.WeakHashMap<android.app.Activity, Boolean> applied =
-                    new java.util.WeakHashMap<android.app.Activity, Boolean>();
+            private final java.util.WeakHashMap<android.app.Activity, Integer> applied =
+                    new java.util.WeakHashMap<android.app.Activity, Integer>();
 
             private void style(android.app.Activity a) {
                 if (!(a instanceof androidx.appcompat.app.AppCompatActivity)) {
                     return;
                 }
-                boolean classic = sClassic;
-                if (classic) {
-                    a.getTheme().applyStyle(net.sourceforge.servestream.R.style.ThemeOverlay_ServeStream_Classic, true);
+                int style = sRetroStyle;
+                if (style != 0) {
+                    a.getTheme().applyStyle(style, true);
                 }
-                applied.put(a, classic);
+                applied.put(a, style);
             }
 
             @Override
@@ -73,8 +88,8 @@ public final class AppearanceSettings {
 
             @Override
             public void onActivityResumed(android.app.Activity a) {
-                Boolean was = applied.get(a);
-                if (was != null && was != sClassic) {
+                Integer was = applied.get(a);
+                if (was != null && was != sRetroStyle) {
                     a.recreate();
                 }
             }

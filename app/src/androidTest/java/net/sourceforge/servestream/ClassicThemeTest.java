@@ -118,4 +118,30 @@ public class ClassicThemeTest {
         finish(main);
         assertNotEquals(0xFFC0C0C0, colour[0]);
     }
+
+    @Test
+    public void platinumThemeIsApplied() throws Exception {
+        setTheme("platinum");
+        final Activity main = start(MainActivity.class);
+        inst.waitForIdleSync();
+        final int[] colour = new int[1];
+        final boolean[] stripedBar = new boolean[1];
+        inst.runOnMainSync(new Runnable() {
+            public void run() {
+                colour[0] = surface(main);
+                View bar = main.findViewById(R.id.toolbar);
+                stripedBar[0] = bar != null
+                        && bar.getBackground() instanceof android.graphics.drawable.LayerDrawable;
+            }
+        });
+        screenshot("platinum_main");
+        finish(main);
+        assertEquals("light grey window colour", 0xFFDDDDDD, colour[0]);
+        assertTrue("title bar is not pinstriped", stripedBar[0]);
+
+        Activity settings = start(SettingsActivity.class);
+        inst.waitForIdleSync();
+        screenshot("platinum_settings");
+        finish(settings);
+    }
 }

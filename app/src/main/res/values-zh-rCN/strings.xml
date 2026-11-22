@@ -81,6 +81,7 @@
     <string name="theme_light">浅色</string>
     <string name="theme_dark">深色</string>
     <string name="theme_classic">经典 (90年代电脑)</string>
+    <string name="theme_platinum">铂金 (90年代 Mac 风格)</string>
     <string name="pref_language_title">语言</string>
     <string name="language_system">跟随系统</string>
     <string name="set_sleeptimer_label">睡眠定时器</string>

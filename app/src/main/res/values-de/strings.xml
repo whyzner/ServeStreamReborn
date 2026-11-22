@@ -271,6 +271,7 @@
     <string name="stop">Stopp</string>
     <string name="theme_dark">Dunkel</string>
     <string name="theme_classic">Klassisch (90er-PC)</string>
+    <string name="theme_platinum">Platin (90er-Mac-Stil)</string>
     <string name="theme_light">Hell</string>
     <string name="theme_system">Systemstandard</string>
     <string name="pref_pauseonfocusloss_title">Bei Audio anderer Apps pausieren</string>

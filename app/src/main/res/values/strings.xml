@@ -340,6 +340,7 @@
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
     <string name="theme_classic">Classic (90s PC)</string>
+    <string name="theme_platinum">Platinum (90s Mac style)</string>
     <string name="pref_language_title">Language</string>
     <string name="language_system">System default</string>
     <string name="language_english" translatable="false">English</string>

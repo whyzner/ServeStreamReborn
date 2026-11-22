@@ -29,12 +29,14 @@
         <item>@string/theme_light</item>
         <item>@string/theme_dark</item>
         <item>@string/theme_classic</item>
+        <item>@string/theme_platinum</item>
     </string-array>
     <string-array name="ui_theme_values" translatable="false">
         <item>system</item>
         <item>light</item>
         <item>dark</item>
         <item>classic</item>
+        <item>platinum</item>
     </string-array>
     <string-array name="ui_language_entries">
         <item>@string/language_system</item>

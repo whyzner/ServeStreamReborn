@@ -34,7 +34,7 @@ public class ServeStreamApp extends Application {
 						.setPrecondition(new com.google.android.material.color.DynamicColors.Precondition() {
 							@Override
 							public boolean shouldApplyDynamicColors(android.app.Activity activity, int theme) {
-								return !net.sourceforge.servestream.utils.AppearanceSettings.isClassic();
+								return !net.sourceforge.servestream.utils.AppearanceSettings.isRetro();
 							}
 						}).build());
 		net.sourceforge.servestream.utils.AppearanceSettings.install(this);
