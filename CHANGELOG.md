@@ -5,7 +5,10 @@
 
 최신 버전 받기: https://github.com/whyzner/ServeStreamReborn/releases/latest
 
-## 2.6.0 (2026-11-22)
+## 2.6.1 (2026-11-22)
+- 2.6.0 빌드 실패 수정 (영어 알람 안내 문구의 '&' 표기)
+
+## 2.6.0 (2026-11-22) — 빌드 실패, 2.6.1로 배포
 Google Play 정책 점검(로드맵 문서)에서 지적된 사항 수정
 - 결제(BILLING) 권한과 쓰지 않던 옛 결제 코드(IabHelper, AIDL) 삭제 — Play 등록 차단 요소 해소
 - 정확한 알람: 제한 권한 USE_EXACT_ALARM 삭제 → 사용자가 허용하는 SCHEDULE_EXACT_ALARM으로 전환
