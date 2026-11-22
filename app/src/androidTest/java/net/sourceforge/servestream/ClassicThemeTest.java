@@ -144,4 +144,22 @@ public class ClassicThemeTest {
         screenshot("platinum_settings");
         finish(settings);
     }
+
+    /** The home screen shows exactly one icon, the one for the chosen theme. */
+    @Test
+    public void homeScreenIconFollowsTheTheme() {
+        android.content.Context c = inst.getTargetContext();
+        android.content.pm.PackageManager pm = c.getPackageManager();
+        String[][] cases = {{"dark", "Dark"}, {"classic", "Classic"}, {"platinum", "Platinum"},
+                {"light", "Default"}, {"system", "Default"}};
+        for (String[] k : cases) {
+            AppearanceSettings.applyIcon(c, k[0]);
+            android.content.Intent launcher = new android.content.Intent(android.content.Intent.ACTION_MAIN)
+                    .addCategory(android.content.Intent.CATEGORY_LAUNCHER).setPackage(c.getPackageName());
+            java.util.List<android.content.pm.ResolveInfo> found = pm.queryIntentActivities(launcher, 0);
+            assertEquals("launcher icons for " + k[0], 1, found.size());
+            assertEquals(c.getPackageName() + ".Launcher" + k[1], found.get(0).activityInfo.name);
+            assertTrue(found.get(0).loadIcon(pm) != null);
+        }
+    }
 }

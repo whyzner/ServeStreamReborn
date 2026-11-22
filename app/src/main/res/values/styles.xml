@@ -52,6 +52,7 @@
         <item name="nav_drawer_background">?attr/colorSurfaceContainerLow</item>
         <item name="stationImageShape">@style/ShapeAppearance.ServeStream.StationImage</item>
         <item name="playerArtCorner">28dp</item>
+        <item name="appLogo">@drawable/app_logo</item>
     </style>
 
     <!-- Names kept from the original app so the manifest and code still resolve. -->

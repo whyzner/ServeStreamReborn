@@ -54,6 +54,37 @@ public final class AppearanceSettings {
         return false;
     }
 
+    private static final String[] LAUNCHERS = {"Default", "Dark", "Classic", "Platinum"};
+
+    /**
+     * Shows the home screen icon that goes with the theme: dark, classic (90s PC),
+     * platinum (90s Mac), or the normal one for light and system.
+     */
+    public static void applyIcon(android.content.Context c, String value) {
+        String wanted = "Default";
+        if ("dark".equals(value)) wanted = "Dark";
+        else if ("classic".equals(value)) wanted = "Classic";
+        else if ("platinum".equals(value)) wanted = "Platinum";
+        android.content.pm.PackageManager pm = c.getPackageManager();
+        // enable the new icon first so the app never has no launcher entry
+        for (int pass = 0; pass < 2; pass++) {
+            for (String name : LAUNCHERS) {
+                boolean on = name.equals(wanted);
+                if ((pass == 0) != on) continue;
+                android.content.ComponentName cn = new android.content.ComponentName(
+                        c.getPackageName(), c.getPackageName() + ".Launcher" + name);
+                int want = on ? android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                        : android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+                int now = pm.getComponentEnabledSetting(cn);
+                boolean isOn = now == android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                        || (now == android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DEFAULT && "Default".equals(name));
+                if (isOn != on) {
+                    pm.setComponentEnabledSetting(cn, want, android.content.pm.PackageManager.DONT_KILL_APP);
+                }
+            }
+        }
+    }
+
     /**
      * Puts the classic look on every screen as it is created, and recreates a
      * screen that comes back to the front after the look was switched.

@@ -103,7 +103,8 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
          "BackupImageTest#tenStationsAllImagesComeBack Backup: ten stations, all images restored" \
          "ClassicThemeTest#classicThemeIsApplied Theme: classic look applied" \
          "ClassicThemeTest#switchingBackRestoresTheNormalLook Theme: switching back from classic" \
-         "ClassicThemeTest#platinumThemeIsApplied Theme: platinum look applied"; do
+         "ClassicThemeTest#platinumThemeIsApplied Theme: platinum look applied" \
+         "ClassicThemeTest#homeScreenIconFollowsTheTheme Theme: home screen icon follows the theme"; do
   set -- $t; m=$1; shift
   case "$m" in *#*) ;; *) m="AutoBrowseTest#$m" ;; esac
   out=$(timeout 180 adb shell am instrument -w -e class net.sourceforge.servestream.$m \

@@ -57,6 +57,7 @@
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.ServeStream.Square</item>
         <item name="stationImageShape">@style/ShapeAppearance.ServeStream.Square</item>
         <item name="playerArtCorner">0dp</item>
+        <item name="appLogo">@drawable/app_logo_classic</item>
 
         <!-- title bars -->
         <item name="toolbarStyle">@style/Widget.ServeStream.Classic.Toolbar</item>

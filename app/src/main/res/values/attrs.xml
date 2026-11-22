@@ -41,4 +41,5 @@
     <!-- theme-dependent shapes (square in the classic theme) -->
     <attr name="stationImageShape" format="reference" />
     <attr name="playerArtCorner" format="dimension" />
+    <attr name="appLogo" format="reference" />
 </resources>

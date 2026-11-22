@@ -14,7 +14,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:contentDescription="@null"
-        android:src="@drawable/app_logo" />
+        android:src="?attr/appLogo" />
 
     <TextView
         android:id="@+id/textView"

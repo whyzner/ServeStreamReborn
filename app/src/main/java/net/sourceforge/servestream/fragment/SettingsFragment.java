@@ -100,6 +100,7 @@ public class SettingsFragment extends net.sourceforge.servestream.preference.Pre
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
 					int wasRetro = net.sourceforge.servestream.utils.AppearanceSettings.retroStyle();
+					net.sourceforge.servestream.utils.AppearanceSettings.applyIcon(getActivity(), (String) newValue);
 					boolean modeChanged = net.sourceforge.servestream.utils.AppearanceSettings.applyTheme((String) newValue);
 					if (wasRetro != net.sourceforge.servestream.utils.AppearanceSettings.retroStyle() && !modeChanged) {
 						// same day/night mode: redraw this screen ourselves (after the choice is saved)
