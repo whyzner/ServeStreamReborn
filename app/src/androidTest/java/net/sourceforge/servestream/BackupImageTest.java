@@ -149,4 +149,61 @@ public class BackupImageTest {
         assertFalse(StationImages.has(ctx, ghost));
         assertTrue("a saved station's picture was removed", StationImages.has(ctx, station.getId()));
     }
+
+    /** Like the user's case: ten stations with gallery pictures, fresh phone, restore all. */
+    @Test
+    public void tenStationsAllImagesComeBack() throws Exception {
+        StreamDatabase db = new StreamDatabase(ctx);
+        java.util.List<UriBean> made = new java.util.ArrayList<UriBean>();
+        for (int k = 0; k < 10; k++) {
+            Uri u = Uri.parse("https://example" + k + ".invalid/stream?n=" + k);
+            UriBean b = TransportFactory.findUri(db, u);
+            if (b == null) {
+                b = TransportFactory.getTransport("https").createUri(u);
+                b.setNickname("Ten Test " + k);
+                b = db.saveUri(b);
+            }
+            made.add(b);
+            // a logo-like PNG picked from the gallery, saved through the normal picker path
+            Bitmap logo = Bitmap.createBitmap(300 + k * 150, 300 + k * 150, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(logo);
+            c.drawColor(Color.WHITE);
+            Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+            p.setColor(Color.rgb(20 * k, 100, 255 - 20 * k));
+            c.drawCircle(logo.getWidth() / 2f, logo.getHeight() / 2f, logo.getWidth() / 3f, p);
+            File png = new File(ctx.getCacheDir(), "logo" + k + ".png");
+            FileOutputStream fo = new FileOutputStream(png);
+            logo.compress(Bitmap.CompressFormat.PNG, 100, fo);
+            fo.close();
+            assertTrue(StationImages.save(ctx, b.getId(), Uri.fromFile(png)));
+        }
+        db.close();
+
+        File file = new File(ctx.getCacheDir(), "ten.json");
+        FileOutputStream out = new FileOutputStream(file);
+        BackupUtils.Counts w = BackupUtils.writeBackup(ctx, out);
+        out.close();
+
+        // "reinstall": remove these stations and pictures
+        db = new StreamDatabase(ctx);
+        for (UriBean b : made) {
+            db.deleteUri(b);
+            StationImages.delete(ctx, b.getId());
+        }
+        db.close();
+
+        InputStream in = ctx.getContentResolver().openInputStream(Uri.fromFile(file));
+        BackupUtils.Counts r = BackupUtils.readBackup(ctx, in);
+        in.close();
+        int ok = 0;
+        StringBuilder missing = new StringBuilder();
+        db = new StreamDatabase(ctx);
+        for (int k = 0; k < 10; k++) {
+            UriBean b = TransportFactory.findUri(db, Uri.parse("https://example" + k + ".invalid/stream?n=" + k));
+            if (b != null && StationImages.has(ctx, b.getId())) ok++; else missing.append(k).append(' ');
+        }
+        db.close();
+        assertEquals("written " + w.images + ", in file " + r.imagesInFile + ", restored " + r.images
+                + ", missing " + missing, 10, ok);
+    }
 }

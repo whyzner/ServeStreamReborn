@@ -99,7 +99,8 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
          "BackupImageTest#imageComesBackAfterRemovingIt Backup: image restored after removing it" \
          "BackupImageTest#imageComesBackWithDeletedStation Backup: deleted station restored with image" \
          "BackupImageTest#imageComesBackWhenALeftoverFileExists Backup: image restored over a leftover file" \
-         "BackupImageTest#leftoverPicturesAreCleanedUp Backup: leftover pictures cleaned up"; do
+         "BackupImageTest#leftoverPicturesAreCleanedUp Backup: leftover pictures cleaned up" \
+         "BackupImageTest#tenStationsAllImagesComeBack Backup: ten stations, all images restored"; do
   set -- $t; m=$1; shift
   case "$m" in *#*) ;; *) m="AutoBrowseTest#$m" ;; esac
   out=$(timeout 180 adb shell am instrument -w -e class net.sourceforge.servestream.$m \
@@ -109,6 +110,19 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
   echo "CHECK $*: -> $res"
   RESULTS="$RESULTS\n$res  $*"
 done
+
+# --- app language: 조선말 (ko-KP) shows its own wording ("차림표 열기" = open menu)
+$T adb shell cmd locale set-app-locales $PKG --locales ko-KP
+$T adb shell am force-stop $PKG
+$T adb shell am start -n $PKG/.activity.MainActivity
+sleep 6
+$T adb shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1
+kp=0; $T adb shell cat /sdcard/ui.xml | grep -q '차림표 열기' && kp=1
+shot language_ko_kp 1
+res="FAIL"; [ "$kp" = 1 ] && res="PASS"
+echo "CHECK language ko-KP: -> $res"
+RESULTS="$RESULTS\n$res  language: 조선말 (ko-KP) strings shown"
+$T adb shell cmd locale set-app-locales $PKG --locales ""
 
 echo "=====LOGCAT BEGIN====="
 $T adb logcat -d -v brief | grep -iE "servestream|FFmpeg|AndroidRuntime|FATAL|TAG  |MediaPlayer" | grep -viE "ApkAssets|PackageConfigPersister" | tail -n 200

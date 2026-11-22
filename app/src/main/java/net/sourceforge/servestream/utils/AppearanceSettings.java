@@ -33,7 +33,7 @@ public final class AppearanceSettings {
     }
 
     private static final String[] SUPPORTED = {
-            "en", "ko", "ja", "zh-CN", "zh-TW", "ru", "fr", "de", "es", "pl"};
+            "en", "ko", "ko-KP", "ja", "zh-CN", "zh-TW", "ru", "fr", "de", "es", "pl"};
 
     /** Value for the language list: "system" or one of the supported tags. */
     public static String currentLanguage() {
