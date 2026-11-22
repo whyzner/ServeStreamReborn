@@ -104,9 +104,12 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
          "ClassicThemeTest#classicThemeIsApplied Theme: classic look applied" \
          "ClassicThemeTest#switchingBackRestoresTheNormalLook Theme: switching back from classic" \
          "ClassicThemeTest#platinumThemeIsApplied Theme: platinum look applied" \
-         "ClassicThemeTest#homeScreenIconFollowsTheTheme Theme: home screen icon follows the theme"; do
+         "ClassicThemeTest#homeScreenIconFollowsTheTheme Theme: home screen icon follows the theme" \
+         "FixesTest#themeChangeDoesNotCloseTheApp Theme change keeps the app open (icon switched after leaving)" \
+         "FixesTest#bluetoothOptionsWithoutPermission Bluetooth options without permission: no crash"; do
   set -- $t; m=$1; shift
   case "$m" in *#*) ;; *) m="AutoBrowseTest#$m" ;; esac
+  case "$m" in *bluetoothOptions*) $T adb shell pm revoke $PKG android.permission.BLUETOOTH_CONNECT ;; esac
   out=$(timeout 180 adb shell am instrument -w -e class net.sourceforge.servestream.$m \
         $PKG.test/androidx.test.runner.AndroidJUnitRunner 2>&1)
   echo "$out" | tail -n 30
@@ -115,6 +118,7 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
   RESULTS="$RESULTS\n$res  $*"
 done
 
+$T adb shell pm grant $PKG android.permission.BLUETOOTH_CONNECT
 for n in classic_main classic_settings platinum_main platinum_settings; do
   $T adb exec-out cat /sdcard/Download/$n.png > /tmp/$n.png 2>/dev/null
   echo "=====SHOT $n BEGIN====="; base64 -w 3000 /tmp/$n.png; echo "=====SHOT $n END====="

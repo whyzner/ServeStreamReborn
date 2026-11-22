@@ -268,5 +268,6 @@
     <string name="set_station_image">Elegir imagen de la emisora</string>
     <string name="remove_station_image">Quitar imagen de la emisora</string>
     <string name="station_image_failed">No se puede usar esta imagen.</string>
+    <string name="bluetooth_permission_needed">Permite «Dispositivos cercanos» para elegir aquí dispositivos Bluetooth.</string>
 </resources>
 

@@ -61,7 +61,13 @@ public class BluetoothOptionsListAdapter extends ArrayAdapter<BluetoothDevice> {
  
         BluetoothDevice device = (BluetoothDevice) getItem(position);
  
-        holder.txtTitle.setText(device.getName() + "\n" + device.getAddress());
+        String title;
+        try {
+            title = device.getName() + "\n" + device.getAddress();
+        } catch (SecurityException e) {
+            title = "?";
+        }
+        holder.txtTitle.setText(title);
  
         return convertView;
     }

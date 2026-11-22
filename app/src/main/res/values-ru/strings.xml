@@ -268,5 +268,6 @@
     <string name="set_station_image">Выбрать изображение станции</string>
     <string name="remove_station_image">Удалить изображение станции</string>
     <string name="station_image_failed">Не удалось использовать это изображение.</string>
+    <string name="bluetooth_permission_needed">Разрешите доступ к «Устройствам поблизости», чтобы выбрать здесь Bluetooth-устройства.</string>
 </resources>
 

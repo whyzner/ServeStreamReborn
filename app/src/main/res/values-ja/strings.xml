@@ -140,4 +140,5 @@
     <string name="set_station_image">放送局の画像を設定</string>
     <string name="remove_station_image">放送局の画像を削除</string>
     <string name="station_image_failed">この画像は使用できません。</string>
+    <string name="bluetooth_permission_needed">ここでBluetooth機器を選ぶには「付近のデバイス」の権限を許可してください。</string>
 </resources>

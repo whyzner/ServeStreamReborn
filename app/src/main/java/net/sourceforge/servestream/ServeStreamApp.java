@@ -42,15 +42,8 @@ public class ServeStreamApp extends Application {
 		final String theme = android.preference.PreferenceManager.getDefaultSharedPreferences(this).getString(
 				net.sourceforge.servestream.utils.AppearanceSettings.KEY_THEME, "system");
 		net.sourceforge.servestream.utils.AppearanceSettings.applyTheme(theme);
-		// keep the home screen icon in step with the theme (e.g. after an update)
-		final android.content.Context app = this;
-		new Thread(new Runnable() {
-			public void run() {
-				try {
-					net.sourceforge.servestream.utils.AppearanceSettings.applyIcon(app, theme);
-				} catch (RuntimeException ignored) {
-				}
-			}
-		}, "IconSync").start();
+		// keep the home screen icon in step with the theme (e.g. after an update);
+		// applied once no screen of the app is showing
+		net.sourceforge.servestream.utils.AppearanceSettings.requestIcon(this, theme);
 	}
 }

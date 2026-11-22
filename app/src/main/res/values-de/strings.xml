@@ -279,5 +279,6 @@
     <string name="set_station_image">Senderbild festlegen</string>
     <string name="remove_station_image">Senderbild entfernen</string>
     <string name="station_image_failed">Dieses Bild kann nicht verwendet werden.</string>
+    <string name="bluetooth_permission_needed">Erlaube „Geräte in der Nähe“, um hier Bluetooth-Geräte auszuwählen.</string>
 </resources>
 

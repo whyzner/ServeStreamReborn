@@ -247,4 +247,5 @@
     <string name="set_station_image">방송국화상 설정</string>
     <string name="remove_station_image">방송국화상 지우기</string>
     <string name="station_image_failed">이 화상은 쓸수 없습니다.</string>
+    <string name="bluetooth_permission_needed">여기서 블루투스장치를 고르려면 \"가까운 장치\" 권한을 허용하십시오.</string>
 </resources>

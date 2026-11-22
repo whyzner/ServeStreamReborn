@@ -56,6 +56,55 @@ public final class AppearanceSettings {
 
     private static final String[] LAUNCHERS = {"Default", "Dark", "Classic", "Platinum"};
 
+    private static volatile String sPendingIcon;
+    private static int sStartedScreens;
+    private static final android.os.Handler sMain = new android.os.Handler(android.os.Looper.getMainLooper());
+
+    /**
+     * Asks for the icon of this theme. Android closes screens that were opened
+     * from an icon when that icon is switched off, so the switch waits until
+     * none of the app's screens is on display.
+     */
+    public static void requestIcon(final android.content.Context c, String value) {
+        sPendingIcon = value;
+        final android.content.Context app = c.getApplicationContext();
+        sMain.post(new Runnable() {
+            public void run() {
+                maybeApplyPendingIcon(app);
+            }
+        });
+    }
+
+    private static void maybeApplyPendingIcon(final android.content.Context app) {
+        if (sPendingIcon == null || sStartedScreens > 0) {
+            return;
+        }
+        // let a screen that is just being replaced (rotation, theme redraw) come back first
+        sMain.postDelayed(new Runnable() {
+            public void run() {
+                final String value = sPendingIcon;
+                if (value == null || sStartedScreens > 0) {
+                    return;
+                }
+                sPendingIcon = null;
+                new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            applyIcon(app, value);
+                        } catch (RuntimeException e) {
+                            android.util.Log.w("AppearanceSettings", "icon switch failed", e);
+                        }
+                    }
+                }, "IconSwitch").start();
+            }
+        }, 1500);
+    }
+
+    /** For tests: is an icon switch still waiting for the app to leave the screen? */
+    public static boolean iconSwitchPending() {
+        return sPendingIcon != null;
+    }
+
     /**
      * Shows the home screen icon that goes with the theme: dark, classic (90s PC),
      * platinum (90s Mac), or the normal one for light and system.
@@ -89,7 +138,7 @@ public final class AppearanceSettings {
      * Puts the classic look on every screen as it is created, and recreates a
      * screen that comes back to the front after the look was switched.
      */
-    public static void install(android.app.Application app) {
+    public static void install(final android.app.Application app) {
         app.registerActivityLifecycleCallbacks(new android.app.Application.ActivityLifecycleCallbacks() {
             private final java.util.WeakHashMap<android.app.Activity, Integer> applied =
                     new java.util.WeakHashMap<android.app.Activity, Integer>();
@@ -125,9 +174,14 @@ public final class AppearanceSettings {
                 }
             }
 
-            @Override public void onActivityStarted(android.app.Activity a) { }
+            @Override public void onActivityStarted(android.app.Activity a) {
+                sStartedScreens++;
+            }
             @Override public void onActivityPaused(android.app.Activity a) { }
-            @Override public void onActivityStopped(android.app.Activity a) { }
+            @Override public void onActivityStopped(android.app.Activity a) {
+                if (sStartedScreens > 0) sStartedScreens--;
+                maybeApplyPendingIcon(app);
+            }
             @Override public void onActivitySaveInstanceState(android.app.Activity a, android.os.Bundle b) { }
             @Override public void onActivityDestroyed(android.app.Activity a) {
                 applied.remove(a);

@@ -41,6 +41,16 @@ public class BluetoothReceiver extends BroadcastReceiver {
 		
 		if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
 			BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+			String address;
+			try {
+				address = device != null ? device.getAddress() : null;
+			} catch (SecurityException e) {
+				// Android 12+ without the "Nearby devices" permission
+				return;
+			}
+			if (address == null) {
+				return;
+			}
 			
 	        // load tasks from preference
 	        SharedPreferences prefs = context.getSharedPreferences(BluetoothOptionsActivity.PREFS_NAME, Context.MODE_PRIVATE);
@@ -56,7 +66,7 @@ public class BluetoothReceiver extends BroadcastReceiver {
 	        for (int i = 0; i < items.size(); i++) {
 		    	String [] values = items.get(i).split("\\_");
 		    		
-		    	if (values[1].equalsIgnoreCase(device.getAddress())) {
+		    	if (values.length > 1 && values[values.length - 1].equalsIgnoreCase(address)) {
 			        String uri = prefs.getString(BluetoothOptionsActivity.PREF_AUTOSTART_STREAM, null);
 			        
 			        if (uri == null) {

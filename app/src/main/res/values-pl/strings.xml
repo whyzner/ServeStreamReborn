@@ -350,5 +350,6 @@
     <string name="set_station_image">Ustaw obraz stacji</string>
     <string name="remove_station_image">Usuń obraz stacji</string>
     <string name="station_image_failed">Nie można użyć tego obrazu.</string>
+    <string name="bluetooth_permission_needed">Zezwól na „Urządzenia w pobliżu”, aby wybrać tu urządzenia Bluetooth.</string>
 </resources>
 

@@ -140,4 +140,5 @@
     <string name="set_station_image">設定電台圖片</string>
     <string name="remove_station_image">刪除電台圖片</string>
     <string name="station_image_failed">無法使用此圖片。</string>
+    <string name="bluetooth_permission_needed">要在此選擇藍牙裝置，請允許「鄰近裝置」權限。</string>
 </resources>

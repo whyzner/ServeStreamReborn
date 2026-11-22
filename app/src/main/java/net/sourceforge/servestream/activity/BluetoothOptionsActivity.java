@@ -45,13 +45,53 @@ public class BluetoothOptionsActivity extends Activity {
 	private ListView mList;
 	private BluetoothOptionsListAdapter mAdapter;
 	
-	@SuppressWarnings("unchecked")
+	private static final int REQUEST_BLUETOOTH = 0xb7;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
         setTheme(UserPreferences.getTheme());
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_bluetooth_options);
-		
+
+		mList = (ListView) findViewById(android.R.id.list);
+		mList.setEmptyView(findViewById(android.R.id.empty));
+
+		// Android 12+: reading paired devices needs the "Nearby devices" permission
+		if (hasBluetoothPermission()) {
+			loadDevices();
+		} else {
+			requestPermissions(new String[] { android.Manifest.permission.BLUETOOTH_CONNECT }, REQUEST_BLUETOOTH);
+		}
+	}
+
+	private boolean hasBluetoothPermission() {
+		return android.os.Build.VERSION.SDK_INT < 31
+				|| checkSelfPermission(android.Manifest.permission.BLUETOOTH_CONNECT)
+						== android.content.pm.PackageManager.PERMISSION_GRANTED;
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		if (requestCode != REQUEST_BLUETOOTH) {
+			return;
+		}
+		if (hasBluetoothPermission()) {
+			loadDevices();
+		} else {
+			showMessage(getString(R.string.bluetooth_permission_needed));
+		}
+	}
+
+	private void showMessage(String text) {
+		android.view.View empty = findViewById(android.R.id.empty);
+		if (empty instanceof android.widget.TextView) {
+			((android.widget.TextView) empty).setText(text);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void loadDevices() {
 		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if (bluetoothAdapter == null) {
 		    // Device does not support Bluetooth
@@ -67,23 +107,28 @@ public class BluetoothOptionsActivity extends Activity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (items == null) {
+        	items = new ArrayList<String>();
+        }
         
         List<BluetoothDevice> devices = new ArrayList<BluetoothDevice>();
         
-		Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
-		// If there are paired devices
-		if (pairedDevices.size() > 0) {
-		    // Loop through paired devices
+		Set<BluetoothDevice> pairedDevices;
+		try {
+			pairedDevices = bluetoothAdapter.getBondedDevices();
+		} catch (SecurityException e) {
+			showMessage(getString(R.string.bluetooth_permission_needed));
+			return;
+		}
+		// If there are paired devices (null while Bluetooth is off on some phones)
+		if (pairedDevices != null) {
 		    for (BluetoothDevice device : pairedDevices) {
-		        // Add the name and address to an array adapter to show in a ListView
 		    	devices.add(device);
 		    }
 		}
 		
 		mAdapter = new BluetoothOptionsListAdapter(this, devices);
 		
-		mList = (ListView) findViewById(android.R.id.list);
-		mList.setEmptyView(findViewById(android.R.id.empty));
 		mList.setAdapter(mAdapter);
 		mList.setFastScrollEnabled(true);
 		mList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
@@ -101,7 +146,7 @@ public class BluetoothOptionsActivity extends Activity {
 	   	for (int i = 0; i < items.size(); i++) {
 	    	String [] values = items.get(i).split("\\_");
 	    		
-	    	if (values[1].equalsIgnoreCase(device.getAddress())) {
+	    	if (values.length > 1 && values[values.length - 1].equalsIgnoreCase(device.getAddress())) {
 	    		return true;
 	    	}
 	    }
@@ -112,6 +157,10 @@ public class BluetoothOptionsActivity extends Activity {
 	@Override
 	public void onStop() {
 		super.onStop();
+		if (mAdapter == null || !hasBluetoothPermission()) {
+			// list never shown (no permission / no Bluetooth): keep the saved choice
+			return;
+		}
 		
 		ArrayList<String> items = new ArrayList<String>();
 		
@@ -119,7 +168,10 @@ public class BluetoothOptionsActivity extends Activity {
         for (int i = 0; i < checkedItems.size(); i++) {
             if (checkedItems.valueAt(i)) {
             	BluetoothDevice device = mAdapter.getItem(checkedItems.keyAt(i));
-            	items.add(device.getName() + "_" + device.getAddress());
+            	try {
+            		items.add(device.getName() + "_" + device.getAddress());
+            	} catch (SecurityException ignored) {
+            	}
             }
         }
 		

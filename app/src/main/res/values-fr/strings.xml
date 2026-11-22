@@ -269,5 +269,6 @@
     <string name="set_station_image">Définir l\'image de la station</string>
     <string name="remove_station_image">Supprimer l\'image de la station</string>
     <string name="station_image_failed">Impossible d\'utiliser cette image.</string>
+    <string name="bluetooth_permission_needed">Autorisez « Appareils à proximité » pour choisir ici des appareils Bluetooth.</string>
 </resources>
 

@@ -350,5 +350,6 @@
     <string name="set_station_image">Set station image</string>
     <string name="remove_station_image">Remove station image</string>
     <string name="station_image_failed">Could not use that image.</string>
+    <string name="bluetooth_permission_needed">Allow \"Nearby devices\" to choose Bluetooth devices here.</string>
 </resources>
 
