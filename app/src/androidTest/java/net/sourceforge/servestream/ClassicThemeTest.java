@@ -12,7 +12,6 @@ import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.View;
 
-import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
@@ -63,42 +62,60 @@ public class ClassicThemeTest {
         setTheme("system");
     }
 
+    private Activity start(Class<?> cls) {
+        android.content.Intent i = new android.content.Intent(inst.getTargetContext(), cls)
+                .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        return inst.startActivitySync(i);
+    }
+
+    private void finish(final Activity a) {
+        inst.runOnMainSync(new Runnable() {
+            public void run() {
+                a.finish();
+            }
+        });
+        SystemClock.sleep(800);
+    }
+
     @Test
     public void classicThemeIsApplied() throws Exception {
         setTheme("classic");
+        final Activity main = start(MainActivity.class);
+        inst.waitForIdleSync();
         final int[] colour = new int[1];
         final boolean[] gradientBar = new boolean[1];
-        try (ActivityScenario<MainActivity> s = ActivityScenario.launch(MainActivity.class)) {
-            s.onActivity(new ActivityScenario.ActivityAction<MainActivity>() {
-                public void perform(MainActivity a) {
-                    colour[0] = surface(a);
-                    View bar = a.findViewById(R.id.toolbar);
-                    gradientBar[0] = bar != null
-                            && bar.getBackground() instanceof android.graphics.drawable.GradientDrawable;
-                }
-            });
-            screenshot("classic_main");
-        }
+        inst.runOnMainSync(new Runnable() {
+            public void run() {
+                colour[0] = surface(main);
+                View bar = main.findViewById(R.id.toolbar);
+                gradientBar[0] = bar != null
+                        && bar.getBackground() instanceof android.graphics.drawable.GradientDrawable;
+            }
+        });
+        screenshot("classic_main");
+        finish(main);
         assertEquals("grey window colour", 0xFFC0C0C0, colour[0]);
         assertTrue("title bar is not the gradient", gradientBar[0]);
 
-        try (ActivityScenario<SettingsActivity> s = ActivityScenario.launch(SettingsActivity.class)) {
-            screenshot("classic_settings");
-        }
+        Activity settings = start(SettingsActivity.class);
+        inst.waitForIdleSync();
+        screenshot("classic_settings");
+        finish(settings);
     }
 
     @Test
     public void switchingBackRestoresTheNormalLook() {
         setTheme("classic");
         setTheme("light");
+        final Activity main = start(MainActivity.class);
+        inst.waitForIdleSync();
         final int[] colour = new int[1];
-        try (ActivityScenario<MainActivity> s = ActivityScenario.launch(MainActivity.class)) {
-            s.onActivity(new ActivityScenario.ActivityAction<MainActivity>() {
-                public void perform(MainActivity a) {
-                    colour[0] = surface(a);
-                }
-            });
-        }
+        inst.runOnMainSync(new Runnable() {
+            public void run() {
+                colour[0] = surface(main);
+            }
+        });
+        finish(main);
         assertNotEquals(0xFFC0C0C0, colour[0]);
     }
 }
