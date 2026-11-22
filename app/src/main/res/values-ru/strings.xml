@@ -269,5 +269,8 @@
     <string name="remove_station_image">Удалить изображение станции</string>
     <string name="station_image_failed">Не удалось использовать это изображение.</string>
     <string name="bluetooth_permission_needed">Разрешите доступ к «Устройствам поблизости», чтобы выбрать здесь Bluetooth-устройства.</string>
+    <string name="exact_alarm_title">Будить точно вовремя?</string>
+    <string name="exact_alarm_message">Без разрешения «Будильники и напоминания» Android может включить радиобудильник на несколько минут позже. Разрешите его на следующем экране.</string>
+    <string name="exact_alarm_allow">Разрешить</string>
 </resources>
 

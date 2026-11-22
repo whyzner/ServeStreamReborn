@@ -141,4 +141,7 @@
     <string name="remove_station_image">放送局の画像を削除</string>
     <string name="station_image_failed">この画像は使用できません。</string>
     <string name="bluetooth_permission_needed">ここでBluetooth機器を選ぶには「付近のデバイス」の権限を許可してください。</string>
+    <string name="exact_alarm_title">正確な時刻に鳴らしますか？</string>
+    <string name="exact_alarm_message">「アラームとリマインダー」の権限がないと、ラジオのアラームが数分遅れて鳴ることがあります。次の画面で許可してください。</string>
+    <string name="exact_alarm_allow">許可する</string>
 </resources>

@@ -89,6 +89,17 @@ done
 $T adb shell wm size reset
 $T adb shell wm density reset
 
+# --- Tier 3: multi-window (app launched in a multi-window/freeform window keeps playing)
+$T adb shell settings put global enable_freeform_support 1
+$T adb shell am start --windowingMode 6 -n $PKG/.activity.MainActivity
+sleep 6
+mode=$($T adb shell dumpsys activity activities | grep -A3 "$PKG/.activity.MainActivity" | grep -o "mode=[a-z-]*" | head -1)
+shot multi_window 1
+echo "multi-window: $mode"
+check "keeps playing in multi-window ($mode)"
+$T adb shell am start --windowingMode 1 -n $PKG/.activity.MainActivity
+sleep 3
+
 # --- Android Auto: connect like the car does (media browser), list stations, play
 TESTAPK=$(find testapk -name '*.apk' | head -1)
 $T adb install -r -g "$TESTAPK"
@@ -106,7 +117,9 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
          "ClassicThemeTest#platinumThemeIsApplied Theme: platinum look applied" \
          "ClassicThemeTest#homeScreenIconFollowsTheTheme Theme: home screen icon follows the theme" \
          "FixesTest#themeChangeDoesNotCloseTheApp Theme change keeps the app open (icon switched after leaving)" \
-         "FixesTest#bluetoothOptionsWithoutPermission Bluetooth options without permission: no crash"; do
+         "FixesTest#bluetoothOptionsWithoutPermission Bluetooth options without permission: no crash" \
+         "Tier3Test#listScrollPositionSurvivesRecreation Tier 3: list scroll position kept" \
+         "Tier3Test#typedTextSurvivesRecreation Tier 3: typed text kept"; do
   set -- $t; m=$1; shift
   case "$m" in *#*) ;; *) m="AutoBrowseTest#$m" ;; esac
   case "$m" in *bluetoothOptions*) $T adb shell pm revoke $PKG android.permission.BLUETOOTH_CONNECT ;; esac

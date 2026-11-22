@@ -338,6 +338,7 @@ public class AlarmClockFragment extends Fragment implements
         String toastText = formatToast(context, timeInMillis);
         Toast toast = Toast.makeText(context, toastText, Toast.LENGTH_LONG);
         ToastMaster.setToast(toast);
+        Alarms.askForExactAlarmsIfNeeded(context);
         toast.show();
     }
     

@@ -359,6 +359,45 @@ public class Alarms {
      * @param alarm Alarm.
      * @param atTimeInMillis milliseconds since epoch
      */
+    /** Android 12+: exact alarms need the user's "Alarms & reminders" permission. */
+    public static boolean canScheduleExact(Context context) {
+        if (android.os.Build.VERSION.SDK_INT < 31) {
+            return true;
+        }
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        return am != null && am.canScheduleExactAlarms();
+    }
+
+    /**
+     * After the user sets an alarm: if exact alarms are not allowed, explain and
+     * offer the system setting. The alarm still works without it, possibly late.
+     */
+    public static void askForExactAlarmsIfNeeded(final Context context) {
+        if (canScheduleExact(context) || !(context instanceof android.app.Activity)) {
+            return;
+        }
+        final android.app.Activity activity = (android.app.Activity) context;
+        if (activity.isFinishing()) {
+            return;
+        }
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(activity)
+                .setTitle(net.sourceforge.servestream.R.string.exact_alarm_title)
+                .setMessage(net.sourceforge.servestream.R.string.exact_alarm_message)
+                .setPositiveButton(net.sourceforge.servestream.R.string.exact_alarm_allow,
+                        new android.content.DialogInterface.OnClickListener() {
+                            public void onClick(android.content.DialogInterface d, int which) {
+                                try {
+                                    activity.startActivity(new Intent(
+                                            android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                                            android.net.Uri.parse("package:" + activity.getPackageName())));
+                                } catch (android.content.ActivityNotFoundException ignored) {
+                                }
+                            }
+                        })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
     private static void enableAlert(Context context, final Alarm alarm,
             final long atTimeInMillis) {
         AlarmManager am = (AlarmManager)
@@ -387,11 +426,19 @@ public class Alarms {
                 context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         try {
+            if (!canScheduleExact(context)) {
+                throw new SecurityException("exact alarms not allowed");
+            }
             Intent show = new Intent(context, net.sourceforge.servestream.activity.MainActivity.class);
             am.setAlarmClock(new AlarmManager.AlarmClockInfo(atTimeInMillis,
                     net.sourceforge.servestream.utils.Compat.activity(context, 0, show, 0)), sender);
         } catch (SecurityException e) {
-            am.set(AlarmManager.RTC_WAKEUP, atTimeInMillis, sender);
+            // not allowed to ring at the exact minute: still wake the phone, possibly a bit late
+            if (android.os.Build.VERSION.SDK_INT >= 23) {
+                am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, atTimeInMillis, sender);
+            } else {
+                am.set(AlarmManager.RTC_WAKEUP, atTimeInMillis, sender);
+            }
         }
 
         setStatusBarIcon(context, true);

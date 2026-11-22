@@ -248,4 +248,7 @@
     <string name="remove_station_image">방송국화상 지우기</string>
     <string name="station_image_failed">이 화상은 쓸수 없습니다.</string>
     <string name="bluetooth_permission_needed">여기서 블루투스장치를 고르려면 \"가까운 장치\" 권한을 허용하십시오.</string>
+    <string name="exact_alarm_title">정확한 시간에 울리겠습니까?</string>
+    <string name="exact_alarm_message">\"자명종 및 알림\" 권한이 없으면 안드로이드가 라지오 자명종을 몇분 늦게 울릴수 있습니다. 다음 화면에서 허용하십시오.</string>
+    <string name="exact_alarm_allow">허용하러 가기</string>
 </resources>

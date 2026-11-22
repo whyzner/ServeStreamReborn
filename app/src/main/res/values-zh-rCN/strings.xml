@@ -141,4 +141,7 @@
     <string name="remove_station_image">删除电台图片</string>
     <string name="station_image_failed">无法使用此图片。</string>
     <string name="bluetooth_permission_needed">要在此选择蓝牙设备，请允许“附近的设备”权限。</string>
+    <string name="exact_alarm_title">要准时响铃吗？</string>
+    <string name="exact_alarm_message">如果没有“闹钟和提醒”权限，Android 可能会让电台闹钟晚几分钟响起。请在下一个界面中允许。</string>
+    <string name="exact_alarm_allow">去允许</string>
 </resources>

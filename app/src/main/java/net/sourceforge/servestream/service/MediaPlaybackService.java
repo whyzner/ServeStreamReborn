@@ -596,12 +596,28 @@ public class MediaPlaybackService extends androidx.media.MediaBrowserServiceComp
         }
     };
 
+    private static final long BLUETOOTH_AUTOSTART_DELAY = 8000;
+    private static final String ANDROID_AUTO_PACKAGE = "com.google.android.projection.gearhead";
+    private long mCarBrowserSeenAt;
+
+    /** True while the phone is projecting to a car (car mode) or Android Auto just connected to us. */
+    private boolean isInCar() {
+        android.app.UiModeManager ui = (android.app.UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+        if (ui != null && ui.getCurrentModeType() == android.content.res.Configuration.UI_MODE_TYPE_CAR) {
+            return true;
+        }
+        return mCarBrowserSeenAt != 0 && SystemClock.elapsedRealtime() - mCarBrowserSeenAt < 60000;
+    }
+
     private static boolean isBrowserIntent(Intent intent) {
         return intent != null && SERVICE_INTERFACE.equals(intent.getAction());
     }
 
     @Override
     public BrowserRoot onGetRoot(String clientPackageName, int clientUid, Bundle rootHints) {
+        if (ANDROID_AUTO_PACKAGE.equals(clientPackageName)) {
+            mCarBrowserSeenAt = SystemClock.elapsedRealtime();
+        }
         return new BrowserRoot(AutoLibrary.ROOT_ID, AutoLibrary.rootExtras());
     }
 
@@ -1271,15 +1287,23 @@ public class MediaPlaybackService extends androidx.media.MediaBrowserServiceComp
                 mPausedByTransientLossOfFocus = false;
                 seek(0);
             } else if (BLUETOOTH_DEVICE_PAIRED.equals(action)) {
-        		Uri uri = TransportFactory.getUri(intent.getStringExtra("uri"));
+        		final Uri uri = TransportFactory.getUri(intent.getStringExtra("uri"));
 
         		if (uri != null) {
-        			UriBean uriBean = TransportFactory.getTransport(uri.getScheme()).createUri(uri);
-        			
-        			AbsTransport transport = TransportFactory.getTransport(uriBean.getProtocol());
-        			transport.setUri(uriBean);
-        	   
-        			new DetermineActionTask(this, uriBean, this).execute();
+        			// Android Auto starts a few seconds after the car's Bluetooth connects.
+        			// Car apps must not start playing on their own, so wait and skip in the car.
+        			mMediaplayerHandler.postDelayed(new Runnable() {
+        				public void run() {
+        					if (isInCar()) {
+        						Log.i(LOGTAG, "Bluetooth autostart skipped: Android Auto / car mode");
+        						return;
+        					}
+        					UriBean uriBean = TransportFactory.getTransport(uri.getScheme()).createUri(uri);
+        					AbsTransport transport = TransportFactory.getTransport(uriBean.getProtocol());
+        					transport.setUri(uriBean);
+        					new DetermineActionTask(MediaPlaybackService.this, uriBean, MediaPlaybackService.this).execute();
+        				}
+        			}, BLUETOOTH_AUTOSTART_DELAY);
         		}
             }
         }

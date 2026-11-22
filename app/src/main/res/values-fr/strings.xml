@@ -270,5 +270,8 @@
     <string name="remove_station_image">Supprimer l\'image de la station</string>
     <string name="station_image_failed">Impossible d\'utiliser cette image.</string>
     <string name="bluetooth_permission_needed">Autorisez « Appareils à proximité » pour choisir ici des appareils Bluetooth.</string>
+    <string name="exact_alarm_title">Sonner à l\'heure exacte ?</string>
+    <string name="exact_alarm_message">Sans l\'autorisation « Alarmes et rappels », Android peut déclencher le réveil radio avec quelques minutes de retard. Autorisez-la à l\'écran suivant.</string>
+    <string name="exact_alarm_allow">Autoriser</string>
 </resources>
 

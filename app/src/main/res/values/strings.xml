@@ -351,5 +351,8 @@
     <string name="remove_station_image">Remove station image</string>
     <string name="station_image_failed">Could not use that image.</string>
     <string name="bluetooth_permission_needed">Allow \"Nearby devices\" to choose Bluetooth devices here.</string>
+    <string name="exact_alarm_title">Ring at the exact time?</string>
+    <string name="exact_alarm_message">Without the \"Alarms & reminders\" permission Android may ring the radio alarm a few minutes late. Allow it in the next screen.</string>
+    <string name="exact_alarm_allow">Allow</string>
 </resources>
 

@@ -320,6 +320,7 @@ public class SetAlarmFragment extends net.sourceforge.servestream.preference.Pre
         String toastText = formatToast(context, timeInMillis);
         Toast toast = Toast.makeText(context, toastText, Toast.LENGTH_LONG);
         ToastMaster.setToast(toast);
+        Alarms.askForExactAlarmsIfNeeded(context);
         toast.show();
     }
 

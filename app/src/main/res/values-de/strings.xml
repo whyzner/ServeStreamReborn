@@ -280,5 +280,8 @@
     <string name="remove_station_image">Senderbild entfernen</string>
     <string name="station_image_failed">Dieses Bild kann nicht verwendet werden.</string>
     <string name="bluetooth_permission_needed">Erlaube „Geräte in der Nähe“, um hier Bluetooth-Geräte auszuwählen.</string>
+    <string name="exact_alarm_title">Pünktlich wecken?</string>
+    <string name="exact_alarm_message">Ohne die Berechtigung „Wecker und Erinnerungen“ kann Android den Radiowecker einige Minuten zu spät auslösen. Erlaube sie im nächsten Bildschirm.</string>
+    <string name="exact_alarm_allow">Erlauben</string>
 </resources>
 

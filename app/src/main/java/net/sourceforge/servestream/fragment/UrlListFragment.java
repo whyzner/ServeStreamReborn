@@ -199,10 +199,39 @@ public class UrlListFragment extends ListFragment implements
         net.sourceforge.servestream.utils.ServiceStarter.startServiceSafely(c, refresh);
     }
 
+    // list scroll position kept across rotation, folding/unfolding and resizing:
+    // the list reloads asynchronously, so the system cannot restore it by itself
+    private int mScrollPos = -1;
+    private int mScrollTop;
+    private static final String STATE_SCROLL_POS = "list_scroll_pos";
+    private static final String STATE_SCROLL_TOP = "list_scroll_top";
+
+    private void rememberScroll() {
+        if (getView() == null) {
+            return;
+        }
+        android.widget.ListView list = getListView();
+        if (list.getCount() == 0) {
+            return;
+        }
+        mScrollPos = list.getFirstVisiblePosition();
+        View first = list.getChildAt(0);
+        mScrollTop = first == null ? 0 : first.getTop() - list.getPaddingTop();
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(STATE_IMAGE_TARGET, mImageTarget);
+        rememberScroll();
+        outState.putInt(STATE_SCROLL_POS, mScrollPos);
+        outState.putInt(STATE_SCROLL_TOP, mScrollTop);
+    }
+
+    @Override
+    public void onDestroyView() {
+        rememberScroll();
+        super.onDestroyView();
     }
 
     @Override
@@ -210,6 +239,10 @@ public class UrlListFragment extends ListFragment implements
         super.onCreate(savedInstanceState);
         
         setRetainInstance(true);
+        if (savedInstanceState != null && mScrollPos < 0) {
+            mScrollPos = savedInstanceState.getInt(STATE_SCROLL_POS, -1);
+            mScrollTop = savedInstanceState.getInt(STATE_SCROLL_TOP, 0);
+        }
         if (savedInstanceState != null && mImageTarget < 0) {
             // the picker may outlive our process (big photo apps, low memory)
             mImageTarget = savedInstanceState.getLong(STATE_IMAGE_TARGET, -1);
@@ -583,6 +616,10 @@ public class UrlListFragment extends ListFragment implements
         mAdapter.clear();
 		for (int i = 0; i < data.size(); i++) {
 			mAdapter.add(data.get(i));
+		}
+		if (mScrollPos >= 0 && data.size() > 0 && getView() != null) {
+			getListView().setSelectionFromTop(Math.min(mScrollPos, data.size() - 1), mScrollTop);
+			mScrollPos = -1;
 		}
 	}
 

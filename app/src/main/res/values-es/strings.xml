@@ -269,5 +269,8 @@
     <string name="remove_station_image">Quitar imagen de la emisora</string>
     <string name="station_image_failed">No se puede usar esta imagen.</string>
     <string name="bluetooth_permission_needed">Permite «Dispositivos cercanos» para elegir aquí dispositivos Bluetooth.</string>
+    <string name="exact_alarm_title">¿Sonar a la hora exacta?</string>
+    <string name="exact_alarm_message">Sin el permiso «Alarmas y recordatorios», Android puede hacer sonar la alarma de radio unos minutos tarde. Permítelo en la siguiente pantalla.</string>
+    <string name="exact_alarm_allow">Permitir</string>
 </resources>
 
