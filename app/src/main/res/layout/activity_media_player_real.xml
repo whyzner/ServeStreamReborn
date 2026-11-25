@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Player screen of the "real" theme: Windows 9x era streaming player
+     (transport bar on top, black video, fields, channel buttons, status display). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/real_face"
+    android:orientation="vertical">
+
+    <!-- transport bar: [play/pause] [stop] [position slider] [rew] [ffw] -->
+    <LinearLayout
+        android:id="@+id/player_controller"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="6dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="6dp"
+        android:paddingBottom="6dp">
+
+        <ImageButton
+            android:id="@+id/play_pause_button"
+            android:layout_width="68dp"
+            android:layout_height="40dp"
+            android:background="@drawable/classic_button"
+            android:contentDescription="@string/play"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/real_playpause" />
+
+        <ImageButton
+            android:id="@+id/stop_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/classic_button"
+            android:contentDescription="@string/stop"
+            android:padding="9dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/real_stop" />
+
+        <SeekBar
+            android:id="@+id/seek_bar"
+            style="@style/Widget.ServeStream.Classic.SeekBar"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:progress="0" />
+
+        <net.sourceforge.servestream.button.RepeatingImageButton
+            android:id="@+id/previous_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/classic_button"
+            android:contentDescription="@string/previous_action_title"
+            android:padding="9dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/real_rew" />
+
+        <net.sourceforge.servestream.button.RepeatingImageButton
+            android:id="@+id/next_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="2dp"
+            android:background="@drawable/classic_button"
+            android:contentDescription="@string/next_action_title"
+            android:padding="9dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/real_ffw" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/classic_divider" />
+
+    <!-- black video area with the title / artist / clip fields under it -->
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- blue channel buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="6dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="6dp">
+
+        <ImageButton
+            android:id="@+id/shuffle_button"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/real_channel_button"
+            android:contentDescription="@null"
+            android:src="?attr/ic_av_shuffle"
+            android:tint="#FFFFFF" />
+
+        <ImageButton
+            android:id="@+id/repeat_button"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/real_channel_button"
+            android:contentDescription="@null"
+            android:src="?attr/ic_av_repeat"
+            android:tint="#FFFFFF" />
+    </LinearLayout>
+
+    <!-- the time lives on the status display; these stay hidden -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/position_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/duration_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <!-- green-on-black status display -->
+    <LinearLayout
+        android:id="@+id/lcd_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:background="@drawable/real_lcd"
+        android:orientation="vertical"
+        android:paddingStart="10dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="6dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/lcd_kind"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="monospace"
+                android:singleLine="true"
+                android:textColor="#33FF33"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/lcd_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:singleLine="true"
+                android:textColor="#33FF33"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/lcd_state"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="monospace"
+                android:singleLine="true"
+                android:textColor="#33FF33"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/lcd_dot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\u25CF"
+                android:textColor="#33FF33"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

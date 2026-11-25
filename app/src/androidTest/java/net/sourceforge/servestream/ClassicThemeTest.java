@@ -113,6 +113,7 @@ public class ClassicThemeTest {
                 // platinum dresses the time strip, classic the information pane,
                 // real shows its status display (with the time) and labelled fields
                 boolean realOk = lcd != null && lcd.getVisibility() == View.VISIBLE
+                        && player.findViewById(R.id.stop_button) != null
                         && ((android.widget.TextView) player.findViewById(R.id.lcd_time)).getText().length() > 0
                         && ((android.widget.TextView) player.findViewById(R.id.lcd_state)).getText().length() > 0
                         && player.findViewById(R.id.player_fields) != null

@@ -23,6 +23,11 @@ public final class AppearanceSettings {
         return sRetroStyle;
     }
 
+    /** The "real" theme has its own player screen layout. */
+    public static boolean isRealTheme() {
+        return sRetroStyle == net.sourceforge.servestream.R.style.ThemeOverlay_ServeStream_Real;
+    }
+
     private static int retroStyleFor(String value) {
         if ("classic".equals(value)) {
             return net.sourceforge.servestream.R.style.ThemeOverlay_ServeStream_Classic;

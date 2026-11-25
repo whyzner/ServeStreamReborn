@@ -136,7 +136,8 @@ public class MediaPlayerActivity extends ActionBarActivity implements MusicUtils
     public void onCreate(Bundle icicle) {
     	setTheme(UserPreferences.getTheme());
         super.onCreate(icicle);
-        setContentView(R.layout.activity_media_player);
+        setContentView(net.sourceforge.servestream.utils.AppearanceSettings.isRealTheme()
+                ? R.layout.activity_media_player_real : R.layout.activity_media_player);
 
         // Wide screens: show the station list next to the player. When the
         // screen becomes narrow again (folding), drop the restored list so it
@@ -194,6 +195,24 @@ public class MediaPlayerActivity extends ActionBarActivity implements MusicUtils
         mDeviceHasDpad = (getResources().getConfiguration().navigation ==
             Configuration.NAVIGATION_DPAD);
         
+        // stop button of the "real" theme's player: pauses and shows "Stopped"
+        // (a full stop would close this screen)
+        View stop = findViewById(R.id.stop_button);
+        if (stop != null) {
+            stop.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    try {
+                        if (mService != null && mService.isPlaying()) {
+                            mService.pause();
+                        }
+                    } catch (RemoteException ignored) {
+                    }
+                    mStoppedByUser = true;
+                    refreshNow();
+                }
+            });
+        }
+
         mShuffleButton = (ImageButton) findViewById(R.id.shuffle_button);
         mShuffleButton.setOnClickListener(mShuffleListener);        
         mRepeatButton = (ImageButton) findViewById(R.id.repeat_button);
@@ -1043,6 +1062,8 @@ public class MediaPlayerActivity extends ActionBarActivity implements MusicUtils
     private TextView mLcdState;
     private View mLcdDot;
 
+    private boolean mStoppedByUser;
+
     private boolean lcdShown() {
         return mLcdPanel != null && mLcdPanel.getVisibility() == View.VISIBLE;
     }
@@ -1062,7 +1083,10 @@ public class MediaPlayerActivity extends ActionBarActivity implements MusicUtils
         boolean live = mDuration <= 0;
         mLcdKind.setText(live ? R.string.real_lcd_live : R.string.real_lcd_clip);
         mLcdTime.setText(live ? lcdClock(pos) : lcdClock(pos) + " / " + lcdClock(mDuration));
-        mLcdState.setText(mService == null ? R.string.real_lcd_stopped
+        if (playing) {
+            mStoppedByUser = false;
+        }
+        mLcdState.setText(mService == null || mStoppedByUser ? R.string.real_lcd_stopped
                 : playing ? R.string.real_lcd_playing : R.string.real_lcd_paused);
         mLcdDot.setVisibility(playing ? View.VISIBLE : View.INVISIBLE);
     }
