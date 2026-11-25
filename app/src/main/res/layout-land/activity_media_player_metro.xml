@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/playerBackground"
+    android:orientation="vertical">
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:id="@+id/player_controller"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp">
+
+        <LinearLayout
+            android:id="@+id/time_strip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/playerTimeStripBackground"
+            android:orientation="vertical"
+            android:padding="?attr/playerTimeStripPadding">
+
+            <SeekBar
+                android:id="@+id/seek_bar"
+                style="?attr/playerSeekBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:progress="0" />
+
+            <RelativeLayout
+                android:visibility="?attr/playerTimeRowVisibility"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <TextView
+                    android:id="@+id/position_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:textAppearance="?attr/playerTimeTextAppearance"
+                    android:textColor="?attr/playerTimeTextColor" />
+
+                <TextView
+                    android:id="@+id/duration_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="?attr/playerTimeTextAppearance"
+                    android:textColor="?attr/playerTimeTextColor" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="?attr/playerButtonRowBackground"
+            android:padding="?attr/playerButtonRowPadding"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/shuffle_button"
+                style="?attr/playerSmallButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:contentDescription="@null"
+                android:src="?attr/ic_av_shuffle" />
+
+            <net.sourceforge.servestream.button.RepeatingImageButton
+                android:id="@+id/previous_button"
+                style="?attr/playerSmallButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:contentDescription="@null"
+                android:scaleType="fitCenter"
+                android:padding="12dp"
+                android:src="?attr/ic_av_previous" />
+
+            <ImageButton
+                android:id="@+id/play_pause_button"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="?attr/playerPlayButtonBackground"
+                android:padding="?attr/playerPlayButtonPadding"
+                android:contentDescription="@null"
+                android:scaleType="fitCenter"
+                android:src="?attr/ic_av_play_over_video_large" />
+
+            <net.sourceforge.servestream.button.RepeatingImageButton
+                android:id="@+id/next_button"
+                style="?attr/playerSmallButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:contentDescription="@null"
+                android:scaleType="fitCenter"
+                android:padding="12dp"
+                android:src="?attr/ic_av_next" />
+
+            <ImageButton
+                android:id="@+id/repeat_button"
+                style="?attr/playerSmallButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:contentDescription="@null"
+                android:src="?attr/ic_av_repeat" />
+        </LinearLayout>
+
+        <!-- Green-on-black status display (only shown by the "real" theme) -->
+        <LinearLayout
+            android:id="@+id/lcd_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/real_lcd"
+            android:orientation="vertical"
+            android:paddingStart="10dp"
+            android:paddingTop="6dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="6dp"
+            android:visibility="?attr/playerLcdVisibility">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/lcd_kind"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="monospace"
+                    android:singleLine="true"
+                    android:textColor="#3DE33D"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/lcd_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:singleLine="true"
+                    android:textColor="#3DE33D"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/lcd_state"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="monospace"
+                    android:singleLine="true"
+                    android:textColor="#3DE33D"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/lcd_dot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="\u25CF"
+                    android:textColor="#3DE33D"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

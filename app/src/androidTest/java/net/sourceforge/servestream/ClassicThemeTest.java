@@ -511,7 +511,7 @@ public class ClassicThemeTest {
         }
     }
 
-    /** Metro player: picture with level bars, station name, round accent play button. */
+    /** Metro player (Windows Phone music app look): big title, queue column, round outline buttons. */
     @Test
     public void metroPlayer() throws Exception {
         for (final String theme : new String[] {"metro_dark", "metro_light"}) {
@@ -542,12 +542,14 @@ public class ClassicThemeTest {
             final String[] err = new String[1];
             inst.runOnMainSync(new Runnable() {
                 public void run() {
-                    View bars = player.findViewById(R.id.metro_bars_left);
+                    View bars = player.findViewById(R.id.metro_header);
                     View play = player.findViewById(R.id.play_pause_button);
                     android.widget.TextView name = player.findViewById(R.id.trackname);
                     View pos = player.findViewById(R.id.position_text);
-                    if (bars == null || !bars.isShown()) err[0] = "no level bars beside the picture";
-                    else if (play == null || !(play.getBackground() instanceof android.graphics.drawable.RippleDrawable)) err[0] = "play button not the round accent one";
+                    View queue = player.findViewById(R.id.metro_queue_button);
+                    if (bars == null || !bars.isShown()) err[0] = "no big servestream title";
+                    else if (queue == null || !queue.isShown()) err[0] = "no shuffle / repeat / queue column";
+                    else if (play == null || !(play.getBackground() instanceof android.graphics.drawable.RippleDrawable)) err[0] = "play button not the round outline one";
                     else if (name == null || name.getText().length() == 0) err[0] = "no station name";
                     else if (pos == null || !pos.isShown()) err[0] = "no play time";
                     else if (player.findViewById(R.id.lcd_panel) != null && player.findViewById(R.id.lcd_panel).isShown()) err[0] = "real status display shown";
@@ -615,7 +617,7 @@ public class ClassicThemeTest {
             inst.runOnMainSync(new Runnable() {
                 public void run() {
                     r[0] = shown(player, R.id.station_list_pane);
-                    r[1] = shown(player, R.id.play_pause_button) && shown(player, R.id.metro_bars_left);
+                    r[1] = shown(player, R.id.play_pause_button) && shown(player, R.id.metro_header);
                     r[2] = player.findViewById(R.id.metro_rail) == null;
                 }
             });

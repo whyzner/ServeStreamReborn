@@ -385,5 +385,6 @@
     <string name="metro_empty_favorites">Tap the star to add a favorite</string>
     <string name="metro_empty_recent">No stations played yet</string>
     <string name="metro_empty_search">No matching stations</string>
+    <string name="metro_player_header" translatable="false">servestream</string>
 </resources>
 

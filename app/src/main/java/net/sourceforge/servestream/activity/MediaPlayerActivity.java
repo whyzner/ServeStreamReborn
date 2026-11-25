@@ -136,8 +136,14 @@ public class MediaPlayerActivity extends ActionBarActivity implements MusicUtils
     public void onCreate(Bundle icicle) {
     	setTheme(UserPreferences.getTheme());
         super.onCreate(icicle);
-        setContentView(net.sourceforge.servestream.utils.AppearanceSettings.isRealTheme()
-                ? R.layout.activity_media_player_real : R.layout.activity_media_player);
+        int layout = R.layout.activity_media_player;
+        if (net.sourceforge.servestream.utils.AppearanceSettings.isRealTheme()) {
+            layout = R.layout.activity_media_player_real;
+        } else if (net.sourceforge.servestream.utils.AppearanceSettings.isMetro()) {
+            // Windows Phone music app look
+            layout = R.layout.activity_media_player_metro;
+        }
+        setContentView(layout);
 
         // Wide screens: show the station list next to the player. When the
         // screen becomes narrow again (folding), drop the restored list so it
@@ -167,6 +173,15 @@ public class MediaPlayerActivity extends ActionBarActivity implements MusicUtils
         ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setHomeButtonEnabled(true);
+		if (findViewById(R.id.metro_header) != null) {
+			// the big "servestream" title takes the place of the bar title
+			actionBar.setDisplayShowTitleEnabled(false);
+			findViewById(R.id.metro_queue_button).setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					startActivity(new Intent(MediaPlayerActivity.this, NowPlayingActivity.class));
+				}
+			});
+		}
         //actionBar.setDisplayShowCustomEnabled(true);
         //actionBar.setDisplayShowTitleEnabled(false);
         

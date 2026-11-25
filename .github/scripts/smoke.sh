@@ -117,7 +117,7 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
          "ClassicThemeTest#metroLightThemeIsApplied Theme: metro light look applied (colours, switches, drop-downs)" \
          "ClassicThemeTest#metroHomeTiles Metro: tile home, stations tile, back returns home" \
          "ClassicThemeTest#metroStationTabsAndFavorites Metro: all / favourites / recent tabs, star, backup keeps it" \
-         "ClassicThemeTest#metroPlayer Metro: player (picture with level bars, name, round play button)" \
+         "ClassicThemeTest#metroPlayer Metro: player in Windows Phone music app style (title, queue column, round buttons)" \
          "ClassicThemeTest#metroWideTwoPanes Metro: wide screens two panes (list | player) as before" \
          "ClassicThemeTest#metroSwipeBackAndFold Metro: swipe list <-> player, predictive back, tab kept when unfolding" \
          "ClassicThemeTest#realThemeIsApplied Theme: real look applied (status display, fields)" \

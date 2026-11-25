@@ -67,15 +67,15 @@
         <item name="divider_horizontal">@drawable/metro_divider</item>
         <item name="now_playing_item_color">@color/metro_accent</item>
 
-        <!-- player: flat, round accent play button, thin accent progress bar -->
+        <!-- player: Windows Phone music app look - round outline buttons, thin accent progress line -->
         <item name="playerArtCorner">0dp</item>
         <item name="playerTimeTextColor">?attr/colorOnSurfaceVariant</item>
         <item name="playerSeekBarStyle">@style/Widget.ServeStream.Metro.SeekBar</item>
         <item name="playerSmallButtonStyle">@style/Widget.ServeStream.Metro.PlayerButton</item>
-        <item name="playerPlayButtonBackground">@drawable/metro_play_circle</item>
-        <item name="playerPlayButtonPadding">22dp</item>
-        <item name="ic_av_play_over_video_large">@drawable/metro_play</item>
-        <item name="ic_av_pause_over_video_large">@drawable/metro_pause</item>
+        <item name="playerPlayButtonBackground">@drawable/metro_circle_outline</item>
+        <item name="playerPlayButtonPadding">15dp</item>
+        <item name="ic_av_play_over_video_large">@drawable/metro_play_line</item>
+        <item name="ic_av_pause_over_video_large">@drawable/metro_pause_line</item>
         <item name="playerInfoVisibility">0</item>
         <item name="playerFieldsVisibility">2</item>
         <item name="playerTimeRowVisibility">0</item>
