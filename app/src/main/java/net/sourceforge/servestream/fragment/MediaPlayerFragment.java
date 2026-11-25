@@ -85,8 +85,14 @@ public class MediaPlayerFragment extends Fragment implements CoverViewListener {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// the "real" theme keeps the picture above the fields on wide screens too
-		View view = inflater.inflate(net.sourceforge.servestream.utils.AppearanceSettings.isRealTheme()
-				? R.layout.fragment_media_player_real : R.layout.fragment_media_player, container, false);
+		int layout = R.layout.fragment_media_player;
+		if (net.sourceforge.servestream.utils.AppearanceSettings.isRealTheme()) {
+			layout = R.layout.fragment_media_player_real;
+		} else if (net.sourceforge.servestream.utils.AppearanceSettings.isMetro()) {
+			// Metro: picture with level bars at both sides, then the station name
+			layout = R.layout.fragment_media_player_metro;
+		}
+		View view = inflater.inflate(layout, container, false);
 		
         mAlbum = (CoverView) view.findViewById(R.id.album_art);
         mAlbum.setup(this);

@@ -66,6 +66,31 @@
         <item name="android:listDivider">@drawable/metro_divider</item>
         <item name="divider_horizontal">@drawable/metro_divider</item>
         <item name="now_playing_item_color">@color/metro_accent</item>
+
+        <!-- player: flat, round accent play button, thin accent progress bar -->
+        <item name="playerArtCorner">0dp</item>
+        <item name="playerTimeTextColor">?attr/colorOnSurfaceVariant</item>
+        <item name="playerSeekBarStyle">@style/Widget.ServeStream.Metro.SeekBar</item>
+        <item name="playerSmallButtonStyle">@style/Widget.ServeStream.Metro.PlayerButton</item>
+        <item name="playerPlayButtonBackground">@drawable/metro_play_circle</item>
+        <item name="playerPlayButtonPadding">22dp</item>
+        <item name="ic_av_play_over_video_large">@drawable/metro_play</item>
+        <item name="ic_av_pause_over_video_large">@drawable/metro_pause</item>
+        <item name="playerInfoVisibility">0</item>
+        <item name="playerFieldsVisibility">2</item>
+        <item name="playerTimeRowVisibility">0</item>
+        <item name="playerLcdVisibility">2</item>
+    </style>
+
+    <style name="Widget.ServeStream.Metro.SeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressTint">@color/metro_accent</item>
+        <item name="android:thumbTint">@color/metro_accent</item>
+        <item name="android:progressBackgroundTint">?attr/colorOutline</item>
+        <item name="android:splitTrack">false</item>
+    </style>
+
+    <style name="Widget.ServeStream.Metro.PlayerButton" parent="Widget.ServeStream.IconButton">
+        <item name="android:tint">?attr/colorOnSurface</item>
     </style>
 
     <style name="ThemeOverlay.ServeStream.MetroDark" parent="ThemeOverlay.ServeStream.MetroBase">
@@ -90,6 +115,7 @@
         <item name="nav_drawer_background">@color/metro_dark_bg</item>
         <item name="metroPanel">@color/metro_dark_panel</item>
         <item name="metroSelectedRow">@color/metro_dark_selected</item>
+        <item name="playerBackground">@color/metro_dark_bg</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.ServeStream.MetroDark.Dialog</item>
         <item name="alertDialogTheme">@style/ThemeOverlay.ServeStream.MetroDark.Dialog</item>
     </style>
@@ -116,6 +142,7 @@
         <item name="nav_drawer_background">@color/metro_light_bg</item>
         <item name="metroPanel">@color/metro_light_panel</item>
         <item name="metroSelectedRow">@color/metro_light_selected</item>
+        <item name="playerBackground">@color/metro_light_bg</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.ServeStream.MetroLight.Dialog</item>
         <item name="alertDialogTheme">@style/ThemeOverlay.ServeStream.MetroLight.Dialog</item>
     </style>

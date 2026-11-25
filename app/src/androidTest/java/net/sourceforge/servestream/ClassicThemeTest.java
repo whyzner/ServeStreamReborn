@@ -513,4 +513,52 @@ public class ClassicThemeTest {
             }
         }
     }
+
+    /** Metro player: picture with level bars, station name, round accent play button. */
+    @Test
+    public void metroPlayer() throws Exception {
+        for (final String theme : new String[] {"metro_dark", "metro_light"}) {
+            setTheme(theme);
+            android.content.Intent view = new android.content.Intent(android.content.Intent.ACTION_VIEW)
+                    .setDataAndType(android.net.Uri.parse("https://stream1.rcast.net/73730"), "audio/mpeg")
+                    .setClass(inst.getTargetContext(), MainActivity.class)
+                    .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            inst.getTargetContext().startActivity(view);
+            Activity found = null;
+            long end = SystemClock.elapsedRealtime() + 40000;
+            while (SystemClock.elapsedRealtime() < end && found == null) {
+                SystemClock.sleep(1000);
+                final Activity[] r = new Activity[1];
+                inst.runOnMainSync(new Runnable() {
+                    public void run() {
+                        for (Activity a : androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance()
+                                .getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED)) {
+                            if (a instanceof net.sourceforge.servestream.activity.MediaPlayerActivity) r[0] = a;
+                        }
+                    }
+                });
+                found = r[0];
+            }
+            assertTrue(theme + ": player screen did not open", found != null);
+            SystemClock.sleep(6000);
+            final Activity player = found;
+            final String[] err = new String[1];
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    View bars = player.findViewById(R.id.metro_bars_left);
+                    View play = player.findViewById(R.id.play_pause_button);
+                    android.widget.TextView name = player.findViewById(R.id.trackname);
+                    View pos = player.findViewById(R.id.position_text);
+                    if (bars == null || !bars.isShown()) err[0] = "no level bars beside the picture";
+                    else if (play == null || !(play.getBackground() instanceof android.graphics.drawable.RippleDrawable)) err[0] = "play button not the round accent one";
+                    else if (name == null || name.getText().length() == 0) err[0] = "no station name";
+                    else if (pos == null || !pos.isShown()) err[0] = "no play time";
+                    else if (player.findViewById(R.id.lcd_panel) != null && player.findViewById(R.id.lcd_panel).isShown()) err[0] = "real status display shown";
+                }
+            });
+            screenshot(theme + "_player");
+            finish(player);
+            assertTrue(theme + ": " + err[0], err[0] == null);
+        }
+    }
 }

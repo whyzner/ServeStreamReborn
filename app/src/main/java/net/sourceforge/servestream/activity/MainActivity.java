@@ -208,6 +208,12 @@ public class MainActivity extends AppCompatActivity implements
 		if (drawer != null) {
 			drawer.setDrawerLockMode(home ? DrawerLayout.LOCK_MODE_LOCKED_CLOSED : DrawerLayout.LOCK_MODE_UNLOCKED);
 		}
+		// Metro: the title bar names the section (Stations, Browse, Alarm)
+		if (isMetro() && getSupportActionBar() != null) {
+			if ("0".equals(mTag)) getSupportActionBar().setTitle(R.string.metro_tile_stations);
+			else if ("1".equals(mTag)) getSupportActionBar().setTitle(R.string.browse_label);
+			else if ("2".equals(mTag)) getSupportActionBar().setTitle(R.string.metro_tile_alarm);
+		}
 	}
 
 	/** Metro home tile pressed. */
