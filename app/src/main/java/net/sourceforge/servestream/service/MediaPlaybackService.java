@@ -505,6 +505,7 @@ public class MediaPlaybackService extends androidx.media.MediaBrowserServiceComp
 
         @Override
         public boolean onMediaButtonEvent(Intent intent) {
+            if (mPlayer == null) return false;
             if (intent != null) {
                 String action = intent.getAction();
                 String cmd = intent.getStringExtra("command");
@@ -558,27 +559,32 @@ public class MediaPlaybackService extends androidx.media.MediaBrowserServiceComp
         // System media controls (quick panel, lock screen, Bluetooth) use these.
         @Override
         public void onPlay() {
+            if (mPlayer == null) return;
             play();
         }
 
         @Override
         public void onPause() {
+            if (mPlayer == null) return;
             pause(true);
             mPausedByTransientLossOfFocus = false;
         }
 
         @Override
         public void onSkipToNext() {
+            if (mPlayer == null) return;
             userNext();
         }
 
         @Override
         public void onSkipToPrevious() {
+            if (mPlayer == null) return;
             userPrev();
         }
 
         @Override
         public void onStop() {
+            if (mPlayer == null) return;
             pause(true);
             mPausedByTransientLossOfFocus = false;
         }
@@ -586,12 +592,14 @@ public class MediaPlaybackService extends androidx.media.MediaBrowserServiceComp
         // Android Auto: a station picked from the list
         @Override
         public void onPlayFromMediaId(String mediaId, Bundle extras) {
+            if (mPlayer == null) return;
             playStation(AutoLibrary.findByMediaId(MediaPlaybackService.this, mediaId));
         }
 
         // Voice: "play <station> on ServeStream"
         @Override
         public void onPlayFromSearch(String query, Bundle extras) {
+            if (mPlayer == null) return;
             playStation(AutoLibrary.search(MediaPlaybackService.this, query));
         }
     };
@@ -970,6 +978,17 @@ public class MediaPlaybackService extends androidx.media.MediaBrowserServiceComp
         i.putExtra("android.media.extra.AUDIO_SESSION", getAudioSessionId());
         i.putExtra("android.media.extra.PACKAGE_NAME", getPackageName());
         sendBroadcast(i);
+
+        // Close the media session first: otherwise Bluetooth / headset / lock screen
+        // buttons still reach this destroyed service and find no player.
+        try {
+            mediaSession.setCallback(null);
+            mediaSession.setActive(false);
+            mediaSession.release();
+        } catch (RuntimeException e) {
+            Log.w(LOGTAG, "media session release failed", e);
+        }
+
         mPlayer.release();
         mPlayer = null;
 
@@ -1843,6 +1862,10 @@ public class MediaPlaybackService extends androidx.media.MediaBrowserServiceComp
      * Starts playback of a previously opened file.
      */
     public void play() {
+        if (mPlayer == null) {
+            // service already shut down (late button press): nothing to play
+            return;
+        }
         mAudioManager.requestAudioFocus(mAudioFocusListener, AudioManager.STREAM_MUSIC,
                 AudioManager.AUDIOFOCUS_GAIN);
         MediaButtonHelper.registerMediaButtonEventReceiverCompat(

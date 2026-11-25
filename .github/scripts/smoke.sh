@@ -149,6 +149,26 @@ echo "CHECK language ko-KP: -> $res"
 RESULTS="$RESULTS\n$res  language: 조선말 (ko-KP) strings shown"
 $T adb shell cmd locale set-app-locales $PKG --locales ""
 
+# --- media button after the playback service has shut down (crash in 2.6.4 and earlier)
+$T adb shell input keyevent KEYCODE_MEDIA_PAUSE
+sleep 2
+$T adb shell am start -n $PKG/.activity.MainActivity
+sleep 3
+for k in 1 2 3 4; do $T adb shell input keyevent KEYCODE_BACK; sleep 1; done
+$T adb shell am stopservice -n $PKG/.service.MediaPlaybackService
+sleep 6
+svc=$($T adb shell dumpsys activity services $PKG | grep -c "MediaPlaybackService")
+echo "playback service records after stop: $svc"
+$T adb logcat -c
+$T adb shell input keyevent KEYCODE_MEDIA_PLAY
+sleep 6
+crash=$($T adb logcat -d | grep -c "FATAL EXCEPTION")
+$T adb logcat -d | grep -A12 "FATAL EXCEPTION" | head -30
+res="FAIL"; [ "$crash" = 0 ] && res="PASS"
+echo "CHECK late media button: crashes=$crash -> $res"
+RESULTS="$RESULTS\n$res  media button after service shutdown: no crash"
+$T adb shell input keyevent KEYCODE_MEDIA_PAUSE
+
 echo "=====LOGCAT BEGIN====="
 $T adb logcat -d -v brief | grep -iE "servestream|FFmpeg|AndroidRuntime|FATAL|TAG  |MediaPlayer" | grep -viE "ApkAssets|PackageConfigPersister" | tail -n 200
 echo "=====LOGCAT END====="
