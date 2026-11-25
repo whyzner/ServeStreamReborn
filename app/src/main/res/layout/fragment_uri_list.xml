@@ -18,9 +18,28 @@
  */
 -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical">
+<!-- Metro only: All / Favourites / Recent tabs -->
+<com.google.android.material.tabs.TabLayout
+    android:id="@+id/metro_tabs"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorSurface"
+    android:visibility="gone"
+    app:tabGravity="start"
+    app:tabMode="scrollable"
+    app:tabIndicatorColor="?attr/colorPrimary"
+    app:tabSelectedTextColor="?attr/colorPrimary"
+    app:tabTextColor="?attr/colorOnSurfaceVariant"
+    app:tabTextAppearance="?attr/textAppearanceTitleSmall" />
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
     android:orientation="vertical"
     android:gravity="center_vertical" >
 
@@ -39,7 +58,6 @@
 		android:gravity="center" />
 
 	<com.google.android.material.floatingactionbutton.FloatingActionButton
-		xmlns:app="http://schemas.android.com/apk/res-auto"
 		android:id="@+id/fab"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -49,3 +67,4 @@
 		app:srcCompat="@drawable/ic_m3_add"/>
 
 </FrameLayout>
+</LinearLayout>

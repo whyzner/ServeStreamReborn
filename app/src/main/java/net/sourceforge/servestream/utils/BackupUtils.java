@@ -114,6 +114,10 @@ public class BackupUtils {
 					counts.stations++;
 					added = true;
 				}
+				// a star in the backup is kept for a station that is already here
+				if (!added && station != null && uris.get(i).isFavorite() && !station.isFavorite()) {
+					streamdb.setFavorite(station, true);
+				}
 				// a new station has no picture of its own yet: anything on disk under its
 				// number is left over from a deleted station. Existing stations keep the
 				// picture the user set on this phone.
@@ -209,6 +213,10 @@ public class BackupUtils {
 			js.put(StreamDatabase.FIELD_STREAM_QUERY, uriBean.getQuery());
 			js.put(StreamDatabase.FIELD_STREAM_REFERENCE, uriBean.getReference());
 			js.put(StreamDatabase.FIELD_STREAM_LASTCONNECT, uriBean.getLastConnect());
+			if (uriBean.isFavorite()) {
+				// only written when set, so older versions read these files unchanged
+				js.put(StreamDatabase.FIELD_STREAM_FAVORITE, true);
+			}
 			byte[] image = StationImages.readBytes(context, uriBean.getId());
 			if (image != null) {
 				js.put(FIELD_IMAGE, android.util.Base64.encodeToString(image, android.util.Base64.NO_WRAP));
@@ -260,6 +268,8 @@ public class BackupUtils {
 	      				uriBean.setReference(row.getString(StreamDatabase.FIELD_STREAM_REFERENCE));
 	      			} else if (name.equalsIgnoreCase(StreamDatabase.FIELD_STREAM_LASTCONNECT)) {
 	      				uriBean.setLastConnect(row.getLong(StreamDatabase.FIELD_STREAM_LASTCONNECT));
+	      			} else if (name.equalsIgnoreCase(StreamDatabase.FIELD_STREAM_FAVORITE)) {
+	      				uriBean.setFavorite(row.optBoolean(StreamDatabase.FIELD_STREAM_FAVORITE, false));
 	      			}
 	      		}
 	      		

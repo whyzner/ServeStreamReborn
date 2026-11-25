@@ -295,5 +295,14 @@
     <string name="metro_tile_settings">Paramètres</string>
     <string name="metro_tile_about">À propos</string>
     <string name="metro_nothing_playing">Aucune lecture en cours</string>
+    <string name="metro_tab_all">Toutes</string>
+    <string name="metro_tab_favorites">Favoris</string>
+    <string name="metro_tab_recent">Récents</string>
+    <string name="metro_favorite_add">Ajouter aux favoris</string>
+    <string name="metro_favorite_remove">Retirer des favoris</string>
+    <string name="metro_search_stations">Rechercher des stations</string>
+    <string name="metro_empty_favorites">Touchez l’étoile pour ajouter un favori</string>
+    <string name="metro_empty_recent">Aucune station écoutée pour l’instant</string>
+    <string name="metro_empty_search">Aucune station correspondante</string>
 </resources>
 

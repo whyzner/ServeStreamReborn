@@ -272,4 +272,13 @@
     <string name="metro_tile_settings">설정</string>
     <string name="metro_tile_about">앱 정보</string>
     <string name="metro_nothing_playing">지금 재생 중인 방송이 없습니다</string>
+    <string name="metro_tab_all">전체</string>
+    <string name="metro_tab_favorites">즐겨찾기</string>
+    <string name="metro_tab_recent">최근 재생</string>
+    <string name="metro_favorite_add">즐겨찾기에 추가</string>
+    <string name="metro_favorite_remove">즐겨찾기에서 빼기</string>
+    <string name="metro_search_stations">방송국 검색</string>
+    <string name="metro_empty_favorites">별표를 눌러 즐겨찾기에 추가하세요</string>
+    <string name="metro_empty_recent">최근 재생한 방송이 없습니다</string>
+    <string name="metro_empty_search">찾는 방송국이 없습니다</string>
 </resources>

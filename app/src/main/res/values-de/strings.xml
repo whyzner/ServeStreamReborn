@@ -305,5 +305,14 @@
     <string name="metro_tile_settings">Einstellungen</string>
     <string name="metro_tile_about">Info</string>
     <string name="metro_nothing_playing">Gerade läuft nichts</string>
+    <string name="metro_tab_all">Alle</string>
+    <string name="metro_tab_favorites">Favoriten</string>
+    <string name="metro_tab_recent">Zuletzt</string>
+    <string name="metro_favorite_add">Zu Favoriten hinzufügen</string>
+    <string name="metro_favorite_remove">Aus Favoriten entfernen</string>
+    <string name="metro_search_stations">Sender suchen</string>
+    <string name="metro_empty_favorites">Tippe auf den Stern, um einen Favoriten hinzuzufügen</string>
+    <string name="metro_empty_recent">Noch keine Sender gespielt</string>
+    <string name="metro_empty_search">Keine passenden Sender</string>
 </resources>
 

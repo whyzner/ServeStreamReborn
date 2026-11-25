@@ -46,6 +46,7 @@ public class UriBean implements Parcelable {
 	private long lastConnect = -1;
 	private String contentType = null;
 	private int listPosition = -1;
+	private boolean favorite = false;
 
 	public UriBean() {
 
@@ -65,6 +66,7 @@ public class UriBean implements Parcelable {
 		lastConnect = in.readLong();
 		contentType = in.readString();
 		listPosition = in.readInt();
+		favorite = in.readInt() != 0;
 	}
 
 	public String getBeanName() {
@@ -149,6 +151,12 @@ public class UriBean implements Parcelable {
 	public int getListPosition() {
 		return listPosition;
 	}
+	public void setFavorite(boolean favorite) {
+		this.favorite = favorite;
+	}
+	public boolean isFavorite() {
+		return favorite;
+	}
 	
 	public String getDescription() {
 		String description = String.format("%s@%s", username, hostname);
@@ -173,6 +181,7 @@ public class UriBean implements Parcelable {
 		values.put(StreamDatabase.FIELD_STREAM_REFERENCE, reference);
 		values.put(StreamDatabase.FIELD_STREAM_LASTCONNECT, lastConnect);
 		values.put(StreamDatabase.FIELD_STREAM_LIST_POSITION, listPosition);
+		values.put(StreamDatabase.FIELD_STREAM_FAVORITE, favorite ? 1 : 0);
 
 		return values;
 	}
@@ -403,6 +412,7 @@ public class UriBean implements Parcelable {
 		dest.writeLong(lastConnect);
 		dest.writeString(contentType);
 		dest.writeInt(listPosition);
+		dest.writeInt(favorite ? 1 : 0);
 	}
 	
     public static final Parcelable.Creator<UriBean> CREATOR

@@ -376,5 +376,14 @@
     <string name="metro_tile_settings">Ustawienia</string>
     <string name="metro_tile_about">O aplikacji</string>
     <string name="metro_nothing_playing">Teraz nic nie gra</string>
+    <string name="metro_tab_all">Wszystkie</string>
+    <string name="metro_tab_favorites">Ulubione</string>
+    <string name="metro_tab_recent">Ostatnie</string>
+    <string name="metro_favorite_add">Dodaj do ulubionych</string>
+    <string name="metro_favorite_remove">Usuń z ulubionych</string>
+    <string name="metro_search_stations">Szukaj stacji</string>
+    <string name="metro_empty_favorites">Dotknij gwiazdki, aby dodać ulubioną</string>
+    <string name="metro_empty_recent">Nie odtworzono jeszcze żadnej stacji</string>
+    <string name="metro_empty_search">Brak pasujących stacji</string>
 </resources>
 

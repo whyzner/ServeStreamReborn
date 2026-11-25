@@ -36,6 +36,38 @@ public class UrlListAdapter extends ArrayAdapter<UriBean> {
     private Context mContext;
     private List<UriBean> mRowItems;
     private OverflowClickListener mListener;
+    private Runnable mFavoriteChanged;
+    private String mPlaying;
+
+    /** Called after a star was switched on or off (Metro). */
+    public void setOnFavoriteChanged(Runnable r) {
+        mFavoriteChanged = r;
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        mPlaying = playingUri();
+        super.notifyDataSetChanged();
+    }
+
+    private static String playingUri() {
+        try {
+            if (net.sourceforge.servestream.utils.MusicUtils.sService != null) {
+                return net.sourceforge.servestream.utils.MusicUtils.sService.getMediaUri();
+            }
+        } catch (Exception ignored) {
+        }
+        return null;
+    }
+
+    private boolean isPlaying(UriBean uri) {
+        if (mPlaying == null) return false;
+        try {
+            return mPlaying.equals(uri.getUri().toString()) || mPlaying.equals(uri.getScrubbedUri().toString());
+        } catch (Exception e) {
+            return false;
+        }
+    }
  
     public UrlListAdapter(Context context, List<UriBean> rowItems, OverflowClickListener listener) {
 		super(context, R.layout.list_item_uri, rowItems);
@@ -50,6 +82,7 @@ public class UrlListAdapter extends ArrayAdapter<UriBean> {
         TextView caption;
         ImageView overflowMenuButton;
         ImageView image;
+        ImageView favorite;
     }
  
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -64,6 +97,7 @@ public class UrlListAdapter extends ArrayAdapter<UriBean> {
 			holder.caption = (TextView) convertView.findViewById(android.R.id.text2);
 			holder.overflowMenuButton = (ImageView) convertView.findViewById(R.id.overflow_menu_button);
 			holder.image = (ImageView) convertView.findViewById(R.id.station_image);
+			holder.favorite = (ImageView) convertView.findViewById(R.id.favorite_button);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -101,6 +135,37 @@ public class UrlListAdapter extends ArrayAdapter<UriBean> {
 		}
 
 		holder.caption.setText(lastConnect);
+
+		boolean metro = net.sourceforge.servestream.utils.AppearanceSettings.isMetro();
+		if (holder.favorite != null) {
+			holder.favorite.setVisibility(metro ? View.VISIBLE : View.GONE);
+			if (metro) {
+				bindStar(holder.favorite, uri);
+				holder.favorite.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						net.sourceforge.servestream.database.StreamDatabase db =
+								new net.sourceforge.servestream.database.StreamDatabase(mContext);
+						try {
+							db.setFavorite(uri, !uri.isFavorite());
+						} finally {
+							db.close();
+						}
+						bindStar((ImageView) v, uri);
+						v.announceForAccessibility(v.getContentDescription());
+						if (mFavoriteChanged != null) mFavoriteChanged.run();
+					}
+				});
+			}
+		}
+		// Metro: the station being played is shown on a coloured row
+		if (metro && isPlaying(uri)) {
+			android.util.TypedValue tv = new android.util.TypedValue();
+			mContext.getTheme().resolveAttribute(R.attr.metroSelectedRow, tv, true);
+			convertView.setBackgroundColor(tv.data);
+		} else {
+			convertView.setBackground(null);
+		}
 		if (holder.overflowMenuButton != null) {
 			holder.overflowMenuButton.setOnClickListener(new View.OnClickListener() {
 			
@@ -115,5 +180,16 @@ public class UrlListAdapter extends ArrayAdapter<UriBean> {
 		}
 
         return convertView;
+    }
+
+    private void bindStar(ImageView star, UriBean uri) {
+        android.util.TypedValue tv = new android.util.TypedValue();
+        mContext.getTheme().resolveAttribute(uri.isFavorite()
+                ? androidx.appcompat.R.attr.colorPrimary
+                : com.google.android.material.R.attr.colorOnSurfaceVariant, tv, true);
+        star.setImageResource(uri.isFavorite() ? R.drawable.ic_m3_star : R.drawable.ic_m3_star_border);
+        star.setColorFilter(tv.data);
+        star.setContentDescription(mContext.getString(uri.isFavorite()
+                ? R.string.metro_favorite_remove : R.string.metro_favorite_add));
     }
 }

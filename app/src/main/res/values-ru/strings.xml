@@ -294,5 +294,14 @@
     <string name="metro_tile_settings">Настройки</string>
     <string name="metro_tile_about">О приложении</string>
     <string name="metro_nothing_playing">Сейчас ничего не играет</string>
+    <string name="metro_tab_all">Все</string>
+    <string name="metro_tab_favorites">Избранное</string>
+    <string name="metro_tab_recent">Недавние</string>
+    <string name="metro_favorite_add">Добавить в избранное</string>
+    <string name="metro_favorite_remove">Убрать из избранного</string>
+    <string name="metro_search_stations">Поиск станций</string>
+    <string name="metro_empty_favorites">Нажмите на звезду, чтобы добавить в избранное</string>
+    <string name="metro_empty_recent">Станции ещё не воспроизводились</string>
+    <string name="metro_empty_search">Нет подходящих станций</string>
 </resources>
 

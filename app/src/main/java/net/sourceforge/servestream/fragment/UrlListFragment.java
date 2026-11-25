@@ -258,6 +258,23 @@ public class UrlListFragment extends ListFragment implements
 
 		mFab = (FloatingActionButton) view.findViewById(R.id.fab);
 
+		if (net.sourceforge.servestream.utils.AppearanceSettings.isMetro()) {
+			setHasOptionsMenu(true);
+			com.google.android.material.tabs.TabLayout tabs = view.findViewById(R.id.metro_tabs);
+			tabs.setVisibility(View.VISIBLE);
+			tabs.addTab(tabs.newTab().setText(R.string.metro_tab_all), mTab == TAB_ALL);
+			tabs.addTab(tabs.newTab().setText(R.string.metro_tab_favorites), mTab == TAB_FAVORITES);
+			tabs.addTab(tabs.newTab().setText(R.string.metro_tab_recent), mTab == TAB_RECENT);
+			tabs.addOnTabSelectedListener(new com.google.android.material.tabs.TabLayout.OnTabSelectedListener() {
+				public void onTabSelected(com.google.android.material.tabs.TabLayout.Tab tab) {
+					mTab = tab.getPosition();
+					applyFilter();
+				}
+				public void onTabUnselected(com.google.android.material.tabs.TabLayout.Tab tab) { }
+				public void onTabReselected(com.google.android.material.tabs.TabLayout.Tab tab) { }
+			});
+		}
+
 		return view;
 	}
 	
@@ -353,6 +370,11 @@ public class UrlListFragment extends ListFragment implements
 		});
 
 		mAdapter = new UrlListAdapter(getActivity(), new ArrayList<UriBean>(), this);
+		mAdapter.setOnFavoriteChanged(new Runnable() {
+			public void run() {
+				if (mTab == TAB_FAVORITES) applyFilter();
+			}
+		});
 		setListAdapter(mAdapter);
 	}
 	
@@ -624,11 +646,16 @@ public class UrlListFragment extends ListFragment implements
 			keepTop = list.getChildAt(0).getTop() - list.getPaddingTop();
 		}
 
-		// Set the new data in the adapter.
+		// Set the new data in the adapter (Metro: only what the tab / search shows).
+		mAll = new ArrayList<UriBean>(data);
+		data = filtered();
+        mAdapter.setNotifyOnChange(false);
         mAdapter.clear();
 		for (int i = 0; i < data.size(); i++) {
 			mAdapter.add(data.get(i));
 		}
+		mAdapter.notifyDataSetChanged();
+		updateMetroListState();
 
 		if (list != null && keepPos >= 0 && data.size() > 0) {
 			final int pos = Math.min(keepPos, data.size() - 1);
@@ -642,6 +669,105 @@ public class UrlListFragment extends ListFragment implements
 				}
 			});
 		}
+	}
+
+	// ---- Metro: tabs, favourites, search ----
+
+	public static final int TAB_ALL = 0, TAB_FAVORITES = 1, TAB_RECENT = 2;
+	private int mTab = TAB_ALL;
+	private String mQuery = "";
+	private List<UriBean> mAll = new ArrayList<UriBean>();
+
+	/** For tests: the tab shown. */
+	public int getMetroTab() {
+		return mTab;
+	}
+
+	private List<UriBean> filtered() {
+		if (!net.sourceforge.servestream.utils.AppearanceSettings.isMetro()) {
+			return mAll;
+		}
+		List<UriBean> out = new ArrayList<UriBean>();
+		String q = mQuery == null ? "" : mQuery.trim().toLowerCase(java.util.Locale.ROOT);
+		for (UriBean u : mAll) {
+			if (mTab == TAB_FAVORITES && !u.isFavorite()) continue;
+			if (mTab == TAB_RECENT && u.getLastConnect() <= 0) continue;
+			if (q.length() > 0) {
+				String name = u.getNickname() == null ? "" : u.getNickname().toLowerCase(java.util.Locale.ROOT);
+				String url = u.getUri() == null ? "" : u.getUri().toString().toLowerCase(java.util.Locale.ROOT);
+				if (!name.contains(q) && !url.contains(q)) continue;
+			}
+			out.add(u);
+		}
+		if (mTab == TAB_RECENT) {
+			java.util.Collections.sort(out, new java.util.Comparator<UriBean>() {
+				public int compare(UriBean a, UriBean b) {
+					return Long.compare(b.getLastConnect(), a.getLastConnect());
+				}
+			});
+		}
+		return out;
+	}
+
+	private void applyFilter() {
+		if (mAdapter == null) return;
+		List<UriBean> data = filtered();
+		mAdapter.setNotifyOnChange(false);
+		mAdapter.clear();
+		for (UriBean u : data) mAdapter.add(u);
+		mAdapter.notifyDataSetChanged();
+		updateMetroListState();
+	}
+
+	/** Drag sorting only on the full list; an empty text that fits the tab. */
+	private void updateMetroListState() {
+		if (getView() == null || !net.sourceforge.servestream.utils.AppearanceSettings.isMetro()) return;
+		boolean full = mTab == TAB_ALL && (mQuery == null || mQuery.trim().length() == 0);
+		((DragSortListView) getListView()).setDragEnabled(full);
+		android.widget.TextView empty = getView().findViewById(android.R.id.empty);
+		if (empty != null) {
+			int text = R.string.no_urls_label;
+			if (mQuery != null && mQuery.trim().length() > 0) text = R.string.metro_empty_search;
+			else if (mTab == TAB_FAVORITES) text = R.string.metro_empty_favorites;
+			else if (mTab == TAB_RECENT) text = R.string.metro_empty_recent;
+			empty.setText(text);
+		}
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		if (!net.sourceforge.servestream.utils.AppearanceSettings.isMetro()
+				|| menu.findItem(R.id.menu_item_search_stations) != null) {
+			return;
+		}
+		MenuItem item = menu.add(Menu.NONE, R.id.menu_item_search_stations, 0, R.string.metro_search_stations);
+		item.setIcon(R.drawable.ic_m3_search);
+		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+		androidx.appcompat.widget.SearchView search = new androidx.appcompat.widget.SearchView(
+				((androidx.appcompat.app.AppCompatActivity) getActivity()).getSupportActionBar().getThemedContext());
+		search.setQueryHint(getString(R.string.metro_search_stations));
+		search.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+			public boolean onQueryTextSubmit(String query) {
+				return true;
+			}
+			public boolean onQueryTextChange(String text) {
+				mQuery = text;
+				applyFilter();
+				return true;
+			}
+		});
+		item.setActionView(search);
+		item.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+			public boolean onMenuItemActionExpand(MenuItem i) {
+				return true;
+			}
+			public boolean onMenuItemActionCollapse(MenuItem i) {
+				mQuery = "";
+				applyFilter();
+				return true;
+			}
+		});
 	}
 
 	@Override

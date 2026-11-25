@@ -166,4 +166,13 @@
     <string name="metro_tile_settings">設定</string>
     <string name="metro_tile_about">アプリ情報</string>
     <string name="metro_nothing_playing">再生中の放送はありません</string>
+    <string name="metro_tab_all">すべて</string>
+    <string name="metro_tab_favorites">お気に入り</string>
+    <string name="metro_tab_recent">最近再生</string>
+    <string name="metro_favorite_add">お気に入りに追加</string>
+    <string name="metro_favorite_remove">お気に入りから削除</string>
+    <string name="metro_search_stations">放送局を検索</string>
+    <string name="metro_empty_favorites">星をタップしてお気に入りに追加</string>
+    <string name="metro_empty_recent">最近再生した放送はありません</string>
+    <string name="metro_empty_search">該当する放送局はありません</string>
 </resources>

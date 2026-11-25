@@ -53,9 +53,11 @@ public class StreamDatabase extends SQLiteOpenHelper {
 	public final static String FIELD_STREAM_COLOR = "color";
 	public final static String FIELD_STREAM_FONTSIZE = "fontsize";
 	public final static String FIELD_STREAM_LIST_POSITION = "listposition";
+	/** 1 = marked as a favourite (star). Added in database version 6. */
+	public final static String FIELD_STREAM_FAVORITE = "favorite";
 	
 	public static final String	DATABASE_NAME = "servestream.db";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
     
     private static final String STREAM_TABLE_CREATE =
                 "CREATE TABLE " + TABLE_STREAMS + " (" +
@@ -72,7 +74,8 @@ public class StreamDatabase extends SQLiteOpenHelper {
 				FIELD_STREAM_LASTCONNECT + " INTEGER, " +
                 FIELD_STREAM_COLOR + " TEXT, " +
 	            FIELD_STREAM_FONTSIZE + " INTEGER, " +
-                FIELD_STREAM_LIST_POSITION + " INTEGER);";
+                FIELD_STREAM_LIST_POSITION + " INTEGER, " +
+                FIELD_STREAM_FAVORITE + " INTEGER DEFAULT 0);";
 
     public StreamDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -132,6 +135,33 @@ public class StreamDatabase extends SQLiteOpenHelper {
 				}
 				break;
 		}
+
+		// version 6: favourites (star); added once, whatever version we came from
+		if (oldVersion < 6 && !hasColumn(db, TABLE_STREAMS, FIELD_STREAM_FAVORITE)) {
+			db.execSQL("ALTER TABLE " + TABLE_STREAMS
+					+ " ADD COLUMN " + FIELD_STREAM_FAVORITE + " INTEGER DEFAULT 0");
+		}
+	}
+
+	private static boolean hasColumn(SQLiteDatabase db, String table, String column) {
+		Cursor c = db.rawQuery("PRAGMA table_info(" + table + ")", null);
+		try {
+			int name = c.getColumnIndex("name");
+			while (c.moveToNext()) {
+				if (column.equalsIgnoreCase(c.getString(name))) return true;
+			}
+			return false;
+		} finally {
+			c.close();
+		}
+	}
+
+	/** Marks or unmarks a station as a favourite. */
+	public void setFavorite(UriBean uri, boolean favorite) {
+		ContentValues values = new ContentValues();
+		values.put(FIELD_STREAM_FAVORITE, favorite ? 1 : 0);
+		updateUri(uri, values);
+		uri.setFavorite(favorite);
 	}
 	
 	/**
@@ -179,7 +209,8 @@ public class StreamDatabase extends SQLiteOpenHelper {
 			COL_QUERY = c.getColumnIndexOrThrow(FIELD_STREAM_QUERY),
 			COL_REFERENCE = c.getColumnIndexOrThrow(FIELD_STREAM_REFERENCE),
 			COL_LASTCONNECT = c.getColumnIndexOrThrow(FIELD_STREAM_LASTCONNECT),
-			COL_LISTPOSITION = c.getColumnIndexOrThrow(FIELD_STREAM_LIST_POSITION);
+			COL_LISTPOSITION = c.getColumnIndexOrThrow(FIELD_STREAM_LIST_POSITION),
+			COL_FAVORITE = c.getColumnIndex(FIELD_STREAM_FAVORITE);
 
 		while (c.moveToNext()) {
 			UriBean uri = new UriBean();
@@ -196,6 +227,7 @@ public class StreamDatabase extends SQLiteOpenHelper {
 			uri.setReference(c.getString(COL_REFERENCE));
 			uri.setLastConnect(c.getLong(COL_LASTCONNECT));
 			uri.setListPosition(c.getInt(COL_LISTPOSITION));
+			uri.setFavorite(COL_FAVORITE >= 0 && c.getInt(COL_FAVORITE) != 0);
 
 			uris.add(uri);
 		}

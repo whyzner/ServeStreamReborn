@@ -294,5 +294,14 @@
     <string name="metro_tile_settings">Ajustes</string>
     <string name="metro_tile_about">Acerca de</string>
     <string name="metro_nothing_playing">No se está reproduciendo nada</string>
+    <string name="metro_tab_all">Todas</string>
+    <string name="metro_tab_favorites">Favoritas</string>
+    <string name="metro_tab_recent">Recientes</string>
+    <string name="metro_favorite_add">Añadir a favoritas</string>
+    <string name="metro_favorite_remove">Quitar de favoritas</string>
+    <string name="metro_search_stations">Buscar emisoras</string>
+    <string name="metro_empty_favorites">Toca la estrella para añadir una favorita</string>
+    <string name="metro_empty_recent">Aún no se ha reproducido ninguna emisora</string>
+    <string name="metro_empty_search">No hay emisoras que coincidan</string>
 </resources>
 

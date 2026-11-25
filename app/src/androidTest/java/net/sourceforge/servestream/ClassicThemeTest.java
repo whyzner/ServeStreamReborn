@@ -412,4 +412,105 @@ public class ClassicThemeTest {
             assertTrue(theme + ": back did not return to the tile home", r[3]);
         }
     }
+
+    /** Metro station list: All / Favourites / Recent tabs, star, backup keeps the star. */
+    @Test
+    public void metroStationTabsAndFavorites() throws Exception {
+        for (final String theme : new String[] {"metro_dark", "metro_light"}) {
+            setTheme(theme);
+            final Activity main = start(MainActivity.class);
+            inst.waitForIdleSync();
+            SystemClock.sleep(1000);
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    main.findViewById(R.id.metro_tile_stations).performClick();
+                }
+            });
+            inst.waitForIdleSync();
+            SystemClock.sleep(2500);
+            final String[] err = new String[1];
+            final long[] starred = new long[] {-1};
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    View tabs = main.findViewById(R.id.metro_tabs);
+                    android.widget.ListView list = main.findViewById(android.R.id.list);
+                    if (tabs == null || !tabs.isShown()) { err[0] = "tabs not shown"; return; }
+                    if (list.getChildCount() == 0) { err[0] = "no stations listed"; return; }
+                    View star = list.getChildAt(0).findViewById(R.id.favorite_button);
+                    if (star == null || !star.isShown()) { err[0] = "no star on the row"; return; }
+                    net.sourceforge.servestream.bean.UriBean first =
+                            (net.sourceforge.servestream.bean.UriBean) list.getItemAtPosition(0);
+                    if (!first.isFavorite()) star.performClick();
+                    starred[0] = first.getId();
+                }
+            });
+            assertTrue(theme + ": " + err[0], err[0] == null);
+            SystemClock.sleep(500);
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    ((com.google.android.material.tabs.TabLayout) main.findViewById(R.id.metro_tabs)).getTabAt(1).select();
+                }
+            });
+            inst.waitForIdleSync();
+            SystemClock.sleep(800);
+            final int[] counts = new int[3];
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    android.widget.ListView list = main.findViewById(android.R.id.list);
+                    for (int i = 0; i < list.getCount(); i++) {
+                        net.sourceforge.servestream.bean.UriBean u =
+                                (net.sourceforge.servestream.bean.UriBean) list.getItemAtPosition(i);
+                        counts[0]++;
+                        if (!u.isFavorite()) counts[1]++;
+                        if (u.getId() == starred[0]) counts[2]++;
+                    }
+                }
+            });
+            screenshot(theme + "_favorites");
+            assertTrue(theme + ": starred station missing from favourites", counts[2] == 1);
+            assertEquals(theme + ": non-favourite in favourites tab", 0, counts[1]);
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    ((com.google.android.material.tabs.TabLayout) main.findViewById(R.id.metro_tabs)).getTabAt(2).select();
+                }
+            });
+            inst.waitForIdleSync();
+            SystemClock.sleep(800);
+            final boolean[] recentOk = new boolean[] {true};
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    android.widget.ListView list = main.findViewById(android.R.id.list);
+                    long last = Long.MAX_VALUE;
+                    for (int i = 0; i < list.getCount(); i++) {
+                        net.sourceforge.servestream.bean.UriBean u =
+                                (net.sourceforge.servestream.bean.UriBean) list.getItemAtPosition(i);
+                        if (u.getLastConnect() <= 0 || u.getLastConnect() > last) recentOk[0] = false;
+                        last = u.getLastConnect();
+                    }
+                    ((com.google.android.material.tabs.TabLayout) main.findViewById(R.id.metro_tabs)).getTabAt(0).select();
+                }
+            });
+            assertTrue(theme + ": recent tab not played-only / newest first", recentOk[0]);
+            inst.waitForIdleSync();
+            SystemClock.sleep(800);
+            screenshot(theme + "_list");
+
+            // the star is saved and goes into the backup
+            java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+            net.sourceforge.servestream.utils.BackupUtils.writeBackup(inst.getTargetContext(), out);
+            String json = out.toString("UTF-8");
+            finish(main);
+            assertTrue(theme + ": backup has no favourite", json.contains("\"favorite\":true"));
+
+            net.sourceforge.servestream.database.StreamDatabase db =
+                    new net.sourceforge.servestream.database.StreamDatabase(inst.getTargetContext());
+            try {
+                net.sourceforge.servestream.bean.UriBean u = db.findUri((int) starred[0]);
+                assertTrue(theme + ": star not saved", u != null && u.isFavorite());
+                db.setFavorite(u, false);
+            } finally {
+                db.close();
+            }
+        }
+    }
 }

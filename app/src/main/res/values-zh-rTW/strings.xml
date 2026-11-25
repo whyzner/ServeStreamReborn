@@ -166,4 +166,13 @@
     <string name="metro_tile_settings">設定</string>
     <string name="metro_tile_about">關於</string>
     <string name="metro_nothing_playing">目前沒有正在播放的電台</string>
+    <string name="metro_tab_all">全部</string>
+    <string name="metro_tab_favorites">我的最愛</string>
+    <string name="metro_tab_recent">最近播放</string>
+    <string name="metro_favorite_add">加入我的最愛</string>
+    <string name="metro_favorite_remove">從我的最愛移除</string>
+    <string name="metro_search_stations">搜尋電台</string>
+    <string name="metro_empty_favorites">點選星號加入我的最愛</string>
+    <string name="metro_empty_recent">尚未播放任何電台</string>
+    <string name="metro_empty_search">沒有符合的電台</string>
 </resources>
