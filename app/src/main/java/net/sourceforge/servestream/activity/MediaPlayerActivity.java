@@ -1349,37 +1349,28 @@ public class MediaPlayerActivity extends ActionBarActivity implements MusicUtils
 
     // ---- Metro: swipe right on the player goes back to the station list ----
 
-    private android.view.GestureDetector mSwipe;
+    private net.sourceforge.servestream.utils.MetroSwipe mSwipe;
 
     @Override
     public boolean dispatchTouchEvent(android.view.MotionEvent ev) {
-        if (mSwipe == null && net.sourceforge.servestream.utils.AppearanceSettings.isMetro()
+        if (net.sourceforge.servestream.utils.AppearanceSettings.isMetro()
                 && findViewById(R.id.station_list_pane) == null) {
-            final float dp = getResources().getDisplayMetrics().density;
-            mSwipe = new android.view.GestureDetector(this, new android.view.GestureDetector.SimpleOnGestureListener() {
-                @Override
-                public boolean onFling(android.view.MotionEvent e1, android.view.MotionEvent e2, float vx, float vy) {
-                    if (e1 == null) { MainActivity.sLastSwipe = "player: no start"; return false; }
-                    int width = getWindow().getDecorView().getWidth();
-                    if (e1.getX() < 32 * dp || e1.getX() > width - 32 * dp) { MainActivity.sLastSwipe = "player: edge"; return false; }
-                    // the first page only: further pages are other items of the play queue
-                    if (mPager != null && mPager.getCurrentItem() > 0) { MainActivity.sLastSwipe = "player: page " + mPager.getCurrentItem(); return false; }
-                    float dx = e2.getX() - e1.getX(), dy = e2.getY() - e1.getY();
-                    if (dx > 120 * dp && Math.abs(dy) < dx / 2 && Math.abs(vx) > 600 * dp) {
-                        MainActivity.sLastSwipe = "player: closed";
-                        finish();
-                        overridePendingTransition(R.anim.metro_slide_in_left, R.anim.metro_slide_out_right);
-                        return true;
-                    }
-                    MainActivity.sLastSwipe = "player: dx " + dx + " dy " + dy + " vx " + vx;
-                    return false;
+            if (ev.getActionMasked() == android.view.MotionEvent.ACTION_DOWN) {
+                // the seek bar is dragged sideways itself
+                mSwipe = new net.sourceforge.servestream.utils.MetroSwipe(getWindow().getDecorView(),
+                        findViewById(R.id.seek_bar));
+            }
+            if (mSwipe != null && mSwipe.onTouchEvent(ev) == net.sourceforge.servestream.utils.MetroSwipe.RIGHT) {
+                // the first page only: further pages are other items of the play queue
+                if (mPager == null || mPager.getCurrentItem() == 0) {
+                    MainActivity.sLastSwipe = "player: closed";
+                    finish();
+                    overridePendingTransition(R.anim.metro_slide_in_left, R.anim.metro_slide_out_right);
+                } else {
+                    MainActivity.sLastSwipe = "player: page " + mPager.getCurrentItem();
                 }
-            });
+            }
         }
-        if (ev.getActionMasked() == android.view.MotionEvent.ACTION_DOWN) {
-            MainActivity.sLastSwipe = "player: touched, detector " + (mSwipe != null);
-        }
-        if (mSwipe != null) mSwipe.onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
     }
 }
