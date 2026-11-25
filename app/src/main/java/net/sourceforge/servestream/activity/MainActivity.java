@@ -22,6 +22,7 @@ import net.sourceforge.servestream.adapter.NavigationDrawerAdapter.ItemAccess;
 import net.sourceforge.servestream.fragment.AlarmClockFragment;
 import net.sourceforge.servestream.fragment.BrowseFragment;
 import net.sourceforge.servestream.fragment.UrlListFragment;
+import net.sourceforge.servestream.fragment.MetroHomeFragment;
 import net.sourceforge.servestream.fragment.UrlListFragment.BrowseIntentListener;
 import net.sourceforge.servestream.preference.UserPreferences;
 import net.sourceforge.servestream.utils.DownloadScannerDialog;
@@ -52,6 +53,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -105,7 +107,12 @@ public class MainActivity extends AppCompatActivity implements
 		navigationView.setNavigationItemSelectedListener(this);
 
 		if (savedInstanceState == null) {
-			openUri(getUri());
+			String uri = getUri();
+			if (uri == null && isMetro()) {
+				showMetroHome();
+			} else {
+				openUri(uri);
+			}
 
 			navigationView = (NavigationView) findViewById(R.id.nav_view);
 			navigationView.setCheckedItem(R.id.nav_urls);
@@ -146,6 +153,93 @@ public class MainActivity extends AppCompatActivity implements
 		// Restore the previously serialized current dropdown position.
 		if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
 			mTag = savedInstanceState.getString(STATE_SELECTED_NAVIGATION_ITEM);
+		}
+		updateMetroChrome();
+	}
+
+	private static boolean isMetro() {
+		return net.sourceforge.servestream.utils.AppearanceSettings.isMetro();
+	}
+
+	/** Metro: shows the tile home in place of the current section. */
+	public void showMetroHome() {
+		FragmentManager fm = getSupportFragmentManager();
+		Fragment current = fm.findFragmentByTag(mTag);
+		FragmentTransaction ft = fm.beginTransaction();
+		if (current != null && !MetroHomeFragment.TAG.equals(mTag)) {
+			ft.detach(current);
+		}
+		Fragment home = fm.findFragmentByTag(MetroHomeFragment.TAG);
+		if (home == null) {
+			ft.add(R.id.content_frame, new MetroHomeFragment(), MetroHomeFragment.TAG);
+		} else {
+			ft.attach(home);
+		}
+		ft.commit();
+		mTag = MetroHomeFragment.TAG;
+		updateMetroChrome();
+	}
+
+	/** Leaves the Metro home (if shown) so another section can take its place. */
+	private void leaveMetroHome() {
+		if (!MetroHomeFragment.TAG.equals(mTag)) return;
+		Fragment home = getSupportFragmentManager().findFragmentByTag(MetroHomeFragment.TAG);
+		if (home != null) {
+			getSupportFragmentManager().beginTransaction().detach(home).commit();
+		}
+		mTag = null;
+	}
+
+	/** The home has its own title row: no tool bar, no drawer while it is shown. */
+	private void updateMetroChrome() {
+		boolean home = MetroHomeFragment.TAG.equals(mTag);
+		View bar = findViewById(R.id.app_bar);
+		if (bar != null) bar.setVisibility(home ? View.GONE : View.VISIBLE);
+		View frame = findViewById(R.id.content_frame);
+		if (frame != null) {
+			android.util.TypedValue tv = new android.util.TypedValue();
+			int top = 0;
+			if (!home && getTheme().resolveAttribute(androidx.appcompat.R.attr.actionBarSize, tv, true)) {
+				top = android.util.TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+			}
+			frame.setPadding(frame.getPaddingLeft(), top, frame.getPaddingRight(), frame.getPaddingBottom());
+		}
+		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+		if (drawer != null) {
+			drawer.setDrawerLockMode(home ? DrawerLayout.LOCK_MODE_LOCKED_CLOSED : DrawerLayout.LOCK_MODE_UNLOCKED);
+		}
+	}
+
+	/** Metro home tile pressed. */
+	public void openMetroTile(int which) {
+		NavigationView nav = (NavigationView) findViewById(R.id.nav_view);
+		switch (which) {
+			case MetroHomeFragment.STATIONS:
+				leaveMetroHome();
+				selectItem(0);
+				nav.setCheckedItem(R.id.nav_urls);
+				break;
+			case MetroHomeFragment.BROWSE:
+				startActivity(new Intent(this, AddUrlActivity.class));
+				break;
+			case MetroHomeFragment.ALARM:
+				leaveMetroHome();
+				selectItem(2);
+				nav.setCheckedItem(R.id.nav_alarm_clock);
+				break;
+			case MetroHomeFragment.NOW_PLAYING:
+				if (MetroHomeFragment.currentStation() != null) {
+					startActivity(new Intent(this, MediaPlayerActivity.class));
+				} else {
+					android.widget.Toast.makeText(this, R.string.metro_nothing_playing, android.widget.Toast.LENGTH_SHORT).show();
+				}
+				break;
+			case MetroHomeFragment.SETTINGS:
+				startActivity(new Intent(this, SettingsActivity.class));
+				break;
+			case MetroHomeFragment.ABOUT:
+				startActivity(new Intent(this, AboutActivity.class));
+				break;
 		}
 	}
 
@@ -236,6 +330,7 @@ public class MainActivity extends AppCompatActivity implements
 	}
 	
     private void selectItem(int position) {
+    	leaveMetroHome();
     	mCurrentSelectedPosition = position;
     	
     	FragmentManager fragmentManager = getSupportFragmentManager();
@@ -265,6 +360,7 @@ public class MainActivity extends AppCompatActivity implements
     	}
     	
     	mTag = tag;
+    	updateMetroChrome();
     }
 
     @Override
@@ -363,6 +459,7 @@ public class MainActivity extends AppCompatActivity implements
 	}
 
 	private void openUri(String uri) {
+		leaveMetroHome();
 		mCurrentSelectedPosition = 0;
 		
 		Bundle args = new Bundle();
@@ -388,10 +485,12 @@ public class MainActivity extends AppCompatActivity implements
     	}
     	
     	mTag = tag;
+    	updateMetroChrome();
 	}
 	
 	@Override
 	public void browseToUri(Uri uri) {
+		leaveMetroHome();
 		mCurrentSelectedPosition = 1;
 		
 		Bundle args = new Bundle();
@@ -417,6 +516,7 @@ public class MainActivity extends AppCompatActivity implements
     	}
     	
     	mTag = tag;
+    	updateMetroChrome();
 
 		NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 		navigationView.setCheckedItem(R.id.nav_browse);
@@ -451,6 +551,9 @@ public class MainActivity extends AppCompatActivity implements
 		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		if (drawer.isDrawerOpen(GravityCompat.START)) {
 			drawer.closeDrawer(GravityCompat.START);
+		} else if (isMetro() && !MetroHomeFragment.TAG.equals(mTag)) {
+			// Metro: back from a section goes to the tile home
+			showMetroHome();
 		} else {
 			super.onBackPressed();
 		}

@@ -365,5 +365,16 @@
     <string name="exact_alarm_title">Budzić punktualnie?</string>
     <string name="exact_alarm_message">Bez uprawnienia „Alarmy i przypomnienia” Android może włączyć budzik radiowy kilka minut później. Zezwól na nie na następnym ekranie.</string>
     <string name="exact_alarm_allow">Zezwól</string>
+    <string name="metro_tile_stations">Stacje</string>
+    <string name="metro_tile_stations_sub">Moja lista stacji</string>
+    <string name="metro_tile_browse">Przeglądaj</string>
+    <string name="metro_tile_browse_sub">Szukaj i dodawaj strumienie</string>
+    <string name="metro_tile_alarm">Alarm</string>
+    <string name="metro_tile_alarm_sub">Budzenie radiem</string>
+    <string name="metro_tile_now_playing">Teraz gra</string>
+    <string name="metro_tile_now_playing_none">Nic nie gra</string>
+    <string name="metro_tile_settings">Ustawienia</string>
+    <string name="metro_tile_about">O aplikacji</string>
+    <string name="metro_nothing_playing">Teraz nic nie gra</string>
 </resources>
 

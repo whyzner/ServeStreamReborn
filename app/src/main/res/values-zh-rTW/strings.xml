@@ -155,4 +155,15 @@
     <string name="exact_alarm_title">要準時響鈴嗎？</string>
     <string name="exact_alarm_message">如果沒有「鬧鐘與提醒」權限，Android 可能會讓電台鬧鐘晚幾分鐘響起。請在下一個畫面中允許。</string>
     <string name="exact_alarm_allow">前往允許</string>
+    <string name="metro_tile_stations">電台</string>
+    <string name="metro_tile_stations_sub">我的電台清單</string>
+    <string name="metro_tile_browse">探索</string>
+    <string name="metro_tile_browse_sub">搜尋並新增串流</string>
+    <string name="metro_tile_alarm">鬧鐘</string>
+    <string name="metro_tile_alarm_sub">預約播放</string>
+    <string name="metro_tile_now_playing">正在播放</string>
+    <string name="metro_tile_now_playing_none">沒有正在播放</string>
+    <string name="metro_tile_settings">設定</string>
+    <string name="metro_tile_about">關於</string>
+    <string name="metro_nothing_playing">目前沒有正在播放的電台</string>
 </resources>

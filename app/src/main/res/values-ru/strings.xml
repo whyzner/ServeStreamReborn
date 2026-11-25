@@ -283,5 +283,16 @@
     <string name="exact_alarm_title">Будить точно вовремя?</string>
     <string name="exact_alarm_message">Без разрешения «Будильники и напоминания» Android может включить радиобудильник на несколько минут позже. Разрешите его на следующем экране.</string>
     <string name="exact_alarm_allow">Разрешить</string>
+    <string name="metro_tile_stations">Станции</string>
+    <string name="metro_tile_stations_sub">Мой список станций</string>
+    <string name="metro_tile_browse">Обзор</string>
+    <string name="metro_tile_browse_sub">Поиск и добавление потоков</string>
+    <string name="metro_tile_alarm">Будильник</string>
+    <string name="metro_tile_alarm_sub">Пробуждение с радио</string>
+    <string name="metro_tile_now_playing">Сейчас играет</string>
+    <string name="metro_tile_now_playing_none">Ничего не играет</string>
+    <string name="metro_tile_settings">Настройки</string>
+    <string name="metro_tile_about">О приложении</string>
+    <string name="metro_nothing_playing">Сейчас ничего не играет</string>
 </resources>
 

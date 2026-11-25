@@ -355,4 +355,61 @@ public class ClassicThemeTest {
             SystemClock.sleep(2000);
         }
     }
+
+    /** Metro: the app opens on the tile home; a tile opens its section and back returns home. */
+    @Test
+    public void metroHomeTiles() throws Exception {
+        for (String theme : new String[] {"metro_dark", "metro_light"}) {
+            setTheme(theme);
+            final Activity main = start(MainActivity.class);
+            inst.waitForIdleSync();
+            SystemClock.sleep(1500);
+            final boolean[] r = new boolean[4];
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    View home = main.findViewById(R.id.metro_home);
+                    View bar = main.findViewById(R.id.app_bar);
+                    r[0] = home != null && home.isShown();
+                    r[1] = bar != null && bar.getVisibility() == View.GONE;
+                    android.widget.TextView np = main.findViewById(R.id.metro_now_playing_name);
+                    r[2] = np != null && np.getText().length() > 0;
+                }
+            });
+            screenshot(theme + "_home");
+            assertTrue(theme + ": tile home not shown", r[0]);
+            assertTrue(theme + ": tool bar still shown on the home", r[1]);
+            assertTrue(theme + ": now playing tile has no text", r[2]);
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    main.findViewById(R.id.metro_tile_stations).performClick();
+                }
+            });
+            inst.waitForIdleSync();
+            SystemClock.sleep(1500);
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    View home = main.findViewById(R.id.metro_home);
+                    r[0] = home == null || !home.isShown();
+                    View bar = main.findViewById(R.id.app_bar);
+                    r[1] = bar != null && bar.getVisibility() == View.VISIBLE;
+                }
+            });
+            assertTrue(theme + ": stations tile did not open the list", r[0] && r[1]);
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    main.onBackPressed();
+                }
+            });
+            inst.waitForIdleSync();
+            SystemClock.sleep(1000);
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    View home = main.findViewById(R.id.metro_home);
+                    r[3] = home != null && home.isShown() && !main.isFinishing();
+                }
+            });
+            finish(main);
+            assertTrue(theme + ": back did not return to the tile home", r[3]);
+        }
+    }
 }

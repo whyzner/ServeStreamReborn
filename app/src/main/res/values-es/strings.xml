@@ -283,5 +283,16 @@
     <string name="exact_alarm_title">¿Sonar a la hora exacta?</string>
     <string name="exact_alarm_message">Sin el permiso «Alarmas y recordatorios», Android puede hacer sonar la alarma de radio unos minutos tarde. Permítelo en la siguiente pantalla.</string>
     <string name="exact_alarm_allow">Permitir</string>
+    <string name="metro_tile_stations">Emisoras</string>
+    <string name="metro_tile_stations_sub">Mi lista de emisoras</string>
+    <string name="metro_tile_browse">Explorar</string>
+    <string name="metro_tile_browse_sub">Buscar y añadir streams</string>
+    <string name="metro_tile_alarm">Alarma</string>
+    <string name="metro_tile_alarm_sub">Despertar con radio</string>
+    <string name="metro_tile_now_playing">Reproduciendo</string>
+    <string name="metro_tile_now_playing_none">Nada en reproducción</string>
+    <string name="metro_tile_settings">Ajustes</string>
+    <string name="metro_tile_about">Acerca de</string>
+    <string name="metro_nothing_playing">No se está reproduciendo nada</string>
 </resources>
 

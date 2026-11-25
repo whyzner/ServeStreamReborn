@@ -155,4 +155,15 @@
     <string name="exact_alarm_title">正確な時刻に鳴らしますか？</string>
     <string name="exact_alarm_message">「アラームとリマインダー」の権限がないと、ラジオのアラームが数分遅れて鳴ることがあります。次の画面で許可してください。</string>
     <string name="exact_alarm_allow">許可する</string>
+    <string name="metro_tile_stations">放送局</string>
+    <string name="metro_tile_stations_sub">マイ放送局リスト</string>
+    <string name="metro_tile_browse">探す</string>
+    <string name="metro_tile_browse_sub">放送の検索と追加</string>
+    <string name="metro_tile_alarm">アラーム</string>
+    <string name="metro_tile_alarm_sub">予約再生</string>
+    <string name="metro_tile_now_playing">再生中</string>
+    <string name="metro_tile_now_playing_none">再生中の放送なし</string>
+    <string name="metro_tile_settings">設定</string>
+    <string name="metro_tile_about">アプリ情報</string>
+    <string name="metro_nothing_playing">再生中の放送はありません</string>
 </resources>

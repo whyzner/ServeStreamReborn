@@ -115,6 +115,7 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
          "ClassicThemeTest#homeScreenIconFollowsTheTheme Theme: home screen icon follows the theme" \
          "ClassicThemeTest#metroDarkThemeIsApplied Theme: metro dark look applied (colours, switches, drop-downs)" \
          "ClassicThemeTest#metroLightThemeIsApplied Theme: metro light look applied (colours, switches, drop-downs)" \
+         "ClassicThemeTest#metroHomeTiles Metro: tile home, stations tile, back returns home" \
          "ClassicThemeTest#realThemeIsApplied Theme: real look applied (status display, fields)" \
          "ClassicThemeTest#realPlayerOnUnfoldedScreen Theme: real player on unfolded screen (picture above fields)" \
          "FixesTest#themeChangeDoesNotCloseTheApp Theme change keeps the app open (icon switched after leaving)" \
@@ -133,7 +134,7 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
 done
 
 $T adb shell pm grant $PKG android.permission.BLUETOOTH_CONNECT
-for n in classic_main classic_settings classic_player platinum_main platinum_settings platinum_player metro_dark_main metro_dark_settings metro_light_main metro_light_settings real_main real_settings real_player real_player_unfolded; do
+for n in classic_main classic_settings classic_player platinum_main platinum_settings platinum_player metro_dark_main metro_dark_settings metro_light_main metro_light_settings metro_dark_home metro_light_home real_main real_settings real_player real_player_unfolded; do
   $T adb exec-out cat /sdcard/Download/$n.png > /tmp/$n.png 2>/dev/null
   echo "=====SHOT $n BEGIN====="; base64 -w 3000 /tmp/$n.png; echo "=====SHOT $n END====="
 done
