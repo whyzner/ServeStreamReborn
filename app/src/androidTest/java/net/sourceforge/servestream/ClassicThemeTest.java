@@ -143,6 +143,23 @@ public class ClassicThemeTest {
         inst.waitForIdleSync();
         screenshot("platinum_settings");
         finish(settings);
+
+        // player screen dressed as a late-90s desktop player: metal body + LCD strip
+        final Activity player = start(net.sourceforge.servestream.activity.MediaPlayerActivity.class);
+        inst.waitForIdleSync();
+        final boolean[] dressed = new boolean[2];
+        inst.runOnMainSync(new Runnable() {
+            public void run() {
+                View strip = player.findViewById(R.id.time_strip);
+                dressed[0] = strip != null && strip.getBackground() != null;
+                View play = player.findViewById(R.id.play_pause_button);
+                dressed[1] = play != null && play.getBackground() instanceof android.graphics.drawable.StateListDrawable;
+            }
+        });
+        screenshot("platinum_player");
+        finish(player);
+        assertTrue("LCD strip missing on the player", dressed[0]);
+        assertTrue("metal play button missing", dressed[1]);
     }
 
     /** The home screen shows exactly one icon, the one for the chosen theme. */

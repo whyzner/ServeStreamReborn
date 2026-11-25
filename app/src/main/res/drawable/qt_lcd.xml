@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pale green LCD strip with a sunken edge (time and progress) -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape><corners android:radius="5dp" /><solid android:color="#FFFFFF" /></shape>
+    </item>
+    <item android:bottom="1dp">
+        <shape><corners android:radius="5dp" /><solid android:color="#6E6E62" /></shape>
+    </item>
+    <item android:left="1dp" android:top="1dp" android:right="1dp" android:bottom="2dp">
+        <shape>
+            <corners android:radius="4dp" />
+            <gradient android:angle="270" android:startColor="#B9C59A" android:endColor="#D9E2BC" />
+        </shape>
+    </item>
+</layer-list>

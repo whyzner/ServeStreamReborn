@@ -13,7 +13,7 @@
         android:padding="24dp">
 
         <com.google.android.material.card.MaterialCardView
-            style="@style/Widget.Material3.CardView.Filled"
+            style="?attr/playerArtCardStyle"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:cardCornerRadius="?attr/playerArtCorner"

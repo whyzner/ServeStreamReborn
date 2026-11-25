@@ -131,7 +131,7 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
 done
 
 $T adb shell pm grant $PKG android.permission.BLUETOOTH_CONNECT
-for n in classic_main classic_settings platinum_main platinum_settings metro_dark_main metro_dark_settings metro_light_main metro_light_settings; do
+for n in classic_main classic_settings platinum_main platinum_settings platinum_player metro_dark_main metro_dark_settings metro_light_main metro_light_settings; do
   $T adb exec-out cat /sdcard/Download/$n.png > /tmp/$n.png 2>/dev/null
   echo "=====SHOT $n BEGIN====="; base64 -w 3000 /tmp/$n.png; echo "=====SHOT $n END====="
 done

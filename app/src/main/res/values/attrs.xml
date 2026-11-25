@@ -42,4 +42,18 @@
     <attr name="stationImageShape" format="reference" />
     <attr name="playerArtCorner" format="dimension" />
     <attr name="appLogo" format="reference" />
+
+    <!-- player screen look (the platinum theme dresses it like a late-90s desktop player) -->
+    <attr name="playerBackground" format="reference" />
+    <attr name="playerTimeStripBackground" format="reference" />
+    <attr name="playerTimeStripPadding" format="dimension" />
+    <attr name="playerTimeTextColor" format="color" />
+    <attr name="playerTimeTextAppearance" format="reference" />
+    <attr name="playerSeekBarStyle" format="reference" />
+    <attr name="playerButtonRowBackground" format="reference" />
+    <attr name="playerButtonRowPadding" format="dimension" />
+    <attr name="playerSmallButtonStyle" format="reference" />
+    <attr name="playerPlayButtonBackground" format="reference" />
+    <attr name="playerPlayButtonPadding" format="dimension" />
+    <attr name="playerArtCardStyle" format="reference" />
 </resources>

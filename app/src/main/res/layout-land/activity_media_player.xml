@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/playerBackground"
     android:orientation="vertical">
 
     <androidx.viewpager.widget.ViewPager
@@ -19,47 +20,59 @@
         android:paddingEnd="16dp"
         android:paddingBottom="16dp">
 
-        <SeekBar
-            android:id="@+id/seek_bar"
+        <LinearLayout
+            android:id="@+id/time_strip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:progress="0" />
+            android:background="?attr/playerTimeStripBackground"
+            android:orientation="vertical"
+            android:padding="?attr/playerTimeStripPadding">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
-
-            <TextView
-                android:id="@+id/position_text"
-                android:layout_width="wrap_content"
+            <SeekBar
+                android:id="@+id/seek_bar"
+                style="?attr/playerSeekBarStyle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:textAppearance="?attr/textAppearanceLabelMedium"
-                android:textColor="?attr/colorOnSurfaceVariant" />
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:progress="0" />
 
-            <TextView
-                android:id="@+id/duration_text"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:textAppearance="?attr/textAppearanceLabelMedium"
-                android:textColor="?attr/colorOnSurfaceVariant" />
-        </RelativeLayout>
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <TextView
+                    android:id="@+id/position_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:textAppearance="?attr/playerTimeTextAppearance"
+                    android:textColor="?attr/playerTimeTextColor" />
+
+                <TextView
+                    android:id="@+id/duration_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:textAppearance="?attr/playerTimeTextAppearance"
+                    android:textColor="?attr/playerTimeTextColor" />
+            </RelativeLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:background="?attr/playerButtonRowBackground"
+            android:padding="?attr/playerButtonRowPadding"
             android:gravity="center"
             android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/shuffle_button"
-                style="@style/Widget.ServeStream.IconButton"
+                style="?attr/playerSmallButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
@@ -68,7 +81,7 @@
 
             <net.sourceforge.servestream.button.RepeatingImageButton
                 android:id="@+id/previous_button"
-                style="@style/Widget.ServeStream.IconButton"
+                style="?attr/playerSmallButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="56dp"
                 android:layout_weight="1"
@@ -83,14 +96,15 @@
                 android:layout_height="80dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="?attr/playerPlayButtonBackground"
+                android:padding="?attr/playerPlayButtonPadding"
                 android:contentDescription="@null"
                 android:scaleType="fitCenter"
                 android:src="?attr/ic_av_play_over_video_large" />
 
             <net.sourceforge.servestream.button.RepeatingImageButton
                 android:id="@+id/next_button"
-                style="@style/Widget.ServeStream.IconButton"
+                style="?attr/playerSmallButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="56dp"
                 android:layout_weight="1"
@@ -101,7 +115,7 @@
 
             <ImageButton
                 android:id="@+id/repeat_button"
-                style="@style/Widget.ServeStream.IconButton"
+                style="?attr/playerSmallButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"

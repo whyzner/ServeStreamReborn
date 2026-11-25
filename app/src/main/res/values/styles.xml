@@ -53,6 +53,20 @@
         <item name="stationImageShape">@style/ShapeAppearance.ServeStream.StationImage</item>
         <item name="playerArtCorner">28dp</item>
         <item name="appLogo">@drawable/app_logo</item>
+
+        <!-- player screen: these defaults keep the normal look -->
+        <item name="playerBackground">@null</item>
+        <item name="playerTimeStripBackground">@null</item>
+        <item name="playerTimeStripPadding">0dp</item>
+        <item name="playerTimeTextColor">?attr/colorOnSurfaceVariant</item>
+        <item name="playerTimeTextAppearance">?attr/textAppearanceLabelMedium</item>
+        <item name="playerSeekBarStyle">?android:attr/seekBarStyle</item>
+        <item name="playerButtonRowBackground">@null</item>
+        <item name="playerButtonRowPadding">0dp</item>
+        <item name="playerSmallButtonStyle">@style/Widget.ServeStream.IconButton</item>
+        <item name="playerPlayButtonBackground">?attr/selectableItemBackgroundBorderless</item>
+        <item name="playerPlayButtonPadding">0dp</item>
+        <item name="playerArtCardStyle">@style/Widget.Material3.CardView.Filled</item>
     </style>
 
     <!-- Names kept from the original app so the manifest and code still resolve. -->
