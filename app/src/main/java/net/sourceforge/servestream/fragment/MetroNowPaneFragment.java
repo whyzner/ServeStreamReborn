@@ -23,6 +23,9 @@ import net.sourceforge.servestream.utils.MusicUtils;
 import net.sourceforge.servestream.utils.StationImages;
 
 /**
+ * Not shown any more (wide screens went back to two panes in 2.8.6). Kept so
+ * screens saved by 2.8.2 - 2.8.5 can still be restored and then dropped.
+ *
  * Metro wide screens: right pane of the main screen showing the station being
  * played (picture and name). Tapping it opens the player.
  */

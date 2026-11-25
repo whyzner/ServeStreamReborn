@@ -29,7 +29,7 @@ public class MetroHomeFragment extends Fragment {
         void openMetroTile(int which);
     }
 
-    /** The tiles as a narrow column (wide screens). */
+    /** The tiles as a narrow column. Not used since 2.8.6 (kept for screens saved by 2.8.2 - 2.8.5). */
     public static MetroHomeFragment rail() {
         MetroHomeFragment f = new MetroHomeFragment();
         Bundle b = new Bundle();

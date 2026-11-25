@@ -81,7 +81,6 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 public class MediaPlayerActivity extends ActionBarActivity implements MusicUtils.Defs,
     		OnSharedPreferenceChangeListener,
     		net.sourceforge.servestream.fragment.UrlListFragment.BrowseIntentListener,
-    		net.sourceforge.servestream.fragment.MetroHomeFragment.Host,
     		LoadingDialogListener,
     		SleepTimerDialogListener {
 	
@@ -158,23 +157,13 @@ public class MediaPlayerActivity extends ActionBarActivity implements MusicUtils
             getSupportFragmentManager().beginTransaction().remove(existing).commitNow();
         }
 
-        // Metro with room: the tile menu column at the left (tiles | list | player)
+        // 2.8.2 - 2.8.5 put a tile column here on wide screens: drop one restored from then
         androidx.fragment.app.Fragment rail =
                 getSupportFragmentManager().findFragmentByTag(net.sourceforge.servestream.fragment.MetroHomeFragment.RAIL_TAG);
-        View railPane = findViewById(R.id.metro_rail_pane);
-        if (railPane != null && net.sourceforge.servestream.utils.AppearanceSettings.isMetro()
-                && MainActivity.metroThreePanes(this)) {
-            railPane.setVisibility(View.VISIBLE);
-            if (rail == null) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.metro_rail_pane, net.sourceforge.servestream.fragment.MetroHomeFragment.rail(),
-                                net.sourceforge.servestream.fragment.MetroHomeFragment.RAIL_TAG)
-                        .commitNow();
-            }
-        } else if (rail != null) {
+        if (rail != null) {
             getSupportFragmentManager().beginTransaction().remove(rail).commitNow();
         }
-        
+
         ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setHomeButtonEnabled(true);
@@ -1389,31 +1378,5 @@ public class MediaPlayerActivity extends ActionBarActivity implements MusicUtils
         }
         if (mSwipe != null) mSwipe.onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
-    }
-
-    /** Metro tile menu column (wide screens). */
-    @Override
-    public void openMetroTile(int which) {
-        switch (which) {
-            case net.sourceforge.servestream.fragment.MetroHomeFragment.STATIONS:
-            case net.sourceforge.servestream.fragment.MetroHomeFragment.ALARM:
-                startActivity(new Intent(this, MainActivity.class)
-                        .putExtra(MainActivity.EXTRA_METRO_SECTION,
-                                which == net.sourceforge.servestream.fragment.MetroHomeFragment.ALARM ? 2 : 0)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
-                break;
-            case net.sourceforge.servestream.fragment.MetroHomeFragment.BROWSE:
-                startActivity(new Intent(this, AddUrlActivity.class));
-                break;
-            case net.sourceforge.servestream.fragment.MetroHomeFragment.SETTINGS:
-                startActivity(new Intent(this, SettingsActivity.class));
-                break;
-            case net.sourceforge.servestream.fragment.MetroHomeFragment.ABOUT:
-                startActivity(new Intent(this, AboutActivity.class));
-                break;
-            default:
-                // now playing: this is it
-                break;
-        }
     }
 }

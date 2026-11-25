@@ -582,34 +582,28 @@ public class ClassicThemeTest {
         return v != null && v.isShown() && v.getWidth() > 0;
     }
 
-    /** Metro on wide screens: tiles | list | now playing; 2 panes when narrower; player gets the tiles too. */
+    /** Metro on wide screens: two panes as before (station list | player), the main screen as on phones. */
     @Test
-    public void metroWidePanes() throws Exception {
+    public void metroWideTwoPanes() throws Exception {
         setTheme("metro_dark");
         try {
             inst.getUiAutomation().executeShellCommand("wm size 1840x1840").close();
             inst.getUiAutomation().executeShellCommand("wm density 420").close();
             SystemClock.sleep(3000);
-            Activity main = start(MainActivity.class);
+            start(MainActivity.class);
             SystemClock.sleep(3000);
-            main = resumed(MainActivity.class, 10000);
-            final Activity m = main;
-            final boolean[] r = new boolean[4];
+            final Activity m = resumed(MainActivity.class, 10000);
+            final boolean[] r = new boolean[3];
             inst.runOnMainSync(new Runnable() {
                 public void run() {
-                    r[0] = shown(m, R.id.metro_rail_pane) && shown(m, R.id.metro_tile_stations);
-                    r[1] = shown(m, android.R.id.list) || shown(m, android.R.id.empty);
-                    r[2] = shown(m, R.id.metro_now_pane) && shown(m, R.id.metro_now_name);
-                    r[3] = m.findViewById(R.id.metro_home) == null || !m.findViewById(R.id.metro_home).isShown();
+                    r[0] = shown(m, R.id.metro_home);
+                    r[1] = m.findViewById(R.id.metro_rail) == null;
                 }
             });
             screenshot("metro_dark_wide_main");
-            assertTrue("3 panes: no tile column", r[0]);
-            assertTrue("3 panes: no station list", r[1]);
-            assertTrue("3 panes: no now playing pane", r[2]);
-            assertTrue("3 panes: tile home shown over the list", r[3]);
+            assertTrue("wide main screen: no tile home", r[0]);
+            assertTrue("wide main screen: tile column still shown", r[1]);
 
-            // the player on the same screen: tiles | list | player
             android.content.Intent view = new android.content.Intent(android.content.Intent.ACTION_VIEW)
                     .setDataAndType(android.net.Uri.parse("https://stream1.rcast.net/73730"), "audio/mpeg")
                     .setClass(inst.getTargetContext(), MainActivity.class)
@@ -620,33 +614,16 @@ public class ClassicThemeTest {
             SystemClock.sleep(5000);
             inst.runOnMainSync(new Runnable() {
                 public void run() {
-                    r[0] = shown(player, R.id.metro_rail_pane) && shown(player, R.id.metro_tile_stations);
-                    r[1] = shown(player, R.id.station_list_pane);
-                    r[2] = shown(player, R.id.play_pause_button);
+                    r[0] = shown(player, R.id.station_list_pane);
+                    r[1] = shown(player, R.id.play_pause_button) && shown(player, R.id.metro_bars_left);
+                    r[2] = player.findViewById(R.id.metro_rail) == null;
                 }
             });
             screenshot("metro_dark_wide_player");
-            assertTrue("player: no tile column", r[0]);
-            assertTrue("player: no station list", r[1]);
-            assertTrue("player: no controls", r[2]);
             finish(player);
-
-            // narrower (640dp): tiles | list, no now playing pane
-            inst.getUiAutomation().executeShellCommand("wm size 1680x1840").close();
-            SystemClock.sleep(3000);
-            start(MainActivity.class);
-            SystemClock.sleep(3000);
-            final Activity m2 = resumed(MainActivity.class, 10000);
-            inst.runOnMainSync(new Runnable() {
-                public void run() {
-                    r[0] = shown(m2, R.id.metro_rail_pane);
-                    r[1] = m2.findViewById(R.id.metro_now_pane) == null || !m2.findViewById(R.id.metro_now_pane).isShown();
-                }
-            });
-            screenshot("metro_dark_wide_two");
-            finish(m2);
-            assertTrue("2 panes: no tile column", r[0]);
-            assertTrue("2 panes: now playing pane shown without room", r[1]);
+            assertTrue("player: no station list beside it", r[0]);
+            assertTrue("player: Metro player missing", r[1]);
+            assertTrue("player: tile column still shown", r[2]);
         } finally {
             inst.getUiAutomation().executeShellCommand("wm size reset").close();
             inst.getUiAutomation().executeShellCommand("wm density reset").close();
