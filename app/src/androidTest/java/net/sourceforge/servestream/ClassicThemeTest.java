@@ -269,7 +269,7 @@ public class ClassicThemeTest {
         });
         screenshot("real_main");
         finish(main);
-        assertEquals("dark G2 window colour", 0xFF3A4350, colour[0]);
+        assertEquals("darker grey window colour", 0xFFA0A0A0, colour[0]);
         assertTrue("title bar is not the gradient", gradientBar[0]);
 
         Activity settings = start(SettingsActivity.class);
@@ -328,7 +328,7 @@ public class ClassicThemeTest {
             screenshot("real_player_unfolded");
             finish(player);
             assertTrue("no station list beside the player", pos[2] == 1);
-            assertEquals("player keeps the grey 9x window", 0xFFC0C0C0, pos[3]);
+            assertEquals("player has the same grey as the other screens", 0xFFA0A0A0, pos[3]);
             assertTrue("fields are not under the picture (" + pos[0] + " / " + pos[1] + ")", pos[1] >= pos[0]);
         } finally {
             inst.getUiAutomation().executeShellCommand("wm size reset").close();
