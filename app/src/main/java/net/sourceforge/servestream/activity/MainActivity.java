@@ -23,6 +23,7 @@ import net.sourceforge.servestream.fragment.AlarmClockFragment;
 import net.sourceforge.servestream.fragment.BrowseFragment;
 import net.sourceforge.servestream.fragment.UrlListFragment;
 import net.sourceforge.servestream.fragment.MetroHomeFragment;
+import net.sourceforge.servestream.fragment.MetroNowPaneFragment;
 import net.sourceforge.servestream.fragment.UrlListFragment.BrowseIntentListener;
 import net.sourceforge.servestream.preference.UserPreferences;
 import net.sourceforge.servestream.utils.DownloadScannerDialog;
@@ -61,7 +62,8 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity implements
 			ServiceConnection,
 			BrowseIntentListener, ItemAccess,
-		NavigationView.OnNavigationItemSelectedListener {
+			NavigationView.OnNavigationItemSelectedListener,
+			MetroHomeFragment.Host {
 	
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	
@@ -81,7 +83,9 @@ public class MainActivity extends AppCompatActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		//setTheme(UserPreferences.getTheme());
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		mMetroWide = isMetro() && metroWideWindow(this);
+		setContentView(mMetroWide ? R.layout.activity_main_metro_wide : R.layout.activity_main);
+		setUpMetroPanes();
 		if (savedInstanceState == null) {
 			// pictures of stations deleted by older versions would be picked up by new stations
 			final android.content.Context app = getApplicationContext();
@@ -107,8 +111,11 @@ public class MainActivity extends AppCompatActivity implements
 		navigationView.setNavigationItemSelectedListener(this);
 
 		if (savedInstanceState == null) {
+			int section = getIntent() != null ? getIntent().getIntExtra(EXTRA_METRO_SECTION, -1) : -1;
 			String uri = getUri();
-			if (uri == null && isMetro()) {
+			if (section == 2) {
+				selectItem(2);
+			} else if (uri == null && isMetro() && !mMetroWide) {
 				showMetroHome();
 			} else {
 				openUri(uri);
@@ -135,6 +142,10 @@ public class MainActivity extends AppCompatActivity implements
     		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     		finish();
     		startActivity(i);
+    	} else if (intent.getIntExtra(EXTRA_METRO_SECTION, -1) == 2) {
+    		selectItem(2);
+    	} else if (intent.getIntExtra(EXTRA_METRO_SECTION, -1) == 0) {
+    		selectItem(0);
     	} else {
     		openUri(getUri());
     	}
@@ -155,6 +166,63 @@ public class MainActivity extends AppCompatActivity implements
 			mTag = savedInstanceState.getString(STATE_SELECTED_NAVIGATION_ITEM);
 		}
 		updateMetroChrome();
+	}
+
+	/** Opens a section of the main screen from another screen (Metro tile menu). */
+	public static final String EXTRA_METRO_SECTION = "metro_section";
+
+	private boolean mMetroWide;
+
+	/** Width class: tile menu column from 600dp, plus the now playing pane from 700dp. */
+	public static boolean metroWideWindow(Activity a) {
+		android.content.res.Configuration c = a.getResources().getConfiguration();
+		return c.screenWidthDp >= 600 && c.screenHeightDp >= 480;
+	}
+
+	public static boolean metroThreePanes(Activity a) {
+		android.content.res.Configuration c = a.getResources().getConfiguration();
+		return c.screenWidthDp >= 700 && c.screenHeightDp >= 480;
+	}
+
+	/**
+	 * Metro wide screens: tile menu column and (with room) the now playing pane.
+	 * When the window gets narrow again (folding), panes restored from before are
+	 * dropped so they do not look for a container that is gone.
+	 */
+	private void setUpMetroPanes() {
+		FragmentManager fm = getSupportFragmentManager();
+		Fragment rail = fm.findFragmentByTag(MetroHomeFragment.RAIL_TAG);
+		Fragment now = fm.findFragmentByTag(MetroNowPaneFragment.TAG);
+		if (mMetroWide) {
+			if (rail == null) {
+				fm.beginTransaction().replace(R.id.metro_rail_pane, MetroHomeFragment.rail(), MetroHomeFragment.RAIL_TAG).commitNow();
+			}
+			boolean three = metroThreePanes(this);
+			findViewById(R.id.metro_now_pane).setVisibility(three ? View.VISIBLE : View.GONE);
+			if (three && now == null) {
+				fm.beginTransaction().replace(R.id.metro_now_pane, new MetroNowPaneFragment(), MetroNowPaneFragment.TAG).commitNow();
+			} else if (!three && now != null) {
+				fm.beginTransaction().remove(now).commitNow();
+			}
+			// the tiles are on screen already: no separate tile home here
+			Fragment home = fm.findFragmentByTag(MetroHomeFragment.TAG);
+			if (home != null) fm.beginTransaction().remove(home).commitNow();
+		} else {
+			FragmentTransaction ft = fm.beginTransaction();
+			if (rail != null) ft.remove(rail);
+			if (now != null) ft.remove(now);
+			if (rail != null || now != null) ft.commitNow();
+		}
+	}
+
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		// restored on a wide screen while the tile home was shown: show the list instead
+		if (mMetroWide && MetroHomeFragment.TAG.equals(mTag)) {
+			mTag = null;
+			selectItem(0);
+		}
 	}
 
 	private static boolean isMetro() {
@@ -557,7 +625,7 @@ public class MainActivity extends AppCompatActivity implements
 		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		if (drawer.isDrawerOpen(GravityCompat.START)) {
 			drawer.closeDrawer(GravityCompat.START);
-		} else if (isMetro() && !MetroHomeFragment.TAG.equals(mTag)) {
+		} else if (isMetro() && !mMetroWide && !MetroHomeFragment.TAG.equals(mTag)) {
 			// Metro: back from a section goes to the tile home
 			showMetroHome();
 		} else {

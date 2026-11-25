@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import net.sourceforge.servestream.R;
-import net.sourceforge.servestream.activity.MainActivity;
 import net.sourceforge.servestream.utils.MusicUtils;
 
 /**
@@ -22,6 +21,22 @@ import net.sourceforge.servestream.utils.MusicUtils;
 public class MetroHomeFragment extends Fragment {
 
     public static final String TAG = "metro_home";
+    public static final String RAIL_TAG = "metro_rail";
+    private static final String ARG_RAIL = "rail";
+
+    /** Screens that show the tiles and open what a tile stands for. */
+    public interface Host {
+        void openMetroTile(int which);
+    }
+
+    /** The tiles as a narrow column (wide screens). */
+    public static MetroHomeFragment rail() {
+        MetroHomeFragment f = new MetroHomeFragment();
+        Bundle b = new Bundle();
+        b.putBoolean(ARG_RAIL, true);
+        f.setArguments(b);
+        return f;
+    }
 
     public static final int STATIONS = 0, BROWSE = 1, ALARM = 2, NOW_PLAYING = 3, SETTINGS = 4, ABOUT = 5;
 
@@ -36,7 +51,8 @@ public class MetroHomeFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_metro_home, container, false);
+        boolean rail = getArguments() != null && getArguments().getBoolean(ARG_RAIL);
+        View v = inflater.inflate(rail ? R.layout.fragment_metro_rail : R.layout.fragment_metro_home, container, false);
         mNowPlaying = v.findViewById(R.id.metro_now_playing_name);
         bind(v, R.id.metro_tile_stations, STATIONS);
         bind(v, R.id.metro_tile_browse, BROWSE);
@@ -50,8 +66,8 @@ public class MetroHomeFragment extends Fragment {
     private void bind(View root, int id, final int which) {
         root.findViewById(id).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).openMetroTile(which);
+                if (getActivity() instanceof Host) {
+                    ((Host) getActivity()).openMetroTile(which);
                 }
             }
         });

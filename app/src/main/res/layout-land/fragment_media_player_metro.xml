@@ -47,6 +47,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.85"
             app:layout_constraintWidth_max="420dp"
             app:layout_constraintWidth_percent="0.75">
 
@@ -65,8 +66,9 @@
             android:layout_marginStart="10dp"
             android:alpha="0.85"
             android:importantForAccessibility="no"
-            android:scaleType="fitStart"
-            android:src="@drawable/metro_bars_right"
+            android:scaleType="fitEnd"
+            android:scaleX="-1"
+            android:src="@drawable/metro_bars_left"
             app:layout_constraintBottom_toBottomOf="@id/metro_art_card"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.5"
