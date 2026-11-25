@@ -84,6 +84,15 @@
     <string name="theme_platinum">プラチナ (90年代Mac風)</string>
     <string name="theme_metro_dark">メトロ ダーク (2010年代モバイル風)</string>
     <string name="theme_metro_light">メトロ ライト (2010年代モバイル風)</string>
+    <string name="theme_real">リアル (90年代ストリーミングプレーヤー風)</string>
+    <string name="real_label_title">タイトル:</string>
+    <string name="real_label_artist">アーティスト:</string>
+    <string name="real_label_clip">クリップ:</string>
+    <string name="real_lcd_live">ライブ</string>
+    <string name="real_lcd_clip">クリップ</string>
+    <string name="real_lcd_playing">再生中</string>
+    <string name="real_lcd_paused">一時停止</string>
+    <string name="real_lcd_stopped">停止</string>
     <string name="pref_language_title">言語</string>
     <string name="language_system">システム設定に従う</string>
     <string name="set_sleeptimer_label">スリープタイマー</string>

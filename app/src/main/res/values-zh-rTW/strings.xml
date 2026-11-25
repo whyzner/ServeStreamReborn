@@ -84,6 +84,15 @@
     <string name="theme_platinum">白金 (90年代 Mac 風格)</string>
     <string name="theme_metro_dark">Metro 深色 (2010年代手機風格)</string>
     <string name="theme_metro_light">Metro 淺色 (2010年代手機風格)</string>
+    <string name="theme_real">Real (90年代串流播放器風格)</string>
+    <string name="real_label_title">標題:</string>
+    <string name="real_label_artist">演出者:</string>
+    <string name="real_label_clip">片段:</string>
+    <string name="real_lcd_live">直播</string>
+    <string name="real_lcd_clip">片段</string>
+    <string name="real_lcd_playing">播放中</string>
+    <string name="real_lcd_paused">已暫停</string>
+    <string name="real_lcd_stopped">已停止</string>
     <string name="pref_language_title">語言</string>
     <string name="language_system">依照系統設定</string>
     <string name="set_sleeptimer_label">睡眠計時器</string>

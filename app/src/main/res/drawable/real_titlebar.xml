@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Title bar: deep blue fading to light blue -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient android:angle="0" android:startColor="@color/real_title" android:endColor="@color/real_title_end" />
+</shape>

@@ -262,6 +262,15 @@
     <string name="theme_platinum">Платина (в стиле Mac 90-х)</string>
     <string name="theme_metro_dark">Metro тёмная (мобильный стиль 2010-х)</string>
     <string name="theme_metro_light">Metro светлая (мобильный стиль 2010-х)</string>
+    <string name="theme_real">Real (в стиле стрим-плеера 90-х)</string>
+    <string name="real_label_title">Название:</string>
+    <string name="real_label_artist">Исполнитель:</string>
+    <string name="real_label_clip">Клип:</string>
+    <string name="real_lcd_live">Эфир</string>
+    <string name="real_lcd_clip">Клип</string>
+    <string name="real_lcd_playing">Воспроизведение</string>
+    <string name="real_lcd_paused">Пауза</string>
+    <string name="real_lcd_stopped">Остановлено</string>
     <string name="theme_light">Светлая</string>
     <string name="theme_system">Как в системе</string>
     <string name="togglepause_action_title">Воспроизведение/пауза</string>

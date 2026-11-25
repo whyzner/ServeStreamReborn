@@ -93,6 +93,10 @@ public class MediaPlayerFragment extends Fragment implements CoverViewListener {
         mArtistAndAlbumName = (TextView) view.findViewById(R.id.artist_and_album);
         mArtistAndAlbumName.setSelected(true);
         mTrackNumber = (TextView) view.findViewById(R.id.track_number_text);
+        // labelled fields used by the "real" theme instead of the centred text
+        mFieldTitle = (TextView) view.findViewById(R.id.field_title);
+        mFieldArtist = (TextView) view.findViewById(R.id.field_artist);
+        mFieldClip = (TextView) view.findViewById(R.id.field_clip);
 		
 		return view;
 	}
@@ -180,6 +184,9 @@ public class MediaPlayerFragment extends Fragment implements CoverViewListener {
     private CoverView mAlbum;
     private TextView mArtistAndAlbumName;
     private TextView mTrackName;
+    private TextView mFieldTitle;
+    private TextView mFieldArtist;
+    private TextView mFieldClip;
 
     private static final int GET_ALBUM_ART = 3;
 
@@ -217,6 +224,7 @@ public class MediaPlayerFragment extends Fragment implements CoverViewListener {
             }
             
             mTrackNumber.setText(mService.getTrackNumber());
+            if (mFieldClip != null) mFieldClip.setText(mService.getTrackNumber());
             
             String trackName = mService.getTrackName();
             if (trackName == null || trackName.equals(Media.UNKNOWN_STRING)) {
@@ -224,6 +232,7 @@ public class MediaPlayerFragment extends Fragment implements CoverViewListener {
             }
             
             mTrackName.setText(trackName);
+            if (mFieldTitle != null) mFieldTitle.setText(trackName);
             
             String artistName = mService.getArtistName();
             String albumName = mService.getAlbumName();
@@ -242,6 +251,7 @@ public class MediaPlayerFragment extends Fragment implements CoverViewListener {
             }
             
             mArtistAndAlbumName.setText(artistAndAlbumName);
+            if (mFieldArtist != null) mFieldArtist.setText(artistAndAlbumName);
 
             mAlbumArtHandler.removeMessages(GET_ALBUM_ART);
        		Message message  = mAlbumArtHandler.obtainMessage(GET_ALBUM_ART);

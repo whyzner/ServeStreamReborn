@@ -343,6 +343,15 @@
     <string name="theme_platinum">Platinum (90s Mac style)</string>
     <string name="theme_metro_dark">Metro dark (2010s mobile)</string>
     <string name="theme_metro_light">Metro light (2010s mobile)</string>
+    <string name="theme_real">Real (90s streaming player style)</string>
+    <string name="real_label_title">Title:</string>
+    <string name="real_label_artist">Artist:</string>
+    <string name="real_label_clip">Clip:</string>
+    <string name="real_lcd_live">Live</string>
+    <string name="real_lcd_clip">Clip</string>
+    <string name="real_lcd_playing">Playing</string>
+    <string name="real_lcd_paused">Paused</string>
+    <string name="real_lcd_stopped">Stopped</string>
     <string name="pref_language_title">Language</string>
     <string name="language_system">System default</string>
     <string name="language_english" translatable="false">English</string>

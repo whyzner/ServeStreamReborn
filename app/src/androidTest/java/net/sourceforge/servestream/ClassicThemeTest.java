@@ -109,9 +109,18 @@ public class ClassicThemeTest {
             public void run() {
                 View strip = player.findViewById(R.id.time_strip);
                 View info = player.findViewById(R.id.player_info);
-                // platinum dresses the time strip, classic the information pane
+                View lcd = player.findViewById(R.id.lcd_panel);
+                // platinum dresses the time strip, classic the information pane,
+                // real shows its status display (with the time) and labelled fields
+                boolean realOk = lcd != null && lcd.getVisibility() == View.VISIBLE
+                        && ((android.widget.TextView) player.findViewById(R.id.lcd_time)).getText().length() > 0
+                        && ((android.widget.TextView) player.findViewById(R.id.lcd_state)).getText().length() > 0
+                        && player.findViewById(R.id.player_fields) != null
+                        && player.findViewById(R.id.player_fields).getVisibility() == View.VISIBLE
+                        && ((android.widget.TextView) player.findViewById(R.id.field_title)).getText().length() > 0;
                 dressed[0] = (strip != null && strip.getBackground() != null)
-                        || (info != null && info.getBackground() != null);
+                        || (info != null && info.getBackground() != null)
+                        || realOk;
                 View play = player.findViewById(R.id.play_pause_button);
                 dressed[1] = play != null && play.getBackground() instanceof android.graphics.drawable.StateListDrawable;
             }
@@ -200,7 +209,7 @@ public class ClassicThemeTest {
         android.content.Context c = inst.getTargetContext();
         android.content.pm.PackageManager pm = c.getPackageManager();
         String[][] cases = {{"dark", "Dark"}, {"classic", "Classic"}, {"platinum", "Platinum"},
-                {"light", "Default"}, {"metro_dark", "Metro"}, {"metro_light", "Metro"},
+                {"light", "Default"}, {"metro_dark", "Metro"}, {"metro_light", "Metro"}, {"real", "Real"},
                 {"system", "Default"}};
         for (String[] k : cases) {
             AppearanceSettings.applyIcon(c, k[0]);
@@ -240,5 +249,33 @@ public class ClassicThemeTest {
     @Test
     public void metroLightThemeIsApplied() throws Exception {
         checkMetro("metro_light", 0xFFFFFFFF, "metro_light");
+    }
+
+    @Test
+    public void realThemeIsApplied() throws Exception {
+        setTheme("real");
+        final Activity main = start(MainActivity.class);
+        inst.waitForIdleSync();
+        final int[] colour = new int[1];
+        final boolean[] gradientBar = new boolean[1];
+        inst.runOnMainSync(new Runnable() {
+            public void run() {
+                colour[0] = surface(main);
+                View bar = main.findViewById(R.id.toolbar);
+                gradientBar[0] = bar != null
+                        && bar.getBackground() instanceof android.graphics.drawable.GradientDrawable;
+            }
+        });
+        screenshot("real_main");
+        finish(main);
+        assertEquals("grey window colour", 0xFFD4D0C8, colour[0]);
+        assertTrue("title bar is not the gradient", gradientBar[0]);
+
+        Activity settings = start(SettingsActivity.class);
+        inst.waitForIdleSync();
+        screenshot("real_settings");
+        finish(settings);
+
+        openPlayerAndCapture("real_player");
     }
 }

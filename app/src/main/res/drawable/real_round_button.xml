@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Small round grey buttons, drawn as a 44dp circle in the middle of the button area -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <layer-list><item android:gravity="center" android:width="44dp" android:height="44dp" android:drawable="@drawable/real_round_down" /></layer-list>
+    </item>
+    <item>
+        <layer-list><item android:gravity="center" android:width="44dp" android:height="44dp" android:drawable="@drawable/real_round_up" /></layer-list>
+    </item>
+</selector>

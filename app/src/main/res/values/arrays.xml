@@ -32,6 +32,7 @@
         <item>@string/theme_platinum</item>
         <item>@string/theme_metro_dark</item>
         <item>@string/theme_metro_light</item>
+        <item>@string/theme_real</item>
     </string-array>
     <string-array name="ui_theme_values" translatable="false">
         <item>system</item>
@@ -41,6 +42,7 @@
         <item>platinum</item>
         <item>metro_dark</item>
         <item>metro_light</item>
+        <item>real</item>
     </string-array>
     <string-array name="ui_language_entries">
         <item>@string/language_system</item>

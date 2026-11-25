@@ -36,6 +36,9 @@ public final class AppearanceSettings {
         if ("metro_light".equals(value)) {
             return net.sourceforge.servestream.R.style.ThemeOverlay_ServeStream_MetroLight;
         }
+        if ("real".equals(value)) {
+            return net.sourceforge.servestream.R.style.ThemeOverlay_ServeStream_Real;
+        }
         return 0;
     }
 
@@ -60,7 +63,7 @@ public final class AppearanceSettings {
         return false;
     }
 
-    private static final String[] LAUNCHERS = {"Default", "Dark", "Classic", "Platinum", "Metro"};
+    private static final String[] LAUNCHERS = {"Default", "Dark", "Classic", "Platinum", "Metro", "Real"};
 
     private static volatile String sPendingIcon;
     private static int sStartedScreens;
@@ -121,6 +124,7 @@ public final class AppearanceSettings {
         else if ("classic".equals(value)) wanted = "Classic";
         else if ("platinum".equals(value)) wanted = "Platinum";
         else if ("metro_dark".equals(value) || "metro_light".equals(value)) wanted = "Metro";
+        else if ("real".equals(value)) wanted = "Real";
         android.content.pm.PackageManager pm = c.getPackageManager();
         // enable the new icon first so the app never has no launcher entry
         for (int pass = 0; pass < 2; pass++) {

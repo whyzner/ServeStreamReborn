@@ -69,6 +69,10 @@
         <item name="playerArtCardStyle">@style/Widget.Material3.CardView.Filled</item>
         <item name="playerArtAreaBackground">@null</item>
         <item name="playerInfoBackground">@null</item>
+        <item name="playerInfoVisibility">0</item>
+        <item name="playerFieldsVisibility">2</item>
+        <item name="playerTimeRowVisibility">0</item>
+        <item name="playerLcdVisibility">2</item>
     </style>
 
     <!-- Names kept from the original app so the manifest and code still resolve. -->

@@ -58,4 +58,9 @@
     <attr name="playerArtCardStyle" format="reference" />
     <attr name="playerArtAreaBackground" format="reference" />
     <attr name="playerInfoBackground" format="reference" />
+    <!-- visibility values: 0 = visible, 2 = gone -->
+    <attr name="playerInfoVisibility" format="integer" />
+    <attr name="playerFieldsVisibility" format="integer" />
+    <attr name="playerTimeRowVisibility" format="integer" />
+    <attr name="playerLcdVisibility" format="integer" />
 </resources>

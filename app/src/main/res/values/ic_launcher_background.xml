@@ -6,4 +6,5 @@
     <color name="ic_launcher_classic_background">#008080</color>
     <color name="ic_launcher_platinum_background">#9999CC</color>
     <color name="ic_launcher_metro_background">#0167E1</color>
+    <color name="ic_launcher_real_background">#080828</color>
 </resources>

@@ -174,6 +174,11 @@ public class MediaPlayerActivity extends ActionBarActivity implements MusicUtils
         
         mCurrentTime = (TextView) findViewById(R.id.position_text);
         mTotalTime = (TextView) findViewById(R.id.duration_text);
+        mLcdPanel = findViewById(R.id.lcd_panel);
+        mLcdKind = (TextView) findViewById(R.id.lcd_kind);
+        mLcdTime = (TextView) findViewById(R.id.lcd_time);
+        mLcdState = (TextView) findViewById(R.id.lcd_state);
+        mLcdDot = findViewById(R.id.lcd_dot);
         mProgress = (SeekBar) findViewById(R.id.seek_bar);
 
         mPrevButton = (RepeatingImageButton) findViewById(R.id.previous_button);
@@ -1030,6 +1035,37 @@ public class MediaPlayerActivity extends ActionBarActivity implements MusicUtils
     
     private TextView mCurrentTime;
     private TextView mTotalTime;
+
+    // green-on-black status display, shown only by the "real" theme
+    private View mLcdPanel;
+    private TextView mLcdKind;
+    private TextView mLcdTime;
+    private TextView mLcdState;
+    private View mLcdDot;
+
+    private boolean lcdShown() {
+        return mLcdPanel != null && mLcdPanel.getVisibility() == View.VISIBLE;
+    }
+
+    /** mm:ss.t like the old streaming players */
+    private static String lcdClock(long ms) {
+        if (ms < 0) ms = 0;
+        long tenths = (ms / 100) % 10;
+        long secs = ms / 1000;
+        return String.format(java.util.Locale.ROOT, "%02d:%02d.%d", secs / 60, secs % 60, tenths);
+    }
+
+    private void updateLcd(long pos, boolean playing) {
+        if (!lcdShown()) {
+            return;
+        }
+        boolean live = mDuration <= 0;
+        mLcdKind.setText(live ? R.string.real_lcd_live : R.string.real_lcd_clip);
+        mLcdTime.setText(live ? lcdClock(pos) : lcdClock(pos) + " / " + lcdClock(mDuration));
+        mLcdState.setText(mService == null ? R.string.real_lcd_stopped
+                : playing ? R.string.real_lcd_playing : R.string.real_lcd_paused);
+        mLcdDot.setVisibility(playing ? View.VISIBLE : View.INVISIBLE);
+    }
     private SeekBar mProgress;
     private SeekBar mVolume;
     private long mPosOverride = -1;
@@ -1051,10 +1087,14 @@ public class MediaPlayerActivity extends ActionBarActivity implements MusicUtils
 
     private long refreshNow() {
         setPauseButtonImage();
-        if(mService == null)
+        if(mService == null) {
+            updateLcd(0, false);
             return 500;
+        }
         try {
             long pos = mPosOverride < 0 ? mService.position() : mPosOverride;
+            boolean playingNow = mService.isPlaying();
+            updateLcd(pos, playingNow);
             if ((pos >= 0)) {
                 mCurrentTime.setText(MusicUtils.makeTimeString(this, pos / 1000));
                 if (mDuration > 0) {
@@ -1085,6 +1125,10 @@ public class MediaPlayerActivity extends ActionBarActivity implements MusicUtils
             if (width == 0) width = 320;
             long smoothrefreshtime = mDuration / width;
 
+            if (lcdShown() && playingNow) {
+                // tenths of a second on the status display
+                return Math.max(20, Math.min(100, remaining));
+            }
             if (smoothrefreshtime > remaining) return remaining;
             if (smoothrefreshtime < 20) return 20;
             return smoothrefreshtime;

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Real" theme: late-90s streaming player look (light grey windows, blue
+     gradient title bars, round grey buttons, green-on-black status display,
+     labelled title / artist / clip fields). Applied on top of the normal theme. -->
+<resources>
+    <color name="real_face">#D4D0C8</color>
+    <color name="real_light">#FFFFFF</color>
+    <color name="real_shadow">#808080</color>
+    <color name="real_dark">#404040</color>
+    <color name="real_title">#0A246A</color>
+    <color name="real_title_end">#A6CAF0</color>
+    <color name="real_channel_blue">#2A5DB0</color>
+
+    <style name="ShapeAppearance.ServeStream.Real.Channel" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">6dp</item>
+    </style>
+
+    <style name="ThemeOverlay.ServeStream.Real" parent="">
+        <!-- colours -->
+        <item name="colorPrimary">@color/real_title</item>
+        <item name="colorOnPrimary">@color/real_light</item>
+        <item name="colorPrimaryContainer">@color/real_title</item>
+        <item name="colorOnPrimaryContainer">@color/real_light</item>
+        <item name="colorSecondary">@color/real_title</item>
+        <item name="colorOnSecondary">@color/real_light</item>
+        <item name="colorSecondaryContainer">@color/real_face</item>
+        <item name="colorOnSecondaryContainer">#000000</item>
+        <item name="colorTertiary">@color/real_title</item>
+        <item name="colorSurface">@color/real_face</item>
+        <item name="colorOnSurface">#000000</item>
+        <item name="colorSurfaceVariant">@color/real_face</item>
+        <item name="colorOnSurfaceVariant">#202020</item>
+        <item name="colorSurfaceContainerLowest">@color/real_light</item>
+        <item name="colorSurfaceContainerLow">@color/real_face</item>
+        <item name="colorSurfaceContainer">@color/real_face</item>
+        <item name="colorSurfaceContainerHigh">@color/real_face</item>
+        <item name="colorSurfaceContainerHighest">@color/real_face</item>
+        <item name="colorSurfaceBright">@color/real_face</item>
+        <item name="colorSurfaceDim">@color/real_face</item>
+        <item name="colorOutline">@color/real_shadow</item>
+        <item name="colorOutlineVariant">@color/real_shadow</item>
+        <item name="android:colorBackground">@color/real_face</item>
+        <item name="android:windowBackground">@color/real_face</item>
+        <item name="android:textColorPrimary">#000000</item>
+        <item name="android:textColorSecondary">#202020</item>
+        <item name="colorControlActivated">@color/real_title</item>
+        <item name="elevationOverlayEnabled">false</item>
+
+        <!-- square windows -->
+        <item name="shapeAppearanceCornerExtraSmall">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceCornerSmall">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceCornerMedium">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceCornerLarge">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceCornerExtraLarge">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="stationImageShape">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="playerArtCorner">0dp</item>
+        <item name="appLogo">@drawable/app_logo_real</item>
+
+        <!-- player: grey body, black video area, labelled fields, round buttons
+             with a green play button, green-on-black status display -->
+        <item name="playerBackground">@color/real_face</item>
+        <item name="playerArtAreaBackground">#000000</item>
+        <item name="playerArtCardStyle">@style/Widget.ServeStream.Classic.Screen</item>
+        <item name="playerInfoBackground">@null</item>
+        <item name="playerInfoVisibility">2</item>
+        <item name="playerFieldsVisibility">0</item>
+        <item name="playerTimeRowVisibility">2</item>
+        <item name="playerLcdVisibility">0</item>
+        <item name="playerTimeStripBackground">@null</item>
+        <item name="playerTimeStripPadding">0dp</item>
+        <item name="playerSeekBarStyle">@style/Widget.ServeStream.Real.SeekBar</item>
+        <item name="playerButtonRowBackground">@null</item>
+        <item name="playerButtonRowPadding">2dp</item>
+        <item name="playerSmallButtonStyle">@style/Widget.ServeStream.Real.PlayerButton</item>
+        <item name="playerPlayButtonBackground">@drawable/real_round_button_big</item>
+        <item name="playerPlayButtonPadding">22dp</item>
+        <item name="ic_av_play_over_video_large">@drawable/real_play</item>
+        <item name="ic_av_pause_over_video_large">@drawable/real_pause</item>
+
+        <!-- title bars -->
+        <item name="toolbarStyle">@style/Widget.ServeStream.Real.Toolbar</item>
+        <item name="actionBarStyle">@style/Widget.ServeStream.Real.ActionBar</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.ServeStream.Classic.TitleBar</item>
+
+        <!-- controls -->
+        <item name="materialButtonStyle">@style/Widget.ServeStream.Real.Button</item>
+        <item name="borderlessButtonStyle">@style/Widget.ServeStream.Real.Button</item>
+        <item name="floatingActionButtonStyle">@style/Widget.ServeStream.Real.Fab</item>
+        <item name="navigationViewStyle">@style/Widget.ServeStream.Real.NavigationView</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.ServeStream.Real.Dialog</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.ServeStream.Real.Dialog</item>
+        <item name="android:listDivider">@drawable/classic_divider</item>
+        <item name="divider_horizontal">@drawable/classic_divider</item>
+        <item name="nav_drawer_background">@color/real_face</item>
+        <item name="now_playing_item_color">@color/real_title</item>
+    </style>
+
+    <style name="Widget.ServeStream.Real.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">@drawable/real_titlebar</item>
+        <item name="titleTextColor">@color/real_light</item>
+        <item name="subtitleTextColor">@color/real_light</item>
+        <item name="navigationIconTint">@color/real_light</item>
+        <item name="titleTextAppearance">@style/TextAppearance.ServeStream.Classic.Title</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.ServeStream.Classic.TitleBar</item>
+    </style>
+
+    <style name="Widget.ServeStream.Real.ActionBar" parent="Widget.Material3.ActionBar.Solid">
+        <item name="background">@drawable/real_titlebar</item>
+        <item name="elevation">0dp</item>
+        <item name="titleTextStyle">@style/TextAppearance.ServeStream.Classic.Title</item>
+    </style>
+
+    <style name="Widget.ServeStream.Real.Button" parent="Widget.Material3.Button">
+        <item name="android:background">@drawable/real_button</item>
+        <item name="backgroundTint">@null</item>
+        <item name="android:textColor">#000000</item>
+        <item name="iconTint">#000000</item>
+        <item name="rippleColor">@android:color/transparent</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:minHeight">40dp</item>
+        <item name="cornerRadius">14dp</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <!-- the add button looks like the old blue channel buttons -->
+    <style name="Widget.ServeStream.Real.Fab" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.ServeStream.Real.Channel</item>
+        <item name="backgroundTint">@color/real_channel_blue</item>
+        <item name="tint">@color/real_light</item>
+        <item name="rippleColor">@color/real_title</item>
+        <item name="elevation">3dp</item>
+    </style>
+
+    <style name="Widget.ServeStream.Real.NavigationView" parent="Widget.Material3.NavigationView">
+        <item name="android:background">@color/real_face</item>
+        <item name="drawerLayoutCornerSize">0dp</item>
+        <item name="itemShapeAppearanceOverlay">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="itemShapeFillColor">@color/real_nav_fill</item>
+        <item name="itemTextColor">@color/real_nav_text</item>
+        <item name="itemIconTint">@color/real_nav_text</item>
+    </style>
+
+    <style name="ThemeOverlay.ServeStream.Real.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">@color/real_face</item>
+        <item name="colorSurfaceContainerHigh">@color/real_face</item>
+        <item name="colorOnSurface">#000000</item>
+        <item name="colorOnSurfaceVariant">#000000</item>
+        <item name="colorPrimary">@color/real_title</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceCornerExtraLarge">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.ServeStream.Real.DialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.ServeStream.Real.DialogButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.ServeStream.Real.DialogButton</item>
+    </style>
+
+    <style name="Widget.ServeStream.Real.DialogButton" parent="Widget.ServeStream.Real.Button">
+        <item name="android:minWidth">88dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+    </style>
+
+    <style name="Widget.ServeStream.Real.SeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressDrawable">@drawable/real_seek_track</item>
+        <item name="android:thumb">@drawable/real_seek_thumb</item>
+        <item name="android:splitTrack">false</item>
+        <item name="android:minHeight">16dp</item>
+        <item name="android:maxHeight">16dp</item>
+        <item name="android:thumbTint">@android:color/white</item>
+        <item name="android:thumbTintMode">multiply</item>
+        <item name="android:progressTint">@android:color/white</item>
+        <item name="android:progressTintMode">multiply</item>
+        <item name="android:progressBackgroundTint">@android:color/white</item>
+        <item name="android:progressBackgroundTintMode">multiply</item>
+    </style>
+
+    <style name="Widget.ServeStream.Real.PlayerButton" parent="Widget.ServeStream.IconButton">
+        <item name="android:background">@drawable/real_round_button</item>
+        <item name="android:tint">#3A3A3A</item>
+        <item name="android:padding">14dp</item>
+    </style>
+</resources>

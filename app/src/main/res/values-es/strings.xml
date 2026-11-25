@@ -262,6 +262,15 @@
     <string name="theme_platinum">Platino (estilo Mac de los 90)</string>
     <string name="theme_metro_dark">Metro oscuro (estilo móvil de los 2010)</string>
     <string name="theme_metro_light">Metro claro (estilo móvil de los 2010)</string>
+    <string name="theme_real">Real (estilo reproductor de streaming de los 90)</string>
+    <string name="real_label_title">Título:</string>
+    <string name="real_label_artist">Artista:</string>
+    <string name="real_label_clip">Clip:</string>
+    <string name="real_lcd_live">En directo</string>
+    <string name="real_lcd_clip">Clip</string>
+    <string name="real_lcd_playing">Reproduciendo</string>
+    <string name="real_lcd_paused">En pausa</string>
+    <string name="real_lcd_stopped">Detenido</string>
     <string name="theme_light">Claro</string>
     <string name="theme_system">Predeterminado del sistema</string>
     <string name="togglepause_action_title">Reproducir/Pausa</string>

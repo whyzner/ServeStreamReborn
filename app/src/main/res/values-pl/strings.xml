@@ -345,6 +345,15 @@
     <string name="theme_platinum">Platyna (styl Maca z lat 90.)</string>
     <string name="theme_metro_dark">Metro ciemny (styl mobilny z lat 2010.)</string>
     <string name="theme_metro_light">Metro jasny (styl mobilny z lat 2010.)</string>
+    <string name="theme_real">Real (styl odtwarzacza strumieni z lat 90.)</string>
+    <string name="real_label_title">Tytuł:</string>
+    <string name="real_label_artist">Wykonawca:</string>
+    <string name="real_label_clip">Klip:</string>
+    <string name="real_lcd_live">Na żywo</string>
+    <string name="real_lcd_clip">Klip</string>
+    <string name="real_lcd_playing">Odtwarzanie</string>
+    <string name="real_lcd_paused">Pauza</string>
+    <string name="real_lcd_stopped">Zatrzymano</string>
     <string name="theme_light">Jasny</string>
     <string name="theme_system">Ustawienie systemowe</string>
     <string name="pref_pauseonfocusloss_title">Pauza przy dźwięku innych aplikacji</string>
