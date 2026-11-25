@@ -4,10 +4,10 @@
      title / artist / clip fields, green-on-black status display).
      The player screen has its own layout (activity_media_player_real). -->
 <resources>
-    <color name="real_face">#A0A0A0</color>
-    <color name="real_face_light">#C8C8C8</color>
+    <color name="real_face">#B4B4B4</color>
+    <color name="real_face_light">#D6D6D6</color>
     <color name="real_light">#FFFFFF</color>
-    <color name="real_shadow">#606060</color>
+    <color name="real_shadow">#707070</color>
     <color name="real_dark">#404040</color>
     <color name="real_title">#000080</color>
     <color name="real_title_end">#1084D0</color>
