@@ -63,7 +63,7 @@
         <!-- player: grey body, black video area, labelled fields, round buttons
              with a green play button, green-on-black status display -->
         <item name="playerBackground">@color/real_face</item>
-        <item name="playerArtAreaBackground">#000000</item>
+        <item name="playerArtAreaBackground">@android:color/black</item>
         <item name="playerArtCardStyle">@style/Widget.ServeStream.Classic.Screen</item>
         <item name="playerInfoBackground">@null</item>
         <item name="playerInfoVisibility">2</item>
