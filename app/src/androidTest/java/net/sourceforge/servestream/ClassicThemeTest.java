@@ -279,4 +279,59 @@ public class ClassicThemeTest {
 
         openPlayerAndCapture("real_player");
     }
+
+    /** Unfolded foldable / tablet: the real player keeps the picture above the fields. */
+    @Test
+    public void realPlayerOnUnfoldedScreen() throws Exception {
+        setTheme("real");
+        inst.getUiAutomation().executeShellCommand("wm size 1840x1840").close();
+        inst.getUiAutomation().executeShellCommand("wm density 420").close();
+        SystemClock.sleep(3000);
+        try {
+            android.content.Intent view = new android.content.Intent(android.content.Intent.ACTION_VIEW)
+                    .setDataAndType(android.net.Uri.parse("https://stream1.rcast.net/73730"), "audio/mpeg")
+                    .setClass(inst.getTargetContext(), MainActivity.class)
+                    .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            inst.getTargetContext().startActivity(view);
+            Activity found = null;
+            long end = SystemClock.elapsedRealtime() + 40000;
+            while (SystemClock.elapsedRealtime() < end && found == null) {
+                SystemClock.sleep(1000);
+                final Activity[] r = new Activity[1];
+                inst.runOnMainSync(new Runnable() {
+                    public void run() {
+                        for (Activity a : androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance()
+                                .getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED)) {
+                            if (a instanceof net.sourceforge.servestream.activity.MediaPlayerActivity) r[0] = a;
+                        }
+                    }
+                });
+                found = r[0];
+            }
+            assertTrue("player screen did not open", found != null);
+            SystemClock.sleep(5000);
+            final Activity player = found;
+            final int[] pos = new int[3];
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    int[] xy = new int[2];
+                    View art = player.findViewById(R.id.album_art);
+                    View field = player.findViewById(R.id.field_title);
+                    art.getLocationOnScreen(xy);
+                    pos[0] = xy[1] + art.getHeight();   // bottom of the picture
+                    field.getLocationOnScreen(xy);
+                    pos[1] = xy[1];                     // top of the title field
+                    pos[2] = player.findViewById(R.id.station_list_pane) != null ? 1 : 0;
+                }
+            });
+            screenshot("real_player_unfolded");
+            finish(player);
+            assertTrue("no station list beside the player", pos[2] == 1);
+            assertTrue("fields are not under the picture (" + pos[0] + " / " + pos[1] + ")", pos[1] >= pos[0]);
+        } finally {
+            inst.getUiAutomation().executeShellCommand("wm size reset").close();
+            inst.getUiAutomation().executeShellCommand("wm density reset").close();
+            SystemClock.sleep(2000);
+        }
+    }
 }

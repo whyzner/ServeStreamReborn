@@ -84,7 +84,9 @@ public class MediaPlayerFragment extends Fragment implements CoverViewListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_media_player, container, false);
+		// the "real" theme keeps the picture above the fields on wide screens too
+		View view = inflater.inflate(net.sourceforge.servestream.utils.AppearanceSettings.isRealTheme()
+				? R.layout.fragment_media_player_real : R.layout.fragment_media_player, container, false);
 		
         mAlbum = (CoverView) view.findViewById(R.id.album_art);
         mAlbum.setup(this);
