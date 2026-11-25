@@ -1371,19 +1371,16 @@ public class MediaPlayerActivity extends ActionBarActivity implements MusicUtils
         if (net.sourceforge.servestream.utils.AppearanceSettings.isMetro()
                 && findViewById(R.id.station_list_pane) == null) {
             if (ev.getActionMasked() == android.view.MotionEvent.ACTION_DOWN) {
-                // the seek bar is dragged sideways itself
+                // the seek bar is dragged sideways itself; so is the picture when there
+                // are earlier items of the play queue to swipe back to
+                boolean queueBack = mPager != null && mPager.getCurrentItem() > 0;
                 mSwipe = new net.sourceforge.servestream.utils.MetroSwipe(getWindow().getDecorView(),
-                        findViewById(R.id.seek_bar));
+                        findViewById(R.id.seek_bar), queueBack ? mPager : null);
             }
             if (mSwipe != null && mSwipe.onTouchEvent(ev) == net.sourceforge.servestream.utils.MetroSwipe.RIGHT) {
-                // the first page only: further pages are other items of the play queue
-                if (mPager == null || mPager.getCurrentItem() == 0) {
-                    MainActivity.sLastSwipe = "player: closed";
-                    finish();
-                    overridePendingTransition(R.anim.metro_slide_in_left, R.anim.metro_slide_out_right);
-                } else {
-                    MainActivity.sLastSwipe = "player: page " + mPager.getCurrentItem();
-                }
+                MainActivity.sLastSwipe = "player: closed";
+                finish();
+                overridePendingTransition(R.anim.metro_slide_in_left, R.anim.metro_slide_out_right);
             }
         }
         return super.dispatchTouchEvent(ev);

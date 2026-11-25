@@ -660,7 +660,9 @@ public class ClassicThemeTest {
         main.getWindowManager().getDefaultDisplay().getRealSize(size);
         int y = size.y / 2;
         String left = "input swipe " + (size.x * 85 / 100) + " " + y + " " + (size.x * 15 / 100) + " " + y + " 120";
-        String right = "input swipe " + (size.x * 15 / 100) + " " + y + " " + (size.x * 85 / 100) + " " + y + " 120";
+        // on the player: across the big title (the picture may page through the play queue)
+        int top = size.y * 12 / 100;
+        String right = "input swipe " + (size.x * 15 / 100) + " " + top + " " + (size.x * 85 / 100) + " " + top + " 120";
         player = null;
         for (int i = 0; i < 3 && player == null; i++) {
             SystemClock.sleep(2500);
