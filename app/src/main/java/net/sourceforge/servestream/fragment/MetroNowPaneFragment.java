@@ -32,7 +32,7 @@ public class MetroNowPaneFragment extends Fragment {
 
     private ImageView mArt;
     private TextView mName;
-    private String mShownUri = "";
+    private String mShownUri = null;
     private final Handler mHandler = new Handler(Looper.getMainLooper());
     private final Runnable mRefresh = new Runnable() {
         public void run() {
@@ -63,7 +63,7 @@ public class MetroNowPaneFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mShownUri = "";
+        mShownUri = null;  // draw the picture again
         mHandler.post(mRefresh);
     }
 

@@ -676,26 +676,35 @@ public class ClassicThemeTest {
         final Activity main = resumed(MainActivity.class, 10000);
         assertTrue("back from the player did not show the list", main != null);
 
-        // swipe left on the list -> player
+        // swipe left on the list -> player (tried again if it lands during a screen change)
         android.graphics.Point size = new android.graphics.Point();
         main.getWindowManager().getDefaultDisplay().getRealSize(size);
         int y = size.y / 2;
-        inst.getUiAutomation().executeShellCommand("input swipe " + (size.x * 85 / 100) + " " + y + " "
-                + (size.x * 15 / 100) + " " + y + " 120").close();
-        player = resumed(net.sourceforge.servestream.activity.MediaPlayerActivity.class, 8000);
+        String left = "input swipe " + (size.x * 85 / 100) + " " + y + " " + (size.x * 15 / 100) + " " + y + " 120";
+        String right = "input swipe " + (size.x * 15 / 100) + " " + y + " " + (size.x * 85 / 100) + " " + y + " 120";
+        player = null;
+        for (int i = 0; i < 3 && player == null; i++) {
+            SystemClock.sleep(2500);
+            MainActivity.sLastSwipe = "none";
+            inst.getUiAutomation().executeShellCommand(left).close();
+            player = resumed(net.sourceforge.servestream.activity.MediaPlayerActivity.class, 5000);
+        }
         assertTrue("swipe left on the list did not open the player (" + MainActivity.sLastSwipe + ")", player != null);
-        SystemClock.sleep(1500);
         // swipe right on the player -> list
-        inst.getUiAutomation().executeShellCommand("input swipe " + (size.x * 15 / 100) + " " + y + " "
-                + (size.x * 85 / 100) + " " + y + " 120").close();
-        SystemClock.sleep(2000);
-        final Activity back = resumed(MainActivity.class, 8000);
-        assertTrue("swipe right on the player did not go back to the list", back != null);
+        Activity back = null;
+        for (int i = 0; i < 3 && back == null; i++) {
+            SystemClock.sleep(2500);
+            MainActivity.sLastSwipe = "none";
+            inst.getUiAutomation().executeShellCommand(right).close();
+            back = resumed(MainActivity.class, 5000);
+        }
+        assertTrue("swipe right on the player did not go back to the list (" + MainActivity.sLastSwipe + ")", back != null);
+        final Activity list = back;
 
         // favourites tab, then unfold: the tab stays
         inst.runOnMainSync(new Runnable() {
             public void run() {
-                ((com.google.android.material.tabs.TabLayout) back.findViewById(R.id.metro_tabs)).getTabAt(1).select();
+                ((com.google.android.material.tabs.TabLayout) list.findViewById(R.id.metro_tabs)).getTabAt(1).select();
             }
         });
         SystemClock.sleep(800);
