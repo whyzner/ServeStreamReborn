@@ -683,7 +683,7 @@ public class ClassicThemeTest {
         inst.getUiAutomation().executeShellCommand("input swipe " + (size.x * 85 / 100) + " " + y + " "
                 + (size.x * 15 / 100) + " " + y + " 120").close();
         player = resumed(net.sourceforge.servestream.activity.MediaPlayerActivity.class, 8000);
-        assertTrue("swipe left on the list did not open the player", player != null);
+        assertTrue("swipe left on the list did not open the player (" + MainActivity.sLastSwipe + ")", player != null);
         SystemClock.sleep(1500);
         // swipe right on the player -> list
         inst.getUiAutomation().executeShellCommand("input swipe " + (size.x * 15 / 100) + " " + y + " "
@@ -733,6 +733,8 @@ public class ClassicThemeTest {
         inst.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
         SystemClock.sleep(1500);
         assertTrue("back from the tile home did not close the screen", narrow.isFinishing() || narrow.isDestroyed());
-        net.sourceforge.servestream.utils.MusicUtils.sService.stop();
+        if (net.sourceforge.servestream.utils.MusicUtils.sService != null) {
+            net.sourceforge.servestream.utils.MusicUtils.sService.stop();
+        }
     }
 }

@@ -657,6 +657,8 @@ public class MainActivity extends AppCompatActivity implements
 	// ---- Metro: swipe from the station list to the player (panorama style) ----
 
 	private android.view.GestureDetector mSwipe;
+	/** For tests: what the last swipe on the list did. */
+	public static volatile String sLastSwipe = "none";
 
 	private void setUpMetroSwipe() {
 		if (!isMetro() || mMetroWide) return;
@@ -664,17 +666,20 @@ public class MainActivity extends AppCompatActivity implements
 		mSwipe = new android.view.GestureDetector(this, new android.view.GestureDetector.SimpleOnGestureListener() {
 			@Override
 			public boolean onFling(android.view.MotionEvent e1, android.view.MotionEvent e2, float vx, float vy) {
-				if (e1 == null || !"0".equals(mTag)) return false;
+				if (e1 == null) { sLastSwipe = "no start"; return false; }
+				if (!"0".equals(mTag)) { sLastSwipe = "section " + mTag; return false; }
 				int width = getWindow().getDecorView().getWidth();
 				// keep clear of the system back gesture at the screen edges
-				if (e1.getX() < 32 * dp || e1.getX() > width - 32 * dp) return false;
+				if (e1.getX() < 32 * dp || e1.getX() > width - 32 * dp) { sLastSwipe = "edge"; return false; }
 				float dx = e2.getX() - e1.getX(), dy = e2.getY() - e1.getY();
-				if (dx < -120 * dp && Math.abs(dy) < Math.abs(dx) / 2 && Math.abs(vx) > 600 * dp
-						&& MetroHomeFragment.currentStation() != null) {
+				if (dx < -120 * dp && Math.abs(dy) < Math.abs(dx) / 2 && Math.abs(vx) > 600 * dp) {
+					if (MetroHomeFragment.currentStation() == null) { sLastSwipe = "nothing playing"; return false; }
+					sLastSwipe = "opened";
 					startActivity(new Intent(MainActivity.this, MediaPlayerActivity.class));
 					overridePendingTransition(R.anim.metro_slide_in_right, R.anim.metro_slide_out_left);
 					return true;
 				}
+				sLastSwipe = "dx " + dx + " dy " + dy + " vx " + vx;
 				return false;
 			}
 		});
