@@ -30,13 +30,18 @@
                 android:src="?attr/appLogo" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
                 android:fontFamily="sans-serif-light"
+                android:maxLines="1"
                 android:text="@string/app_name"
                 android:textColor="?attr/colorOnSurface"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                app:autoSizeMaxTextSize="24sp"
+                app:autoSizeMinTextSize="14sp"
+                app:autoSizeTextType="uniform" />
         </LinearLayout>
 
         <LinearLayout
@@ -77,7 +82,10 @@
                     android:ellipsize="end"
                     android:text="@string/metro_tile_stations"
                     android:textColor="@android:color/white"
-                    android:textSize="17sp" />
+                    android:textSize="17sp"
+                    app:autoSizeMaxTextSize="17sp"
+                    app:autoSizeMinTextSize="11sp"
+                    app:autoSizeTextType="uniform" />
 
                 <TextView
                     
@@ -124,7 +132,10 @@
                     android:ellipsize="end"
                     android:text="@string/metro_tile_browse"
                     android:textColor="@android:color/white"
-                    android:textSize="17sp" />
+                    android:textSize="17sp"
+                    app:autoSizeMaxTextSize="17sp"
+                    app:autoSizeMinTextSize="11sp"
+                    app:autoSizeTextType="uniform" />
 
                 <TextView
                     
@@ -177,7 +188,10 @@
                     android:ellipsize="end"
                     android:text="@string/metro_tile_alarm"
                     android:textColor="@android:color/white"
-                    android:textSize="17sp" />
+                    android:textSize="17sp"
+                    app:autoSizeMaxTextSize="17sp"
+                    app:autoSizeMinTextSize="11sp"
+                    app:autoSizeTextType="uniform" />
 
                 <TextView
                     
@@ -224,7 +238,10 @@
                     android:ellipsize="end"
                     android:text="@string/metro_tile_now_playing"
                     android:textColor="@android:color/white"
-                    android:textSize="17sp" />
+                    android:textSize="17sp"
+                    app:autoSizeMaxTextSize="17sp"
+                    app:autoSizeMinTextSize="11sp"
+                    app:autoSizeTextType="uniform" />
 
                 <TextView
                     android:id="@+id/metro_now_playing_name"

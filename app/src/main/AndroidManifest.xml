@@ -68,6 +68,7 @@
 
 		<activity
 		    android:name=".activity.MainActivity"
+		    android:enableOnBackInvokedCallback="true"
 		    android:exported="true"
 			android:theme="@style/Theme.ServeStream.DarkActionBar.NoActionBar"
 		    android:launchMode="singleTop" >
@@ -203,10 +204,12 @@
 
 		<activity
             android:name=".activity.AboutActivity"
+		    android:enableOnBackInvokedCallback="true"
             android:label="@string/about_pref" />
         
 		<activity
             android:name=".activity.AddUrlActivity"
+		    android:enableOnBackInvokedCallback="true"
             android:exported="true"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/add_new_url_label"
@@ -255,10 +258,12 @@
         
 		<activity
             android:name=".activity.BluetoothOptionsActivity"
+		    android:enableOnBackInvokedCallback="true"
             android:label="@string/pref_bluetooth_options" />
 
 		<activity
 		    android:name=".activity.NowPlayingActivity"
+		    android:enableOnBackInvokedCallback="true"
 			android:label="@string/now_playing_label" />
 		
 		<activity
@@ -276,6 +281,7 @@
 		
 		<activity
             android:name=".activity.SettingsActivity"
+		    android:enableOnBackInvokedCallback="true"
             android:label="@string/settings_label" />
         
 		<activity
@@ -288,7 +294,8 @@
 		</activity>
 		
 		<activity
-		    android:name=".activity.UriEditorActivity" />
+		    android:name=".activity.UriEditorActivity"
+		    android:enableOnBackInvokedCallback="true" />
 
 		<service
 		    android:name=".service.MediaPlaybackService"
@@ -312,6 +319,7 @@
 
         <activity
             android:name=".activity.MediaPlayerActivity"
+		    android:enableOnBackInvokedCallback="true"
             android:label="@string/media_player_label"
             android:launchMode="singleTop"
             android:exported="false" >

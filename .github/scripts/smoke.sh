@@ -119,6 +119,7 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
          "ClassicThemeTest#metroStationTabsAndFavorites Metro: all / favourites / recent tabs, star, backup keeps it" \
          "ClassicThemeTest#metroPlayer Metro: player (picture with level bars, name, round play button)" \
          "ClassicThemeTest#metroWidePanes Metro: wide screens 3 panes / 2 panes, player with tiles" \
+         "ClassicThemeTest#metroSwipeBackAndFold Metro: swipe list <-> player, predictive back, tab kept when unfolding" \
          "ClassicThemeTest#realThemeIsApplied Theme: real look applied (status display, fields)" \
          "ClassicThemeTest#realPlayerOnUnfoldedScreen Theme: real player on unfolded screen (picture above fields)" \
          "FixesTest#themeChangeDoesNotCloseTheApp Theme change keeps the app open (icon switched after leaving)" \

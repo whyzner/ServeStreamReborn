@@ -395,11 +395,8 @@ public class ClassicThemeTest {
                 }
             });
             assertTrue(theme + ": stations tile did not open the list", r[0] && r[1]);
-            inst.runOnMainSync(new Runnable() {
-                public void run() {
-                    main.onBackPressed();
-                }
-            });
+            // the real back key (goes through the predictive back dispatcher)
+            inst.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
             inst.waitForIdleSync();
             SystemClock.sleep(1000);
             inst.runOnMainSync(new Runnable() {
@@ -655,5 +652,87 @@ public class ClassicThemeTest {
             inst.getUiAutomation().executeShellCommand("wm density reset").close();
             SystemClock.sleep(2000);
         }
+    }
+
+    /**
+     * Metro: swipe left on the station list opens the player, swipe right on the
+     * player goes back; back from the tile home closes the screen; the chosen tab
+     * survives unfolding.
+     */
+    @Test
+    public void metroSwipeBackAndFold() throws Exception {
+        setTheme("metro_dark");
+        // play something (the player opens), then back to the list
+        android.content.Intent view = new android.content.Intent(android.content.Intent.ACTION_VIEW)
+                .setDataAndType(android.net.Uri.parse("https://stream1.rcast.net/73730"), "audio/mpeg")
+                .setClass(inst.getTargetContext(), MainActivity.class)
+                .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        inst.getTargetContext().startActivity(view);
+        Activity player = resumed(net.sourceforge.servestream.activity.MediaPlayerActivity.class, 40000);
+        assertTrue("player screen did not open", player != null);
+        SystemClock.sleep(4000);
+        inst.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
+        SystemClock.sleep(2000);
+        final Activity main = resumed(MainActivity.class, 10000);
+        assertTrue("back from the player did not show the list", main != null);
+
+        // swipe left on the list -> player
+        android.graphics.Point size = new android.graphics.Point();
+        main.getWindowManager().getDefaultDisplay().getRealSize(size);
+        int y = size.y / 2;
+        inst.getUiAutomation().executeShellCommand("input swipe " + (size.x * 85 / 100) + " " + y + " "
+                + (size.x * 15 / 100) + " " + y + " 120").close();
+        player = resumed(net.sourceforge.servestream.activity.MediaPlayerActivity.class, 8000);
+        assertTrue("swipe left on the list did not open the player", player != null);
+        SystemClock.sleep(1500);
+        // swipe right on the player -> list
+        inst.getUiAutomation().executeShellCommand("input swipe " + (size.x * 15 / 100) + " " + y + " "
+                + (size.x * 85 / 100) + " " + y + " 120").close();
+        SystemClock.sleep(2000);
+        final Activity back = resumed(MainActivity.class, 8000);
+        assertTrue("swipe right on the player did not go back to the list", back != null);
+
+        // favourites tab, then unfold: the tab stays
+        inst.runOnMainSync(new Runnable() {
+            public void run() {
+                ((com.google.android.material.tabs.TabLayout) back.findViewById(R.id.metro_tabs)).getTabAt(1).select();
+            }
+        });
+        SystemClock.sleep(800);
+        try {
+            inst.getUiAutomation().executeShellCommand("wm size 1840x1840").close();
+            inst.getUiAutomation().executeShellCommand("wm density 420").close();
+            SystemClock.sleep(4000);
+            final Activity wide = resumed(MainActivity.class, 10000);
+            final int[] tab = new int[] {-1};
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    com.google.android.material.tabs.TabLayout t = wide.findViewById(R.id.metro_tabs);
+                    if (t != null) tab[0] = t.getSelectedTabPosition();
+                }
+            });
+            assertEquals("tab lost when unfolding", 1, tab[0]);
+        } finally {
+            inst.getUiAutomation().executeShellCommand("wm size reset").close();
+            inst.getUiAutomation().executeShellCommand("wm density reset").close();
+            SystemClock.sleep(3000);
+        }
+
+        // back: list -> tile home -> screen closes
+        final Activity narrow = resumed(MainActivity.class, 10000);
+        inst.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
+        SystemClock.sleep(1000);
+        final boolean[] home = new boolean[1];
+        inst.runOnMainSync(new Runnable() {
+            public void run() {
+                View h = narrow.findViewById(R.id.metro_home);
+                home[0] = h != null && h.isShown();
+            }
+        });
+        assertTrue("back from the list did not show the tile home", home[0]);
+        inst.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
+        SystemClock.sleep(1500);
+        assertTrue("back from the tile home did not close the screen", narrow.isFinishing() || narrow.isDestroyed());
+        net.sourceforge.servestream.utils.MusicUtils.sService.stop();
     }
 }

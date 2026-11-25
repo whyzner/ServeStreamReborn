@@ -126,6 +126,14 @@ public class MainActivity extends AppCompatActivity implements
 			//selectItem(0);
 		}
 
+		getOnBackPressedDispatcher().addCallback(this, mBackCallback);
+		drawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+			@Override public void onDrawerOpened(View v) { refreshBackCallback(); }
+			@Override public void onDrawerClosed(View v) { refreshBackCallback(); }
+		});
+		setUpMetroSwipe();
+		refreshBackCallback();
+
 		mToken = MusicUtils.bindToService(this, this);
 
 		requestPermission(this);
@@ -276,6 +284,7 @@ public class MainActivity extends AppCompatActivity implements
 		if (drawer != null) {
 			drawer.setDrawerLockMode(home ? DrawerLayout.LOCK_MODE_LOCKED_CLOSED : DrawerLayout.LOCK_MODE_UNLOCKED);
 		}
+		refreshBackCallback();
 		// Metro: the title bar names the section (Stations, Browse, Alarm)
 		if (isMetro() && getSupportActionBar() != null) {
 			if ("0".equals(mTag)) getSupportActionBar().setTitle(R.string.metro_tile_stations);
@@ -375,18 +384,6 @@ public class MainActivity extends AppCompatActivity implements
         super.startActivity(intent);
     }
     
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-	    	Fragment fragment = getSupportFragmentManager().findFragmentByTag(mTag);
-			if (fragment != null && fragment instanceof BrowseFragment) {
-				((BrowseFragment) fragment).onBackKeyPressed();
-				return true;
-			}
-		}
-		
-		return super.onKeyDown(keyCode, event);
-	}
     
     @Override
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -620,17 +617,73 @@ public class MainActivity extends AppCompatActivity implements
 		return mCurrentSelectedPosition;
 	}
 
-	@Override
-	public void onBackPressed() {
-		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-		if (drawer.isDrawerOpen(GravityCompat.START)) {
-			drawer.closeDrawer(GravityCompat.START);
-		} else if (isMetro() && !mMetroWide && !MetroHomeFragment.TAG.equals(mTag)) {
-			// Metro: back from a section goes to the tile home
-			showMetroHome();
-		} else {
-			super.onBackPressed();
+	/**
+	 * Back (key, button or gesture). Registered with the back dispatcher so the
+	 * predictive back gesture works: this callback is only switched on while
+	 * back has something to do here (drawer open, a folder being browsed,
+	 * Metro section over the tile home); otherwise the system shows its
+	 * back-to-home preview and closes the screen.
+	 */
+	private final androidx.activity.OnBackPressedCallback mBackCallback =
+			new androidx.activity.OnBackPressedCallback(false) {
+		@Override
+		public void handleOnBackPressed() {
+			DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+			Fragment fragment = getSupportFragmentManager().findFragmentByTag(mTag);
+			if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
+				drawer.closeDrawer(GravityCompat.START);
+			} else if (fragment instanceof BrowseFragment) {
+				((BrowseFragment) fragment).onBackKeyPressed();
+			} else if (isMetro() && !mMetroWide && !MetroHomeFragment.TAG.equals(mTag)) {
+				// Metro: back from a section goes to the tile home
+				showMetroHome();
+			} else {
+				setEnabled(false);
+				getOnBackPressedDispatcher().onBackPressed();
+			}
+			refreshBackCallback();
 		}
+	};
+
+	private void refreshBackCallback() {
+		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+		Fragment fragment = getSupportFragmentManager().findFragmentByTag(mTag);
+		boolean busy = (drawer != null && drawer.isDrawerOpen(GravityCompat.START))
+				|| fragment instanceof BrowseFragment
+				|| (isMetro() && !mMetroWide && mTag != null && !MetroHomeFragment.TAG.equals(mTag));
+		mBackCallback.setEnabled(busy);
+	}
+
+	// ---- Metro: swipe from the station list to the player (panorama style) ----
+
+	private android.view.GestureDetector mSwipe;
+
+	private void setUpMetroSwipe() {
+		if (!isMetro() || mMetroWide) return;
+		final float dp = getResources().getDisplayMetrics().density;
+		mSwipe = new android.view.GestureDetector(this, new android.view.GestureDetector.SimpleOnGestureListener() {
+			@Override
+			public boolean onFling(android.view.MotionEvent e1, android.view.MotionEvent e2, float vx, float vy) {
+				if (e1 == null || !"0".equals(mTag)) return false;
+				int width = getWindow().getDecorView().getWidth();
+				// keep clear of the system back gesture at the screen edges
+				if (e1.getX() < 32 * dp || e1.getX() > width - 32 * dp) return false;
+				float dx = e2.getX() - e1.getX(), dy = e2.getY() - e1.getY();
+				if (dx < -120 * dp && Math.abs(dy) < Math.abs(dx) / 2 && Math.abs(vx) > 600 * dp
+						&& MetroHomeFragment.currentStation() != null) {
+					startActivity(new Intent(MainActivity.this, MediaPlayerActivity.class));
+					overridePendingTransition(R.anim.metro_slide_in_right, R.anim.metro_slide_out_left);
+					return true;
+				}
+				return false;
+			}
+		});
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(android.view.MotionEvent ev) {
+		if (mSwipe != null) mSwipe.onTouchEvent(ev);
+		return super.dispatchTouchEvent(ev);
 	}
 
 	@SuppressWarnings("StatementWithEmptyBody")

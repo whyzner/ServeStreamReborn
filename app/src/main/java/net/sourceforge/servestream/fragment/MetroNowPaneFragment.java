@@ -88,9 +88,20 @@ public class MetroNowPaneFragment extends Fragment {
         Bitmap picture = uri == null ? null : stationPicture(uri);
         if (picture != null) {
             mArt.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            mArt.clearColorFilter();
+            mArt.setPadding(0, 0, 0, 0);
             mArt.setImageBitmap(picture);
         } else {
-            mArt.setScaleType(ImageView.ScaleType.CENTER);
+            mArt.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            mArt.post(new Runnable() {
+                public void run() {
+                    int p = mArt.getWidth() / 4;
+                    mArt.setPadding(p, p, p, p);
+                }
+            });
+            android.util.TypedValue tv = new android.util.TypedValue();
+            requireContext().getTheme().resolveAttribute(com.google.android.material.R.attr.colorOnSurfaceVariant, tv, true);
+            mArt.setColorFilter(tv.data);
             mArt.setImageResource(R.drawable.ic_m3_radio);
         }
     }

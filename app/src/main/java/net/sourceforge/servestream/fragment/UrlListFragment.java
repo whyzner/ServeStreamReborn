@@ -358,7 +358,9 @@ public class UrlListFragment extends ListFragment implements
 		
 		DragSortController controller = new DragSortController(list);
 		controller.setDragInitMode(DragSortController.ON_DRAG);
-		controller.setDragHandleId(R.id.drag_handle);
+		// Metro: no separate handle (as in the design); the station picture is the handle
+		controller.setDragHandleId(net.sourceforge.servestream.utils.AppearanceSettings.isMetro()
+				? R.id.station_image : R.id.drag_handle);
 		list.setOnTouchListener(controller);
 
 		mFab.setOnClickListener(new View.OnClickListener() {

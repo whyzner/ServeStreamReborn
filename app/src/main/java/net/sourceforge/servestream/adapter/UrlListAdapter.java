@@ -137,6 +137,17 @@ public class UrlListAdapter extends ArrayAdapter<UriBean> {
 		holder.caption.setText(lastConnect);
 
 		boolean metro = net.sourceforge.servestream.utils.AppearanceSettings.isMetro();
+		View handle = convertView.findViewById(R.id.drag_handle);
+		if (handle != null) {
+			// Metro drags by the station picture; keep a small start margin instead of the handle
+			handle.setVisibility(metro ? View.INVISIBLE : View.VISIBLE);
+			android.view.ViewGroup.LayoutParams lp = handle.getLayoutParams();
+			int w = (int) (mContext.getResources().getDisplayMetrics().density * (metro ? 8 : 48));
+			if (lp.width != w) {
+				lp.width = w;
+				handle.setLayoutParams(lp);
+			}
+		}
 		if (holder.favorite != null) {
 			holder.favorite.setVisibility(metro ? View.VISIBLE : View.GONE);
 			if (metro) {

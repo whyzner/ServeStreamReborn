@@ -12,7 +12,7 @@
         android:id="@+id/metro_rail_pane"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1.6"
+        android:layout_weight="1.4"
         android:visibility="gone" />
     <FrameLayout
         android:id="@+id/station_list_pane"
