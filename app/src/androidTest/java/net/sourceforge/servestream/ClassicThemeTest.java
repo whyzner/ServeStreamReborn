@@ -149,7 +149,7 @@ public class ClassicThemeTest {
         });
         screenshot("classic_main");
         finish(main);
-        assertEquals("dark G2 window colour", 0xFF3A4350, colour[0]);
+        assertEquals("grey window colour", 0xFFC0C0C0, colour[0]);
         assertTrue("title bar is not the gradient", gradientBar[0]);
 
         Activity settings = start(SettingsActivity.class);
