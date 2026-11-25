@@ -81,6 +81,10 @@ public class SettingsFragment extends net.sourceforge.servestream.preference.Pre
 
 					});
 
+			if (net.sourceforge.servestream.utils.AppearanceSettings.isMetro()) {
+				metroWidgets(getPreferenceScreen());
+			}
+
 			android.preference.ListPreference themePref = (android.preference.ListPreference)
 					findPreference(net.sourceforge.servestream.utils.AppearanceSettings.KEY_THEME);
 			themePref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
@@ -168,4 +172,18 @@ public class SettingsFragment extends net.sourceforge.servestream.preference.Pre
 		return true;
 	}
 
+
+	/** Metro look: switches instead of check boxes, drop-down boxes for theme and language. */
+	private static void metroWidgets(android.preference.PreferenceGroup group) {
+		for (int i = 0; i < group.getPreferenceCount(); i++) {
+			Preference p = group.getPreference(i);
+			if (p instanceof android.preference.PreferenceGroup) {
+				metroWidgets((android.preference.PreferenceGroup) p);
+			} else if (p instanceof android.preference.CheckBoxPreference) {
+				p.setWidgetLayoutResource(R.layout.metro_pref_switch);
+			} else if (p instanceof net.sourceforge.servestream.preference.ValueBoxListPreference) {
+				p.setWidgetLayoutResource(R.layout.metro_pref_dropdown);
+			}
+		}
+	}
 }

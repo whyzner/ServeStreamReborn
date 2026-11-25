@@ -35,7 +35,7 @@
 	<PreferenceCategory
 		android:title="@string/pref_ui_category" >
 
-		<ListPreference
+		<net.sourceforge.servestream.preference.ValueBoxListPreference
 			android:key="ui_theme"
 			android:title="@string/pref_theme_title"
 			android:entries="@array/ui_theme_entries"
@@ -43,7 +43,7 @@
 			android:defaultValue="system"
 			android:summary="%s" />
 
-		<ListPreference
+		<net.sourceforge.servestream.preference.ValueBoxListPreference
 			android:key="ui_language"
 			android:title="@string/pref_language_title"
 			android:entries="@array/ui_language_entries"

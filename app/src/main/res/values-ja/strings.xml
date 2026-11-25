@@ -82,8 +82,8 @@
     <string name="theme_dark">ダーク</string>
     <string name="theme_classic">クラシック (90年代PC)</string>
     <string name="theme_platinum">プラチナ (90年代Mac風)</string>
-    <string name="theme_metro_dark">メトロ ダーク (2010年代モバイル風)</string>
-    <string name="theme_metro_light">メトロ ライト (2010年代モバイル風)</string>
+    <string name="theme_metro_dark">メトロ ダーク (推奨)</string>
+    <string name="theme_metro_light">メトロ ライト</string>
     <string name="theme_real">リアル (90年代ストリーミングプレーヤー風)</string>
     <string name="real_label_title">タイトル:</string>
     <string name="real_label_artist">アーティスト:</string>

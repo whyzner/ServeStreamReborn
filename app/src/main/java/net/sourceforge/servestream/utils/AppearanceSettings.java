@@ -19,6 +19,12 @@ public final class AppearanceSettings {
         return sRetroStyle != 0;
     }
 
+    /** Metro Dark or Metro Light. */
+    public static boolean isMetro() {
+        return sRetroStyle == net.sourceforge.servestream.R.style.ThemeOverlay_ServeStream_MetroDark
+                || sRetroStyle == net.sourceforge.servestream.R.style.ThemeOverlay_ServeStream_MetroLight;
+    }
+
     public static int retroStyle() {
         return sRetroStyle;
     }

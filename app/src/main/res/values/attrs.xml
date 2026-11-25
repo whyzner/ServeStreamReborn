@@ -63,4 +63,7 @@
     <attr name="playerFieldsVisibility" format="integer" />
     <attr name="playerTimeRowVisibility" format="integer" />
     <attr name="playerLcdVisibility" format="integer" />
+    <!-- Metro: panel colour (boxes, inactive tiles) and the selected list row -->
+    <attr name="metroPanel" format="color" />
+    <attr name="metroSelectedRow" format="color" />
 </resources>

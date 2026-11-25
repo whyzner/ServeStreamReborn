@@ -272,8 +272,8 @@
     <string name="theme_dark">Dunkel</string>
     <string name="theme_classic">Klassisch (90er-PC)</string>
     <string name="theme_platinum">Platin (90er-Mac-Stil)</string>
-    <string name="theme_metro_dark">Metro dunkel (2010er-Mobil-Stil)</string>
-    <string name="theme_metro_light">Metro hell (2010er-Mobil-Stil)</string>
+    <string name="theme_metro_dark">Metro Dunkel (empfohlen)</string>
+    <string name="theme_metro_light">Metro Hell</string>
     <string name="theme_real">Real (90er-Streaming-Player-Stil)</string>
     <string name="real_label_title">Titel:</string>
     <string name="real_label_artist">Interpret:</string>

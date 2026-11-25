@@ -261,8 +261,8 @@
     <string name="theme_dark">Sombre</string>
     <string name="theme_classic">Classique (PC des années 90)</string>
     <string name="theme_platinum">Platine (style Mac des années 90)</string>
-    <string name="theme_metro_dark">Metro sombre (mobile des années 2010)</string>
-    <string name="theme_metro_light">Metro clair (mobile des années 2010)</string>
+    <string name="theme_metro_dark">Metro Sombre (recommandé)</string>
+    <string name="theme_metro_light">Metro Clair</string>
     <string name="theme_real">Real (style lecteur de streaming des années 90)</string>
     <string name="real_label_title">Titre :</string>
     <string name="real_label_artist">Artiste :</string>

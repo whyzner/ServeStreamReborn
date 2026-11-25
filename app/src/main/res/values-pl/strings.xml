@@ -343,8 +343,8 @@
     <string name="theme_dark">Ciemny</string>
     <string name="theme_classic">Klasyczny (PC z lat 90.)</string>
     <string name="theme_platinum">Platyna (styl Maca z lat 90.)</string>
-    <string name="theme_metro_dark">Metro ciemny (styl mobilny z lat 2010.)</string>
-    <string name="theme_metro_light">Metro jasny (styl mobilny z lat 2010.)</string>
+    <string name="theme_metro_dark">Metro Ciemny (zalecany)</string>
+    <string name="theme_metro_light">Metro Jasny</string>
     <string name="theme_real">Real (styl odtwarzacza strumieni z lat 90.)</string>
     <string name="real_label_title">Tytuł:</string>
     <string name="real_label_artist">Wykonawca:</string>

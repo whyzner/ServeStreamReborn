@@ -236,20 +236,39 @@ public class ClassicThemeTest {
         screenshot(shotPrefix + "_main");
         finish(main);
         assertEquals(value + " window colour", surfaceColour, colour[0]);
-        Activity settings = start(SettingsActivity.class);
+        final Activity settings = start(SettingsActivity.class);
         inst.waitForIdleSync();
+        SystemClock.sleep(1000);
+        final int[] found = new int[2];
+        inst.runOnMainSync(new Runnable() {
+            public void run() {
+                countMetroWidgets(settings.getWindow().getDecorView(), found);
+            }
+        });
         screenshot(shotPrefix + "_settings");
         finish(settings);
+        assertTrue("settings have no on/off switches", found[0] > 0);
+        assertTrue("theme / language have no drop-down box", found[1] > 0);
+    }
+
+    /** [0] = switches, [1] = drop-down boxes with text. */
+    private static void countMetroWidgets(View v, int[] found) {
+        if (v instanceof com.google.android.material.materialswitch.MaterialSwitch) found[0]++;
+        if (v.getId() == R.id.metro_value && ((android.widget.TextView) v).getText().length() > 0) found[1]++;
+        if (v instanceof android.view.ViewGroup) {
+            android.view.ViewGroup g = (android.view.ViewGroup) v;
+            for (int i = 0; i < g.getChildCount(); i++) countMetroWidgets(g.getChildAt(i), found);
+        }
     }
 
     @Test
     public void metroDarkThemeIsApplied() throws Exception {
-        checkMetro("metro_dark", 0xFF000000, "metro_dark");
+        checkMetro("metro_dark", 0xFF0D1117, "metro_dark");
     }
 
     @Test
     public void metroLightThemeIsApplied() throws Exception {
-        checkMetro("metro_light", 0xFFFFFFFF, "metro_light");
+        checkMetro("metro_light", 0xFFFAFAFA, "metro_light");
     }
 
     @Test

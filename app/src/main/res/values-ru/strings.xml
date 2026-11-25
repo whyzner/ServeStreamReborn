@@ -260,8 +260,8 @@
     <string name="theme_dark">Тёмная</string>
     <string name="theme_classic">Классика (ПК 90-х)</string>
     <string name="theme_platinum">Платина (в стиле Mac 90-х)</string>
-    <string name="theme_metro_dark">Metro тёмная (мобильный стиль 2010-х)</string>
-    <string name="theme_metro_light">Metro светлая (мобильный стиль 2010-х)</string>
+    <string name="theme_metro_dark">Metro Тёмная (рекомендуется)</string>
+    <string name="theme_metro_light">Metro Светлая</string>
     <string name="theme_real">Real (в стиле стрим-плеера 90-х)</string>
     <string name="real_label_title">Название:</string>
     <string name="real_label_artist">Исполнитель:</string>

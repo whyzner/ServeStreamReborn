@@ -113,8 +113,8 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
          "ClassicThemeTest#switchingBackRestoresTheNormalLook Theme: switching back from classic" \
          "ClassicThemeTest#platinumThemeIsApplied Theme: platinum look applied" \
          "ClassicThemeTest#homeScreenIconFollowsTheTheme Theme: home screen icon follows the theme" \
-         "ClassicThemeTest#metroDarkThemeIsApplied Theme: metro dark look applied" \
-         "ClassicThemeTest#metroLightThemeIsApplied Theme: metro light look applied" \
+         "ClassicThemeTest#metroDarkThemeIsApplied Theme: metro dark look applied (colours, switches, drop-downs)" \
+         "ClassicThemeTest#metroLightThemeIsApplied Theme: metro light look applied (colours, switches, drop-downs)" \
          "ClassicThemeTest#realThemeIsApplied Theme: real look applied (status display, fields)" \
          "ClassicThemeTest#realPlayerOnUnfoldedScreen Theme: real player on unfolded screen (picture above fields)" \
          "FixesTest#themeChangeDoesNotCloseTheApp Theme change keeps the app open (icon switched after leaving)" \

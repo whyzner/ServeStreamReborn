@@ -82,8 +82,8 @@
     <string name="theme_dark">深色</string>
     <string name="theme_classic">经典 (90年代电脑)</string>
     <string name="theme_platinum">铂金 (90年代 Mac 风格)</string>
-    <string name="theme_metro_dark">Metro 深色 (2010年代手机风格)</string>
-    <string name="theme_metro_light">Metro 浅色 (2010年代手机风格)</string>
+    <string name="theme_metro_dark">Metro 深色 (推荐)</string>
+    <string name="theme_metro_light">Metro 浅色</string>
     <string name="theme_real">Real (90年代流媒体播放器风格)</string>
     <string name="real_label_title">标题:</string>
     <string name="real_label_artist">艺术家:</string>
