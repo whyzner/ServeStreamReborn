@@ -149,7 +149,7 @@ public class ClassicThemeTest {
         });
         screenshot("classic_main");
         finish(main);
-        assertEquals("grey window colour", 0xFFC0C0C0, colour[0]);
+        assertEquals("dark G2 window colour", 0xFF3A4350, colour[0]);
         assertTrue("title bar is not the gradient", gradientBar[0]);
 
         Activity settings = start(SettingsActivity.class);
@@ -269,7 +269,7 @@ public class ClassicThemeTest {
         });
         screenshot("real_main");
         finish(main);
-        assertEquals("grey window colour", 0xFFC0C0C0, colour[0]);
+        assertEquals("dark G2 window colour", 0xFF3A4350, colour[0]);
         assertTrue("title bar is not the gradient", gradientBar[0]);
 
         Activity settings = start(SettingsActivity.class);
@@ -311,7 +311,7 @@ public class ClassicThemeTest {
             assertTrue("player screen did not open", found != null);
             SystemClock.sleep(5000);
             final Activity player = found;
-            final int[] pos = new int[3];
+            final int[] pos = new int[4];
             inst.runOnMainSync(new Runnable() {
                 public void run() {
                     int[] xy = new int[2];
@@ -322,11 +322,13 @@ public class ClassicThemeTest {
                     field.getLocationOnScreen(xy);
                     pos[1] = xy[1];                     // top of the title field
                     pos[2] = player.findViewById(R.id.station_list_pane) != null ? 1 : 0;
+                    pos[3] = surface(player);
                 }
             });
             screenshot("real_player_unfolded");
             finish(player);
             assertTrue("no station list beside the player", pos[2] == 1);
+            assertEquals("player keeps the grey 9x window", 0xFFC0C0C0, pos[3]);
             assertTrue("fields are not under the picture (" + pos[0] + " / " + pos[1] + ")", pos[1] >= pos[0]);
         } finally {
             inst.getUiAutomation().executeShellCommand("wm size reset").close();

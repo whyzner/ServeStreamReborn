@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Etched line on the dark window: black over light grey -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:height="2dp"><shape><solid android:color="@color/real_g2_raised" /><size android:height="2dp" /></shape></item>
+    <item android:height="1dp" android:bottom="1dp"><shape><solid android:color="@color/real_g2_lo" /><size android:height="1dp" /></shape></item>
+</layer-list>

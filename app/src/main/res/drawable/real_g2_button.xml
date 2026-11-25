@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dark 3D metal button: light edge top-left, black edge bottom-right; pressed inverts -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+    <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+        <item><shape><solid android:color="@color/real_g2_hi" /></shape></item>
+        <item android:right="1dp" android:bottom="1dp"><shape><solid android:color="@color/real_g2_lo" /></shape></item>
+        <item android:left="1dp" android:top="1dp" android:right="1dp" android:bottom="1dp"><shape><gradient android:angle="270" android:startColor="@color/real_g2_panel" android:endColor="@color/real_g2_face" /></shape></item>
+    </layer-list>
+    </item>
+    <item android:state_enabled="false">
+    <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+        <item><shape><solid android:color="@color/real_g2_lo" /></shape></item>
+        <item android:right="1dp" android:bottom="1dp"><shape><solid android:color="@color/real_g2_raised" /></shape></item>
+        <item android:left="1dp" android:top="1dp" android:right="1dp" android:bottom="1dp"><shape><gradient android:angle="270" android:startColor="@color/real_g2_face" android:endColor="@color/real_g2_face" /></shape></item>
+    </layer-list>
+    </item>
+    <item>
+    <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+        <item><shape><solid android:color="@color/real_g2_lo" /></shape></item>
+        <item android:right="1dp" android:bottom="1dp"><shape><solid android:color="@color/real_g2_hi" /></shape></item>
+        <item android:left="1dp" android:top="1dp" android:right="1dp" android:bottom="1dp"><shape><gradient android:angle="270" android:startColor="@color/real_g2_raised" android:endColor="@color/real_g2_face" /></shape></item>
+    </layer-list>
+    </item>
+</selector>

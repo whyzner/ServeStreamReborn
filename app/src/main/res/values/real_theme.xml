@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- "Real" theme: Windows 9x era streaming player look (grey 3D windows,
+<!-- "Real" theme. Main list, settings, menus and dialogs: dark gunmetal
+     RealPlayer G2 windows with Real blue accents and dark 3D metal buttons.
+     Player screen (ThemeOverlay.ServeStream.Real.Player on top): Windows 9x era streaming player look (grey 3D windows,
      navy title bars, square 3D buttons, blue channel buttons, labelled
      title / artist / clip fields, green-on-black status display).
      The player screen has its own layout (activity_media_player_real). -->
@@ -12,42 +14,63 @@
     <color name="real_title_end">#1084D0</color>
     <color name="real_channel_blue">#2B529F</color>
 
+    <!-- G2 dark window (main list, settings, menus, dialogs) -->
+    <color name="real_g2_face">#3A4350</color>
+    <color name="real_g2_panel">#2E3540</color>
+    <color name="real_g2_deep">#20262E</color>
+    <color name="real_g2_raised">#4A5563</color>
+    <color name="real_g2_hi">#6B7888</color>
+    <color name="real_g2_lo">#14181D</color>
+    <color name="real_g2_text">#E8ECF1</color>
+    <color name="real_g2_text2">#B4BDC9</color>
+    <color name="real_g2_hint">#8792A0</color>
+    <color name="real_g2_blue">#2F6FD0</color>
+    <color name="real_g2_blue_dark">#1C4B94</color>
+    <color name="real_g2_blue_light">#6FA8F2</color>
+
     <style name="ShapeAppearance.ServeStream.Real.Channel" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">0dp</item>
     </style>
 
     <style name="ThemeOverlay.ServeStream.Real" parent="">
-        <!-- colours -->
-        <item name="colorPrimary">@color/real_title</item>
+        <!-- colours: RealPlayer G2 dark gunmetal window, Real blue accents -->
+        <item name="colorPrimary">@color/real_g2_blue</item>
         <item name="colorOnPrimary">@color/real_light</item>
-        <item name="colorPrimaryContainer">@color/real_title</item>
+        <item name="colorPrimaryContainer">@color/real_g2_blue_dark</item>
         <item name="colorOnPrimaryContainer">@color/real_light</item>
-        <item name="colorSecondary">@color/real_title</item>
+        <item name="colorSecondary">@color/real_g2_blue</item>
         <item name="colorOnSecondary">@color/real_light</item>
-        <item name="colorSecondaryContainer">@color/real_face</item>
-        <item name="colorOnSecondaryContainer">#000000</item>
-        <item name="colorTertiary">@color/real_title</item>
-        <item name="colorSurface">@color/real_face</item>
-        <item name="colorOnSurface">#000000</item>
-        <item name="colorSurfaceVariant">@color/real_face</item>
-        <item name="colorOnSurfaceVariant">#202020</item>
-        <item name="colorSurfaceContainerLowest">@color/real_light</item>
-        <item name="colorSurfaceContainerLow">@color/real_face</item>
-        <item name="colorSurfaceContainer">@color/real_face</item>
-        <item name="colorSurfaceContainerHigh">@color/real_face</item>
-        <item name="colorSurfaceContainerHighest">@color/real_face</item>
-        <item name="colorSurfaceBright">@color/real_face</item>
-        <item name="colorSurfaceDim">@color/real_face</item>
-        <item name="colorOutline">@color/real_shadow</item>
-        <item name="colorOutlineVariant">@color/real_shadow</item>
-        <item name="android:colorBackground">@color/real_face</item>
-        <item name="android:windowBackground">@color/real_face</item>
-        <item name="android:textColorPrimary">#000000</item>
-        <item name="android:textColorSecondary">#202020</item>
-        <item name="colorControlActivated">@color/real_title</item>
+        <item name="colorSecondaryContainer">@color/real_g2_raised</item>
+        <item name="colorOnSecondaryContainer">@color/real_g2_text</item>
+        <item name="colorTertiary">@color/real_g2_blue</item>
+        <item name="colorSurface">@color/real_g2_face</item>
+        <item name="colorOnSurface">@color/real_g2_text</item>
+        <item name="colorSurfaceVariant">@color/real_g2_panel</item>
+        <item name="colorOnSurfaceVariant">@color/real_g2_text2</item>
+        <item name="colorOnBackground">@color/real_g2_text</item>
+        <item name="colorSurfaceContainerLowest">@color/real_g2_deep</item>
+        <item name="colorSurfaceContainerLow">@color/real_g2_face</item>
+        <item name="colorSurfaceContainer">@color/real_g2_panel</item>
+        <item name="colorSurfaceContainerHigh">@color/real_g2_panel</item>
+        <item name="colorSurfaceContainerHighest">@color/real_g2_raised</item>
+        <item name="colorSurfaceBright">@color/real_g2_raised</item>
+        <item name="colorSurfaceDim">@color/real_g2_deep</item>
+        <item name="colorSurfaceInverse">@color/real_face</item>
+        <item name="colorOnSurfaceInverse">#000000</item>
+        <item name="colorOutline">@color/real_g2_hi</item>
+        <item name="colorOutlineVariant">@color/real_g2_lo</item>
+        <item name="android:colorBackground">@color/real_g2_face</item>
+        <item name="android:windowBackground">@color/real_g2_face</item>
+        <item name="android:textColorPrimary">@color/real_g2_text</item>
+        <item name="android:textColorSecondary">@color/real_g2_text2</item>
+        <item name="android:textColorTertiary">@color/real_g2_text2</item>
+        <item name="android:textColorHint">@color/real_g2_hint</item>
+        <item name="android:textColorPrimaryInverse">#000000</item>
+        <item name="colorControlNormal">@color/real_g2_text2</item>
+        <item name="colorControlActivated">@color/real_g2_blue_light</item>
+        <item name="colorControlHighlight">#33FFFFFF</item>
         <item name="elevationOverlayEnabled">false</item>
-
         <!-- square windows -->
         <item name="shapeAppearanceCornerExtraSmall">@style/ShapeAppearance.ServeStream.Square</item>
         <item name="shapeAppearanceCornerSmall">@style/ShapeAppearance.ServeStream.Square</item>
@@ -60,7 +83,6 @@
         <item name="stationImageShape">@style/ShapeAppearance.ServeStream.Square</item>
         <item name="playerArtCorner">0dp</item>
         <item name="appLogo">@drawable/app_logo_real</item>
-
         <!-- player (fragment part): black video area and labelled fields -->
         <item name="playerArtAreaBackground">@android:color/black</item>
         <item name="playerArtCardStyle">@style/Widget.ServeStream.Classic.Screen</item>
@@ -69,23 +91,21 @@
         <item name="playerFieldsVisibility">0</item>
         <item name="ic_av_play_over_video_large">@drawable/real_playpause</item>
         <item name="ic_av_pause_over_video_large">@drawable/real_playpause</item>
-
-        <!-- title bars -->
-        <item name="toolbarStyle">@style/Widget.ServeStream.Real.Toolbar</item>
-        <item name="actionBarStyle">@style/Widget.ServeStream.Real.ActionBar</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.ServeStream.Classic.TitleBar</item>
-
-        <!-- controls -->
-        <item name="materialButtonStyle">@style/Widget.ServeStream.Classic.Button</item>
-        <item name="borderlessButtonStyle">@style/Widget.ServeStream.Classic.Button</item>
         <item name="floatingActionButtonStyle">@style/Widget.ServeStream.Real.Fab</item>
-        <item name="navigationViewStyle">@style/Widget.ServeStream.Real.NavigationView</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.ServeStream.Real.Dialog</item>
-        <item name="alertDialogTheme">@style/ThemeOverlay.ServeStream.Real.Dialog</item>
-        <item name="android:listDivider">@drawable/classic_divider</item>
-        <item name="divider_horizontal">@drawable/classic_divider</item>
-        <item name="nav_drawer_background">@color/real_face</item>
-        <item name="now_playing_item_color">@color/real_title</item>
+
+        <!-- title bars, controls, dialogs -->
+        <item name="toolbarStyle">@style/Widget.ServeStream.Real.G2.Toolbar</item>
+        <item name="actionBarStyle">@style/Widget.ServeStream.Real.G2.ActionBar</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.ServeStream.Classic.TitleBar</item>
+        <item name="materialButtonStyle">@style/Widget.ServeStream.Real.G2.Button</item>
+        <item name="borderlessButtonStyle">@style/Widget.ServeStream.Real.G2.Button</item>
+        <item name="navigationViewStyle">@style/Widget.ServeStream.Real.G2.NavigationView</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.ServeStream.Real.G2.Dialog</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.ServeStream.Real.G2.Dialog</item>
+        <item name="android:listDivider">@drawable/real_g2_divider</item>
+        <item name="divider_horizontal">@drawable/real_g2_divider</item>
+        <item name="nav_drawer_background">@color/real_g2_panel</item>
+        <item name="now_playing_item_color">@color/real_g2_blue_light</item>
     </style>
 
     <style name="Widget.ServeStream.Real.Toolbar" parent="Widget.Material3.Toolbar">
@@ -136,5 +156,103 @@
     </style>
 
 
+
+
+    <!-- The player screen keeps the grey Windows 9x RealPlayer window. -->
+    <style name="ThemeOverlay.ServeStream.Real.Player" parent="">
+        <item name="colorPrimary">@color/real_title</item>
+        <item name="colorOnPrimary">@color/real_light</item>
+        <item name="colorPrimaryContainer">@color/real_title</item>
+        <item name="colorOnPrimaryContainer">@color/real_light</item>
+        <item name="colorSecondary">@color/real_title</item>
+        <item name="colorOnSecondary">@color/real_light</item>
+        <item name="colorSecondaryContainer">@color/real_face</item>
+        <item name="colorOnSecondaryContainer">#000000</item>
+        <item name="colorTertiary">@color/real_title</item>
+        <item name="colorSurface">@color/real_face</item>
+        <item name="colorOnSurface">#000000</item>
+        <item name="colorSurfaceVariant">@color/real_face</item>
+        <item name="colorOnSurfaceVariant">#202020</item>
+        <item name="colorSurfaceContainerLowest">@color/real_light</item>
+        <item name="colorSurfaceContainerLow">@color/real_face</item>
+        <item name="colorSurfaceContainer">@color/real_face</item>
+        <item name="colorSurfaceContainerHigh">@color/real_face</item>
+        <item name="colorSurfaceContainerHighest">@color/real_face</item>
+        <item name="colorSurfaceBright">@color/real_face</item>
+        <item name="colorSurfaceDim">@color/real_face</item>
+        <item name="colorOutline">@color/real_shadow</item>
+        <item name="colorOutlineVariant">@color/real_shadow</item>
+        <item name="android:colorBackground">@color/real_face</item>
+        <item name="android:windowBackground">@color/real_face</item>
+        <item name="android:textColorPrimary">#000000</item>
+        <item name="android:textColorSecondary">#202020</item>
+        <item name="colorOnBackground">#000000</item>
+        <item name="colorSurfaceInverse">#303030</item>
+        <item name="colorOnSurfaceInverse">@color/real_light</item>
+        <item name="android:textColorTertiary">#404040</item>
+        <item name="android:textColorHint">@color/real_shadow</item>
+        <item name="android:textColorPrimaryInverse">@color/real_light</item>
+        <item name="colorControlNormal">#202020</item>
+        <item name="colorControlHighlight">#33000000</item>
+        <item name="colorControlActivated">@color/real_title</item>
+        <item name="elevationOverlayEnabled">false</item>
+        <item name="toolbarStyle">@style/Widget.ServeStream.Real.Toolbar</item>
+        <item name="actionBarStyle">@style/Widget.ServeStream.Real.ActionBar</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.ServeStream.Classic.TitleBar</item>
+        <item name="materialButtonStyle">@style/Widget.ServeStream.Classic.Button</item>
+        <item name="borderlessButtonStyle">@style/Widget.ServeStream.Classic.Button</item>
+        <item name="navigationViewStyle">@style/Widget.ServeStream.Real.NavigationView</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.ServeStream.Real.Dialog</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.ServeStream.Real.Dialog</item>
+        <item name="android:listDivider">@drawable/classic_divider</item>
+        <item name="divider_horizontal">@drawable/classic_divider</item>
+        <item name="nav_drawer_background">@color/real_face</item>
+        <item name="now_playing_item_color">@color/real_title</item>
+    </style>
+
+    <style name="Widget.ServeStream.Real.G2.Toolbar" parent="Widget.ServeStream.Real.Toolbar">
+        <item name="android:background">@drawable/real_g2_titlebar</item>
+    </style>
+
+    <style name="Widget.ServeStream.Real.G2.ActionBar" parent="Widget.ServeStream.Real.ActionBar">
+        <item name="background">@drawable/real_g2_titlebar</item>
+    </style>
+
+    <!-- dark 3D metal buttons -->
+    <style name="Widget.ServeStream.Real.G2.Button" parent="Widget.ServeStream.Classic.Button">
+        <item name="android:background">@drawable/real_g2_button</item>
+        <item name="android:textColor">@color/real_g2_text</item>
+        <item name="iconTint">@color/real_g2_text</item>
+    </style>
+
+    <style name="Widget.ServeStream.Real.G2.DialogButton" parent="Widget.ServeStream.Real.G2.Button">
+        <item name="android:minWidth">88dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+    </style>
+
+    <style name="Widget.ServeStream.Real.G2.NavigationView" parent="Widget.ServeStream.Real.NavigationView">
+        <item name="android:background">@color/real_g2_panel</item>
+        <item name="itemShapeFillColor">@color/real_g2_nav_fill</item>
+        <item name="itemTextColor">@color/real_g2_nav_text</item>
+        <item name="itemIconTint">@color/real_g2_nav_text</item>
+    </style>
+
+    <style name="ThemeOverlay.ServeStream.Real.G2.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">@color/real_g2_face</item>
+        <item name="colorSurfaceContainerHigh">@color/real_g2_face</item>
+        <item name="colorOnSurface">@color/real_g2_text</item>
+        <item name="colorOnSurfaceVariant">@color/real_g2_text2</item>
+        <item name="colorPrimary">@color/real_g2_blue_light</item>
+        <item name="colorControlNormal">@color/real_g2_text2</item>
+        <item name="colorControlActivated">@color/real_g2_blue_light</item>
+        <item name="android:textColorPrimary">@color/real_g2_text</item>
+        <item name="android:textColorSecondary">@color/real_g2_text2</item>
+        <item name="android:textColorHint">@color/real_g2_hint</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="shapeAppearanceCornerExtraLarge">@style/ShapeAppearance.ServeStream.Square</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.ServeStream.Real.G2.DialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.ServeStream.Real.G2.DialogButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.ServeStream.Real.G2.DialogButton</item>
+    </style>
 
 </resources>

@@ -39,8 +39,16 @@ public final class EdgeToEdge implements Application.ActivityLifecycleCallbacks 
         boolean night = (activity.getResources().getConfiguration().uiMode
                 & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
         WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(activity.getWindow(), decor);
-        controller.setAppearanceLightStatusBars(!night);
-        controller.setAppearanceLightNavigationBars(!night);
+        // dark icons on a light window; themes with a dark window in light mode (real) get light icons
+        boolean light = !night;
+        android.util.TypedValue tv = new android.util.TypedValue();
+        if (activity.getTheme().resolveAttribute(com.google.android.material.R.attr.colorSurface, tv, true)
+                && tv.type >= android.util.TypedValue.TYPE_FIRST_COLOR_INT
+                && tv.type <= android.util.TypedValue.TYPE_LAST_COLOR_INT) {
+            light = androidx.core.graphics.ColorUtils.calculateLuminance(tv.data) > 0.4;
+        }
+        controller.setAppearanceLightStatusBars(light);
+        controller.setAppearanceLightNavigationBars(light);
 
         ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars()

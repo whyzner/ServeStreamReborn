@@ -166,6 +166,11 @@ public final class AppearanceSettings {
                 int style = sRetroStyle;
                 if (style != 0) {
                     a.getTheme().applyStyle(style, true);
+                    // real theme: dark G2 windows everywhere, but the player keeps the grey 9x window
+                    if (style == net.sourceforge.servestream.R.style.ThemeOverlay_ServeStream_Real
+                            && a instanceof net.sourceforge.servestream.activity.MediaPlayerActivity) {
+                        a.getTheme().applyStyle(net.sourceforge.servestream.R.style.ThemeOverlay_ServeStream_Real_Player, true);
+                    }
                 }
                 applied.put(a, style);
             }
