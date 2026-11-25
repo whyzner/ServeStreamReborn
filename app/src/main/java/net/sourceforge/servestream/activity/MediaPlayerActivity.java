@@ -1376,6 +1376,9 @@ public class MediaPlayerActivity extends ActionBarActivity implements MusicUtils
                 }
             });
         }
+        if (ev.getActionMasked() == android.view.MotionEvent.ACTION_DOWN) {
+            MainActivity.sLastSwipe = "player: touched, detector " + (mSwipe != null);
+        }
         if (mSwipe != null) mSwipe.onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
     }

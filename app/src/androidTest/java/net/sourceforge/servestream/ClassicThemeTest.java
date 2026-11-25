@@ -668,6 +668,8 @@ public class ClassicThemeTest {
         }
         assertTrue("swipe left on the list did not open the player (" + MainActivity.sLastSwipe + ")", player != null);
         // swipe right on the player -> list
+        SystemClock.sleep(2000);
+        screenshot("metro_swipe_player");
         Activity back = null;
         for (int i = 0; i < 3 && back == null; i++) {
             SystemClock.sleep(2500);
