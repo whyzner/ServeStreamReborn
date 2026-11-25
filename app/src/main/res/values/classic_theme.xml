@@ -59,6 +59,27 @@
         <item name="playerArtCorner">0dp</item>
         <item name="appLogo">@drawable/app_logo_classic</item>
 
+        <!-- player: late-90s desktop media player (grey body, black video area,
+             grooved seek bar, flat toolbar buttons, black info pane) -->
+        <item name="playerBackground">@color/classic_face</item>
+        <item name="playerArtAreaBackground">@color/classic_black</item>
+        <item name="playerArtCardStyle">@style/Widget.ServeStream.Classic.Screen</item>
+        <item name="playerInfoBackground">@drawable/classic_info_panel</item>
+        <item name="media_player_metadata_color_primary">@color/classic_face</item>
+        <item name="media_player_metadata_color_secondary">@color/classic_white</item>
+        <item name="playerTimeStripBackground">@null</item>
+        <item name="playerTimeStripPadding">0dp</item>
+        <item name="playerTimeTextColor">@color/classic_black</item>
+        <item name="playerTimeTextAppearance">?attr/textAppearanceLabelMedium</item>
+        <item name="playerSeekBarStyle">@style/Widget.ServeStream.Classic.SeekBar</item>
+        <item name="playerButtonRowBackground">@null</item>
+        <item name="playerButtonRowPadding">2dp</item>
+        <item name="playerSmallButtonStyle">@style/Widget.ServeStream.Classic.PlayerButton</item>
+        <item name="playerPlayButtonBackground">@drawable/classic_player_button</item>
+        <item name="playerPlayButtonPadding">24dp</item>
+        <item name="ic_av_play_over_video_large">@drawable/classic_play</item>
+        <item name="ic_av_pause_over_video_large">@drawable/classic_pause</item>
+
         <!-- title bars -->
         <item name="toolbarStyle">@style/Widget.ServeStream.Classic.Toolbar</item>
         <item name="actionBarStyle">@style/Widget.ServeStream.Classic.ActionBar</item>
@@ -146,6 +167,31 @@
         <item name="buttonBarPositiveButtonStyle">@style/Widget.ServeStream.Classic.DialogButton</item>
         <item name="buttonBarNegativeButtonStyle">@style/Widget.ServeStream.Classic.DialogButton</item>
         <item name="buttonBarNeutralButtonStyle">@style/Widget.ServeStream.Classic.DialogButton</item>
+    </style>
+
+    <style name="Widget.ServeStream.Classic.SeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressDrawable">@drawable/classic_seek_groove</item>
+        <item name="android:thumb">@drawable/classic_seek_thumb</item>
+        <item name="android:splitTrack">false</item>
+        <item name="android:minHeight">22dp</item>
+        <item name="android:maxHeight">22dp</item>
+        <item name="android:thumbTint">@android:color/white</item>
+        <item name="android:thumbTintMode">multiply</item>
+        <item name="android:progressTint">@android:color/white</item>
+        <item name="android:progressTintMode">multiply</item>
+        <item name="android:progressBackgroundTint">@android:color/white</item>
+        <item name="android:progressBackgroundTintMode">multiply</item>
+    </style>
+
+    <style name="Widget.ServeStream.Classic.PlayerButton" parent="Widget.ServeStream.IconButton">
+        <item name="android:background">@drawable/classic_player_button</item>
+        <item name="android:tint">@color/classic_black</item>
+    </style>
+
+    <!-- black "video" area holding the picture, no frame -->
+    <style name="Widget.ServeStream.Classic.Screen" parent="Widget.Material3.CardView.Filled">
+        <item name="cardBackgroundColor">@color/classic_black</item>
+        <item name="cardElevation">0dp</item>
     </style>
 
     <style name="Widget.ServeStream.Classic.DialogButton" parent="Widget.ServeStream.Classic.Button">

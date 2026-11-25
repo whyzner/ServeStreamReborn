@@ -56,4 +56,6 @@
     <attr name="playerPlayButtonBackground" format="reference" />
     <attr name="playerPlayButtonPadding" format="dimension" />
     <attr name="playerArtCardStyle" format="reference" />
+    <attr name="playerArtAreaBackground" format="reference" />
+    <attr name="playerInfoBackground" format="reference" />
 </resources>

@@ -77,6 +77,51 @@ public class ClassicThemeTest {
         SystemClock.sleep(800);
     }
 
+    /** Plays a real stream, waits for the player screen and checks its themed parts. */
+    private void openPlayerAndCapture(String shot) throws Exception {
+        // player screen dressed as a late-90s desktop player: metal body + LCD strip
+        // open a real stream the way a link does; the app then shows the player
+        android.content.Intent view = new android.content.Intent(android.content.Intent.ACTION_VIEW)
+                .setDataAndType(android.net.Uri.parse("https://stream1.rcast.net/73730"), "audio/mpeg")
+                .setClass(inst.getTargetContext(), MainActivity.class)
+                .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        inst.getTargetContext().startActivity(view);
+        Activity found = null;
+        long end = SystemClock.elapsedRealtime() + 40000;
+        while (SystemClock.elapsedRealtime() < end && found == null) {
+            SystemClock.sleep(1000);
+            final Activity[] r = new Activity[1];
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    for (Activity a : androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance()
+                            .getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED)) {
+                        if (a instanceof net.sourceforge.servestream.activity.MediaPlayerActivity) r[0] = a;
+                    }
+                }
+            });
+            found = r[0];
+        }
+        assertTrue("player screen did not open", found != null);
+        SystemClock.sleep(6000);
+        final Activity player = found;
+        final boolean[] dressed = new boolean[2];
+        inst.runOnMainSync(new Runnable() {
+            public void run() {
+                View strip = player.findViewById(R.id.time_strip);
+                View info = player.findViewById(R.id.player_info);
+                // platinum dresses the time strip, classic the information pane
+                dressed[0] = (strip != null && strip.getBackground() != null)
+                        || (info != null && info.getBackground() != null);
+                View play = player.findViewById(R.id.play_pause_button);
+                dressed[1] = play != null && play.getBackground() instanceof android.graphics.drawable.StateListDrawable;
+            }
+        });
+        screenshot(shot);
+        finish(player);
+        assertTrue("player look missing (" + shot + ")", dressed[0]);
+        assertTrue("player buttons not themed (" + shot + ")", dressed[1]);
+    }
+
     @Test
     public void classicThemeIsApplied() throws Exception {
         setTheme("classic");
@@ -101,6 +146,8 @@ public class ClassicThemeTest {
         inst.waitForIdleSync();
         screenshot("classic_settings");
         finish(settings);
+
+        openPlayerAndCapture("classic_player");
     }
 
     @Test
@@ -144,44 +191,7 @@ public class ClassicThemeTest {
         screenshot("platinum_settings");
         finish(settings);
 
-        // player screen dressed as a late-90s desktop player: metal body + LCD strip
-        // open a real stream the way a link does; the app then shows the player
-        android.content.Intent view = new android.content.Intent(android.content.Intent.ACTION_VIEW)
-                .setDataAndType(android.net.Uri.parse("https://stream1.rcast.net/73730"), "audio/mpeg")
-                .setClass(inst.getTargetContext(), MainActivity.class)
-                .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        inst.getTargetContext().startActivity(view);
-        Activity found = null;
-        long end = SystemClock.elapsedRealtime() + 40000;
-        while (SystemClock.elapsedRealtime() < end && found == null) {
-            SystemClock.sleep(1000);
-            final Activity[] r = new Activity[1];
-            inst.runOnMainSync(new Runnable() {
-                public void run() {
-                    for (Activity a : androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance()
-                            .getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED)) {
-                        if (a instanceof net.sourceforge.servestream.activity.MediaPlayerActivity) r[0] = a;
-                    }
-                }
-            });
-            found = r[0];
-        }
-        assertTrue("player screen did not open", found != null);
-        SystemClock.sleep(6000);
-        final Activity player = found;
-        final boolean[] dressed = new boolean[2];
-        inst.runOnMainSync(new Runnable() {
-            public void run() {
-                View strip = player.findViewById(R.id.time_strip);
-                dressed[0] = strip != null && strip.getBackground() != null;
-                View play = player.findViewById(R.id.play_pause_button);
-                dressed[1] = play != null && play.getBackground() instanceof android.graphics.drawable.StateListDrawable;
-            }
-        });
-        screenshot("platinum_player");
-        finish(player);
-        assertTrue("LCD strip missing on the player", dressed[0]);
-        assertTrue("metal play button missing", dressed[1]);
+        openPlayerAndCapture("platinum_player");
     }
 
     /** The home screen shows exactly one icon, the one for the chosen theme. */

@@ -67,6 +67,8 @@
         <item name="playerPlayButtonBackground">?attr/selectableItemBackgroundBorderless</item>
         <item name="playerPlayButtonPadding">0dp</item>
         <item name="playerArtCardStyle">@style/Widget.Material3.CardView.Filled</item>
+        <item name="playerArtAreaBackground">@null</item>
+        <item name="playerInfoBackground">@null</item>
     </style>
 
     <!-- Names kept from the original app so the manifest and code still resolve. -->
