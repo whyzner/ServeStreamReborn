@@ -386,5 +386,27 @@
     <string name="metro_empty_recent">No stations played yet</string>
     <string name="metro_empty_search">No matching stations</string>
     <string name="metro_player_header" translatable="false">servestream</string>
+    <string name="metro_live">LIVE</string>
+    <string name="metro_np_hint">Tap a station to play it</string>
+    <string name="metro_more">More options</string>
+    <string name="metro_volume">Volume</string>
+    <string name="metro_explore_add_sub">Add a new station</string>
+    <string name="metro_explore_search_sub">Find by name or address</string>
+    <string name="metro_explore_fav_sub">Your saved stations</string>
+    <string name="metro_by">by %1$s</string>
+    <string name="metro_set_display_sub">Theme, language</string>
+    <string name="metro_set_general_sub">Auto-save URLs</string>
+    <string name="metro_set_playback_sub">Player, FFmpeg, Wi-Fi, metadata</string>
+    <string name="metro_set_bluetooth_sub">Metadata, Bluetooth options</string>
+    <string name="metro_set_social_sub">Last.fm scrobbling</string>
+    <string name="metro_set_backup_sub">JSON backup and restore</string>
+    <string name="metro_set_about_sub">Version and licences</string>
+    <string name="metro_searching">Searching</string>
+    <!-- Metro panorama section titles: lower case English as on Windows Phone -->
+    <string name="metro_pivot_stations" translatable="false">stations</string>
+    <string name="metro_pivot_now_playing" translatable="false">now playing</string>
+    <string name="metro_pivot_explore" translatable="false">explore</string>
+    <string name="metro_pivot_alarms" translatable="false">alarms</string>
+    <string name="metro_pivot_settings" translatable="false">settings</string>
 </resources>
 

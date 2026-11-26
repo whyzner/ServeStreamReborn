@@ -374,6 +374,11 @@ public class BrowseFragment extends ListFragment implements
     	}
     }
     
+	/** Metro panorama: is there a folder above this one to go back to? */
+	public boolean canGoUp() {
+		return mStepsBack > 0;
+	}
+
 	public void onBackKeyPressed() {
 		if (mStepsBack > 0) {
 			upOneLevel();

@@ -282,4 +282,20 @@
     <string name="metro_empty_favorites">별표를 눌러 즐겨찾기에 추가하십시오</string>
     <string name="metro_empty_recent">최근 재생한 방송이 없습니다</string>
     <string name="metro_empty_search">찾는 방송국이 없습니다</string>
+    <string name="metro_live">LIVE</string>
+    <string name="metro_np_hint">방송국을 눌러 재생하십시오</string>
+    <string name="metro_more">더 보기</string>
+    <string name="metro_volume">소리 크기</string>
+    <string name="metro_explore_add_sub">새 방송국 추가</string>
+    <string name="metro_explore_search_sub">이름이나 주소로 찾기</string>
+    <string name="metro_explore_fav_sub">저장한 방송국</string>
+    <string name="metro_by">by %1$s</string>
+    <string name="metro_set_display_sub">주제, 언어</string>
+    <string name="metro_set_general_sub">URL 자동 보관</string>
+    <string name="metro_set_playback_sub">재생기, FFmpeg, Wi-Fi, 메타자료</string>
+    <string name="metro_set_bluetooth_sub">메타자료, 블루투스 설정</string>
+    <string name="metro_set_social_sub">Last.fm 스크로블링</string>
+    <string name="metro_set_backup_sub">JSON 보관과 복원</string>
+    <string name="metro_set_about_sub">판본과 허가</string>
+    <string name="metro_searching">검색</string>
 </resources>

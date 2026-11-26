@@ -257,6 +257,10 @@ public class UrlListFragment extends ListFragment implements
 		list.setEmptyView(view.findViewById(android.R.id.empty));
 
 		mFab = (FloatingActionButton) view.findViewById(R.id.fab);
+		if (net.sourceforge.servestream.utils.AppearanceSettings.isMetro()) {
+			// Metro panorama: adding is on the round-icon bar at the bottom
+			mFab.setVisibility(View.GONE);
+		}
 
 		if (net.sourceforge.servestream.utils.AppearanceSettings.isMetro()) {
 			setHasOptionsMenu(true);
@@ -679,6 +683,27 @@ public class UrlListFragment extends ListFragment implements
 	private int mTab = TAB_ALL;
 	private String mQuery = "";
 	private List<UriBean> mAll = new ArrayList<UriBean>();
+
+	/** Metro panorama: search text typed in its search box. */
+	public void setMetroQuery(String query) {
+		mQuery = query == null ? "" : query;
+		applyFilter();
+	}
+
+	/** Metro panorama: show a tab (All / Favourites / Recent). */
+	public void selectMetroTab(int tab) {
+		mTab = tab;
+		if (getView() != null) {
+			com.google.android.material.tabs.TabLayout tabs = getView().findViewById(R.id.metro_tabs);
+			if (tabs != null && tabs.getTabAt(tab) != null) tabs.getTabAt(tab).select();
+		}
+		applyFilter();
+	}
+
+	/** Metro panorama: open an address the way a link does. */
+	public void openMetroUri(String uri) {
+		if (uri != null && getView() != null) processUri(uri);
+	}
 
 	/** For tests: the tab shown. */
 	public int getMetroTab() {

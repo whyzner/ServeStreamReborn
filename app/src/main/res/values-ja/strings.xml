@@ -175,4 +175,20 @@
     <string name="metro_empty_favorites">星をタップしてお気に入りに追加</string>
     <string name="metro_empty_recent">最近再生した放送はありません</string>
     <string name="metro_empty_search">該当する放送局はありません</string>
+    <string name="metro_live">LIVE</string>
+    <string name="metro_np_hint">放送局をタップして再生</string>
+    <string name="metro_more">その他</string>
+    <string name="metro_volume">音量</string>
+    <string name="metro_explore_add_sub">新しい放送局を追加</string>
+    <string name="metro_explore_search_sub">名前やアドレスで検索</string>
+    <string name="metro_explore_fav_sub">保存した放送局</string>
+    <string name="metro_by">%1$s</string>
+    <string name="metro_set_display_sub">テーマ、言語</string>
+    <string name="metro_set_general_sub">URL を自動保存</string>
+    <string name="metro_set_playback_sub">プレーヤー、FFmpeg、Wi-Fi、メタデータ</string>
+    <string name="metro_set_bluetooth_sub">メタデータ、Bluetooth オプション</string>
+    <string name="metro_set_social_sub">Last.fm スクロブル</string>
+    <string name="metro_set_backup_sub">JSON バックアップと復元</string>
+    <string name="metro_set_about_sub">バージョンとライセンス</string>
+    <string name="metro_searching">検索</string>
 </resources>

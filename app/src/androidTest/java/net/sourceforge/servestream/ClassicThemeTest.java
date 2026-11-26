@@ -356,59 +356,6 @@ public class ClassicThemeTest {
         }
     }
 
-    /** Metro: the app opens on the tile home; a tile opens its section and back returns home. */
-    @Test
-    public void metroHomeTiles() throws Exception {
-        for (String theme : new String[] {"metro_dark", "metro_light"}) {
-            setTheme(theme);
-            final Activity main = start(MainActivity.class);
-            inst.waitForIdleSync();
-            SystemClock.sleep(1500);
-            final boolean[] r = new boolean[4];
-            inst.runOnMainSync(new Runnable() {
-                public void run() {
-                    View home = main.findViewById(R.id.metro_home);
-                    View bar = main.findViewById(R.id.app_bar);
-                    r[0] = home != null && home.isShown();
-                    r[1] = bar != null && bar.getVisibility() == View.GONE;
-                    android.widget.TextView np = main.findViewById(R.id.metro_now_playing_name);
-                    r[2] = np != null && np.getText().length() > 0;
-                }
-            });
-            screenshot(theme + "_home");
-            assertTrue(theme + ": tile home not shown", r[0]);
-            assertTrue(theme + ": tool bar still shown on the home", r[1]);
-            assertTrue(theme + ": now playing tile has no text", r[2]);
-            inst.runOnMainSync(new Runnable() {
-                public void run() {
-                    main.findViewById(R.id.metro_tile_stations).performClick();
-                }
-            });
-            inst.waitForIdleSync();
-            SystemClock.sleep(1500);
-            inst.runOnMainSync(new Runnable() {
-                public void run() {
-                    View home = main.findViewById(R.id.metro_home);
-                    r[0] = home == null || !home.isShown();
-                    View bar = main.findViewById(R.id.app_bar);
-                    r[1] = bar != null && bar.getVisibility() == View.VISIBLE;
-                }
-            });
-            assertTrue(theme + ": stations tile did not open the list", r[0] && r[1]);
-            // the real back key (goes through the predictive back dispatcher)
-            inst.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
-            inst.waitForIdleSync();
-            SystemClock.sleep(1000);
-            inst.runOnMainSync(new Runnable() {
-                public void run() {
-                    View home = main.findViewById(R.id.metro_home);
-                    r[3] = home != null && home.isShown() && !main.isFinishing();
-                }
-            });
-            finish(main);
-            assertTrue(theme + ": back did not return to the tile home", r[3]);
-        }
-    }
 
     /** Metro station list: All / Favourites / Recent tabs, star, backup keeps the star. */
     @Test
@@ -418,11 +365,6 @@ public class ClassicThemeTest {
             final Activity main = start(MainActivity.class);
             inst.waitForIdleSync();
             SystemClock.sleep(1000);
-            inst.runOnMainSync(new Runnable() {
-                public void run() {
-                    main.findViewById(R.id.metro_tile_stations).performClick();
-                }
-            });
             inst.waitForIdleSync();
             SystemClock.sleep(2500);
             final String[] err = new String[1];
@@ -511,55 +453,6 @@ public class ClassicThemeTest {
         }
     }
 
-    /** Metro player (Windows Phone music app look): big title, queue column, round outline buttons. */
-    @Test
-    public void metroPlayer() throws Exception {
-        for (final String theme : new String[] {"metro_dark", "metro_light"}) {
-            setTheme(theme);
-            android.content.Intent view = new android.content.Intent(android.content.Intent.ACTION_VIEW)
-                    .setDataAndType(android.net.Uri.parse("https://stream1.rcast.net/73730"), "audio/mpeg")
-                    .setClass(inst.getTargetContext(), MainActivity.class)
-                    .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            inst.getTargetContext().startActivity(view);
-            Activity found = null;
-            long end = SystemClock.elapsedRealtime() + 40000;
-            while (SystemClock.elapsedRealtime() < end && found == null) {
-                SystemClock.sleep(1000);
-                final Activity[] r = new Activity[1];
-                inst.runOnMainSync(new Runnable() {
-                    public void run() {
-                        for (Activity a : androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance()
-                                .getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED)) {
-                            if (a instanceof net.sourceforge.servestream.activity.MediaPlayerActivity) r[0] = a;
-                        }
-                    }
-                });
-                found = r[0];
-            }
-            assertTrue(theme + ": player screen did not open", found != null);
-            SystemClock.sleep(6000);
-            final Activity player = found;
-            final String[] err = new String[1];
-            inst.runOnMainSync(new Runnable() {
-                public void run() {
-                    View bars = player.findViewById(R.id.metro_header);
-                    View play = player.findViewById(R.id.play_pause_button);
-                    android.widget.TextView name = player.findViewById(R.id.trackname);
-                    View pos = player.findViewById(R.id.position_text);
-                    View queue = player.findViewById(R.id.metro_queue_button);
-                    if (bars == null || !bars.isShown()) err[0] = "no big servestream title";
-                    else if (queue == null || !queue.isShown()) err[0] = "no shuffle / repeat / queue column";
-                    else if (play == null || !(play.getBackground() instanceof android.graphics.drawable.RippleDrawable)) err[0] = "play button not the round outline one";
-                    else if (name == null || name.getText().length() == 0) err[0] = "no station name";
-                    else if (pos == null || !pos.isShown()) err[0] = "no play time";
-                    else if (player.findViewById(R.id.lcd_panel) != null && player.findViewById(R.id.lcd_panel).isShown()) err[0] = "real status display shown";
-                }
-            });
-            screenshot(theme + "_player");
-            finish(player);
-            assertTrue(theme + ": " + err[0], err[0] == null);
-        }
-    }
 
     private Activity resumed(final Class<?> cls, long waitMs) {
         long end = SystemClock.elapsedRealtime() + waitMs;
@@ -584,7 +477,113 @@ public class ClassicThemeTest {
         return v != null && v.isShown() && v.getWidth() > 0;
     }
 
-    /** Metro on wide screens: two panes as before (station list | player), the main screen as on phones. */
+
+
+    private static int section(final Activity a) {
+        return ((MainActivity) a).metroSection();
+    }
+
+    private void showSection(final Activity a, final int section) {
+        inst.runOnMainSync(new Runnable() {
+            public void run() {
+                ((MainActivity) a).metroShow(section);
+            }
+        });
+        inst.waitForIdleSync();
+        SystemClock.sleep(900);
+    }
+
+    /** Metro panorama: big title, section titles, each section, back returns to stations then closes. */
+    @Test
+    public void metroPanorama() throws Exception {
+        for (final String theme : new String[] {"metro_dark", "metro_light"}) {
+            setTheme(theme);
+            final Activity main = start(MainActivity.class);
+            inst.waitForIdleSync();
+            SystemClock.sleep(2000);
+            final String[] err = new String[1];
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    if (!shown(main, R.id.metro_title)) err[0] = "no big title";
+                    else if (((android.view.ViewGroup) main.findViewById(R.id.metro_pivot)).getChildCount() != 5) err[0] = "not 5 section titles";
+                    else if (!shown(main, android.R.id.list) && !shown(main, android.R.id.empty)) err[0] = "station list not shown first";
+                    else if (!shown(main, R.id.metro_appbar)) err[0] = "no round-icon bar";
+                    else if (main.findViewById(R.id.toolbar) != null && main.findViewById(R.id.toolbar).isShown()) err[0] = "old tool bar shown";
+                }
+            });
+            screenshot(theme + "_pano_stations");
+            assertTrue(theme + ": " + err[0], err[0] == null);
+            assertEquals(theme + ": first section", 0, section(main));
+
+            showSection(main, 1);
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    err[0] = shown(main, R.id.metro_np_play) && shown(main, R.id.metro_np_title) ? null : "now playing not shown";
+                }
+            });
+            screenshot(theme + "_pano_now");
+            assertTrue(theme + ": " + err[0], err[0] == null);
+
+            showSection(main, 2);
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    err[0] = shown(main, R.id.metro_single) && shown(main, R.id.metro_row_title) ? null : "explore rows not shown";
+                }
+            });
+            screenshot(theme + "_pano_explore");
+            assertTrue(theme + ": " + err[0], err[0] == null);
+
+            showSection(main, 3);
+            screenshot(theme + "_pano_alarms");
+            showSection(main, 4);
+            screenshot(theme + "_pano_settings");
+            assertEquals(theme + ": settings section", 4, section(main));
+
+            // back: to stations, then the screen closes (predictive back dispatcher)
+            inst.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
+            SystemClock.sleep(1000);
+            assertEquals(theme + ": back did not return to stations", 0, section(main));
+            inst.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
+            SystemClock.sleep(1500);
+            assertTrue(theme + ": back from stations did not close", main.isFinishing() || main.isDestroyed());
+        }
+    }
+
+    /** Metro: playing a station shows the now playing section (LIVE for radio, pause button). */
+    @Test
+    public void metroNowPlaying() throws Exception {
+        for (final String theme : new String[] {"metro_dark", "metro_light"}) {
+            setTheme(theme);
+            android.content.Intent view = new android.content.Intent(android.content.Intent.ACTION_VIEW)
+                    .setDataAndType(android.net.Uri.parse("https://stream1.rcast.net/73730"), "audio/mpeg")
+                    .setClass(inst.getTargetContext(), MainActivity.class)
+                    .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            inst.getTargetContext().startActivity(view);
+            final Activity main = resumed(MainActivity.class, 15000);
+            assertTrue(theme + ": main screen did not open", main != null);
+            long end = SystemClock.elapsedRealtime() + 40000;
+            while (SystemClock.elapsedRealtime() < end && section(main) != 1) SystemClock.sleep(500);
+            assertEquals(theme + ": playing did not show now playing", 1, section(main));
+            SystemClock.sleep(6000);
+            final String[] err = new String[1];
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    android.widget.TextView title = main.findViewById(R.id.metro_np_title);
+                    View live = main.findViewById(R.id.metro_np_live);
+                    View play = main.findViewById(R.id.metro_np_play);
+                    if (title == null || title.getText().length() == 0) err[0] = "no title";
+                    else if (live == null || !live.isShown()) err[0] = "no LIVE for a radio stream";
+                    else if (!main.getString(R.string.pause).contentEquals(play.getContentDescription())) err[0] = "button is not pause while playing";
+                    else if (!shown(main, R.id.metro_np_queue)) err[0] = "no queue button";
+                }
+            });
+            screenshot(theme + "_pano_playing");
+            finish(main);
+            assertTrue(theme + ": " + err[0], err[0] == null);
+        }
+    }
+
+    /** Metro on wide windows: list and now playing side by side, other sections full width. */
     @Test
     public void metroWideTwoPanes() throws Exception {
         setTheme("metro_dark");
@@ -598,34 +597,22 @@ public class ClassicThemeTest {
             final boolean[] r = new boolean[3];
             inst.runOnMainSync(new Runnable() {
                 public void run() {
-                    r[0] = shown(m, R.id.metro_home);
-                    r[1] = m.findViewById(R.id.metro_rail) == null;
+                    r[0] = shown(m, R.id.metro_left) && shown(m, R.id.metro_right);
+                    r[1] = shown(m, R.id.metro_np_play);
                 }
             });
             screenshot("metro_dark_wide_main");
-            assertTrue("wide main screen: no tile home", r[0]);
-            assertTrue("wide main screen: tile column still shown", r[1]);
-
-            android.content.Intent view = new android.content.Intent(android.content.Intent.ACTION_VIEW)
-                    .setDataAndType(android.net.Uri.parse("https://stream1.rcast.net/73730"), "audio/mpeg")
-                    .setClass(inst.getTargetContext(), MainActivity.class)
-                    .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            inst.getTargetContext().startActivity(view);
-            final Activity player = resumed(net.sourceforge.servestream.activity.MediaPlayerActivity.class, 40000);
-            assertTrue("player screen did not open", player != null);
-            SystemClock.sleep(5000);
+            assertTrue("wide: list and now playing not side by side", r[0]);
+            assertTrue("wide: now playing controls missing", r[1]);
+            showSection(m, 2);
             inst.runOnMainSync(new Runnable() {
                 public void run() {
-                    r[0] = shown(player, R.id.station_list_pane);
-                    r[1] = shown(player, R.id.play_pause_button) && shown(player, R.id.metro_header);
-                    r[2] = player.findViewById(R.id.metro_rail) == null;
+                    r[2] = shown(m, R.id.metro_single) && !shown(m, R.id.metro_left);
                 }
             });
-            screenshot("metro_dark_wide_player");
-            finish(player);
-            assertTrue("player: no station list beside it", r[0]);
-            assertTrue("player: Metro player missing", r[1]);
-            assertTrue("player: tile column still shown", r[2]);
+            screenshot("metro_dark_wide_explore");
+            finish(m);
+            assertTrue("wide: explore not full width", r[2]);
         } finally {
             inst.getUiAutomation().executeShellCommand("wm size reset").close();
             inst.getUiAutomation().executeShellCommand("wm density reset").close();
@@ -633,70 +620,45 @@ public class ClassicThemeTest {
         }
     }
 
-    /**
-     * Metro: swipe left on the station list opens the player, swipe right on the
-     * player goes back; back from the tile home closes the screen; the chosen tab
-     * survives unfolding.
-     */
+    /** Metro: swipe between sections; section and tab kept when unfolding. */
     @Test
-    public void metroSwipeBackAndFold() throws Exception {
+    public void metroSwipeAndFold() throws Exception {
         setTheme("metro_dark");
-        // play something (the player opens), then back to the list
-        android.content.Intent view = new android.content.Intent(android.content.Intent.ACTION_VIEW)
-                .setDataAndType(android.net.Uri.parse("https://stream1.rcast.net/73730"), "audio/mpeg")
-                .setClass(inst.getTargetContext(), MainActivity.class)
-                .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        inst.getTargetContext().startActivity(view);
-        Activity player = resumed(net.sourceforge.servestream.activity.MediaPlayerActivity.class, 40000);
-        assertTrue("player screen did not open", player != null);
-        SystemClock.sleep(4000);
-        inst.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
+        start(MainActivity.class);
         SystemClock.sleep(2000);
-        final Activity main = resumed(MainActivity.class, 10000);
-        assertTrue("back from the player did not show the list", main != null);
-
-        // swipe left on the list -> player (tried again if it lands during a screen change)
+        Activity main = resumed(MainActivity.class, 10000);
         android.graphics.Point size = new android.graphics.Point();
         main.getWindowManager().getDefaultDisplay().getRealSize(size);
-        int y = size.y / 2;
-        String left = "input swipe " + (size.x * 85 / 100) + " " + y + " " + (size.x * 15 / 100) + " " + y + " 120";
-        // on the player: across the big title (the picture may page through the play queue)
-        int top = size.y * 12 / 100;
-        String right = "input swipe " + (size.x * 15 / 100) + " " + top + " " + (size.x * 85 / 100) + " " + top + " 120";
-        player = null;
-        for (int i = 0; i < 3 && player == null; i++) {
-            SystemClock.sleep(2500);
-            MainActivity.sLastSwipe = "none";
-            inst.getUiAutomation().executeShellCommand(left).close();
-            player = resumed(net.sourceforge.servestream.activity.MediaPlayerActivity.class, 5000);
-        }
-        assertTrue("swipe left on the list did not open the player (" + MainActivity.sLastSwipe + ")", player != null);
-        // swipe right on the player -> list
-        SystemClock.sleep(2000);
-        screenshot("metro_swipe_player");
-        Activity back = null;
-        for (int i = 0; i < 3 && back == null; i++) {
-            SystemClock.sleep(2500);
-            MainActivity.sLastSwipe = "none";
-            inst.getUiAutomation().executeShellCommand(right).close();
-            back = resumed(MainActivity.class, 5000);
-        }
-        assertTrue("swipe right on the player did not go back to the list (" + MainActivity.sLastSwipe + ")", back != null);
-        final Activity list = back;
+        int y = size.y * 55 / 100;
+        String left = "input swipe " + (size.x * 85 / 100) + " " + y + " " + (size.x * 15 / 100) + " " + y + " 150";
+        String right = "input swipe " + (size.x * 15 / 100) + " " + y + " " + (size.x * 85 / 100) + " " + y + " 150";
+        inst.getUiAutomation().executeShellCommand(left).close();
+        SystemClock.sleep(1500);
+        assertEquals("swipe left did not go to now playing", 1, section(main));
+        inst.getUiAutomation().executeShellCommand(left).close();
+        SystemClock.sleep(1500);
+        assertEquals("swipe left did not go to explore", 2, section(main));
+        inst.getUiAutomation().executeShellCommand(right).close();
+        SystemClock.sleep(1500);
+        assertEquals("swipe right did not go back to now playing", 1, section(main));
+        inst.getUiAutomation().executeShellCommand(right).close();
+        SystemClock.sleep(1500);
+        assertEquals("swipe right did not go back to stations", 0, section(main));
 
-        // favourites tab, then unfold: the tab stays
+        final Activity list = main;
         inst.runOnMainSync(new Runnable() {
             public void run() {
                 ((com.google.android.material.tabs.TabLayout) list.findViewById(R.id.metro_tabs)).getTabAt(1).select();
             }
         });
-        SystemClock.sleep(800);
+        showSection(main, 2);
         try {
             inst.getUiAutomation().executeShellCommand("wm size 1840x1840").close();
             inst.getUiAutomation().executeShellCommand("wm density 420").close();
             SystemClock.sleep(4000);
             final Activity wide = resumed(MainActivity.class, 10000);
             final int[] tab = new int[] {-1};
+            showSection(wide, 0);
             inst.runOnMainSync(new Runnable() {
                 public void run() {
                     com.google.android.material.tabs.TabLayout t = wide.findViewById(R.id.metro_tabs);
@@ -709,24 +671,6 @@ public class ClassicThemeTest {
             inst.getUiAutomation().executeShellCommand("wm density reset").close();
             SystemClock.sleep(3000);
         }
-
-        // back: list -> tile home -> screen closes
-        final Activity narrow = resumed(MainActivity.class, 10000);
-        inst.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
-        SystemClock.sleep(1000);
-        final boolean[] home = new boolean[1];
-        inst.runOnMainSync(new Runnable() {
-            public void run() {
-                View h = narrow.findViewById(R.id.metro_home);
-                home[0] = h != null && h.isShown();
-            }
-        });
-        assertTrue("back from the list did not show the tile home", home[0]);
-        inst.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
-        SystemClock.sleep(1500);
-        assertTrue("back from the tile home did not close the screen", narrow.isFinishing() || narrow.isDestroyed());
-        if (net.sourceforge.servestream.utils.MusicUtils.sService != null) {
-            net.sourceforge.servestream.utils.MusicUtils.sService.stop();
-        }
+        finish(resumed(MainActivity.class, 5000));
     }
 }

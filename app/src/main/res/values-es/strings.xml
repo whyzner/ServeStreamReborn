@@ -303,5 +303,21 @@
     <string name="metro_empty_favorites">Toca la estrella para añadir una favorita</string>
     <string name="metro_empty_recent">Aún no se ha reproducido ninguna emisora</string>
     <string name="metro_empty_search">No hay emisoras que coincidan</string>
+    <string name="metro_live">EN VIVO</string>
+    <string name="metro_np_hint">Toca una emisora para reproducirla</string>
+    <string name="metro_more">Más opciones</string>
+    <string name="metro_volume">Volumen</string>
+    <string name="metro_explore_add_sub">Añadir una emisora</string>
+    <string name="metro_explore_search_sub">Buscar por nombre o dirección</string>
+    <string name="metro_explore_fav_sub">Tus emisoras guardadas</string>
+    <string name="metro_by">de %1$s</string>
+    <string name="metro_set_display_sub">Tema, idioma</string>
+    <string name="metro_set_general_sub">Guardar URL automáticamente</string>
+    <string name="metro_set_playback_sub">Reproductor, FFmpeg, Wi-Fi, metadatos</string>
+    <string name="metro_set_bluetooth_sub">Metadatos, opciones de Bluetooth</string>
+    <string name="metro_set_social_sub">Scrobbling de Last.fm</string>
+    <string name="metro_set_backup_sub">Copia y restauración JSON</string>
+    <string name="metro_set_about_sub">Versión y licencias</string>
+    <string name="metro_searching">Buscar</string>
 </resources>
 

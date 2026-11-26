@@ -304,5 +304,21 @@
     <string name="metro_empty_favorites">Touchez l’étoile pour ajouter un favori</string>
     <string name="metro_empty_recent">Aucune station écoutée pour l’instant</string>
     <string name="metro_empty_search">Aucune station correspondante</string>
+    <string name="metro_live">DIRECT</string>
+    <string name="metro_np_hint">Touchez une station pour l’écouter</string>
+    <string name="metro_more">Plus d’options</string>
+    <string name="metro_volume">Volume</string>
+    <string name="metro_explore_add_sub">Ajouter une station</string>
+    <string name="metro_explore_search_sub">Chercher par nom ou adresse</string>
+    <string name="metro_explore_fav_sub">Vos stations enregistrées</string>
+    <string name="metro_by">par %1$s</string>
+    <string name="metro_set_display_sub">Thème, langue</string>
+    <string name="metro_set_general_sub">Enregistrement auto des URL</string>
+    <string name="metro_set_playback_sub">Lecteur, FFmpeg, Wi-Fi, métadonnées</string>
+    <string name="metro_set_bluetooth_sub">Métadonnées, options Bluetooth</string>
+    <string name="metro_set_social_sub">Scrobbling Last.fm</string>
+    <string name="metro_set_backup_sub">Sauvegarde et restauration JSON</string>
+    <string name="metro_set_about_sub">Version et licences</string>
+    <string name="metro_searching">Recherche</string>
 </resources>
 

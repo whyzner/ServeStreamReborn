@@ -175,4 +175,20 @@
     <string name="metro_empty_favorites">點選星號加入我的最愛</string>
     <string name="metro_empty_recent">尚未播放任何電台</string>
     <string name="metro_empty_search">沒有符合的電台</string>
+    <string name="metro_live">直播</string>
+    <string name="metro_np_hint">點選電台開始播放</string>
+    <string name="metro_more">更多選項</string>
+    <string name="metro_volume">音量</string>
+    <string name="metro_explore_add_sub">新增電台</string>
+    <string name="metro_explore_search_sub">依名稱或網址搜尋</string>
+    <string name="metro_explore_fav_sub">已儲存的電台</string>
+    <string name="metro_by">%1$s</string>
+    <string name="metro_set_display_sub">主題、語言</string>
+    <string name="metro_set_general_sub">自動儲存網址</string>
+    <string name="metro_set_playback_sub">播放器、FFmpeg、Wi-Fi、中繼資料</string>
+    <string name="metro_set_bluetooth_sub">中繼資料、藍牙選項</string>
+    <string name="metro_set_social_sub">Last.fm 記錄</string>
+    <string name="metro_set_backup_sub">JSON 備份與還原</string>
+    <string name="metro_set_about_sub">版本與授權</string>
+    <string name="metro_searching">搜尋</string>
 </resources>

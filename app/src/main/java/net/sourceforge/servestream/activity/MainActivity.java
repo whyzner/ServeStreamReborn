@@ -63,7 +63,8 @@ public class MainActivity extends AppCompatActivity implements
 			ServiceConnection,
 			BrowseIntentListener, ItemAccess,
 			NavigationView.OnNavigationItemSelectedListener,
-			MetroHomeFragment.Host {
+			MetroHomeFragment.Host,
+			net.sourceforge.servestream.fragment.MetroRowsFragment.Host {
 	
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	
@@ -83,8 +84,23 @@ public class MainActivity extends AppCompatActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		//setTheme(UserPreferences.getTheme());
 		super.onCreate(savedInstanceState);
+		if (isMetro()) {
+			// Metro Dark / Metro Light: Windows Phone panorama
+			setContentView(R.layout.activity_main_metro);
+			((DrawerLayout) findViewById(R.id.drawer_layout)).setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+			mPanorama = new MetroPanorama(this, savedInstanceState, savedInstanceState == null ? getUri() : null);
+			getOnBackPressedDispatcher().addCallback(this, mBackCallback);
+			refreshBackCallback();
+			if (savedInstanceState == null) {
+				net.sourceforge.servestream.utils.CrashReporter.showIfAny(this);
+			}
+			mToken = MusicUtils.bindToService(this, this);
+			requestPermission(this);
+			return;
+		}
 		setContentView(R.layout.activity_main);
 		dropOldMetroPanes();
+		dropPanoramaSections();
 		if (savedInstanceState == null) {
 			// pictures of stations deleted by older versions would be picked up by new stations
 			final android.content.Context app = getApplicationContext();
@@ -110,12 +126,7 @@ public class MainActivity extends AppCompatActivity implements
 		navigationView.setNavigationItemSelectedListener(this);
 
 		if (savedInstanceState == null) {
-			String uri = getUri();
-			if (uri == null && isMetro()) {
-				showMetroHome();
-			} else {
-				openUri(uri);
-			}
+			openUri(getUri());
 
 			navigationView = (NavigationView) findViewById(R.id.nav_view);
 			navigationView.setCheckedItem(R.id.nav_urls);
@@ -127,7 +138,6 @@ public class MainActivity extends AppCompatActivity implements
 			@Override public void onDrawerOpened(View v) { refreshBackCallback(); }
 			@Override public void onDrawerClosed(View v) { refreshBackCallback(); }
 		});
-		setUpMetroSwipe();
 		refreshBackCallback();
 
 		mToken = MusicUtils.bindToService(this, this);
@@ -146,6 +156,9 @@ public class MainActivity extends AppCompatActivity implements
     		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     		finish();
     		startActivity(i);
+    	} else if (mPanorama != null) {
+    		String uri = getUri();
+    		if (uri != null) mPanorama.openUri(uri);
     	} else {
     		openUri(getUri());
     	}
@@ -222,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements
 
 	/** The home has its own title row: no tool bar, no drawer while it is shown. */
 	private void updateMetroChrome() {
+		if (mPanorama != null) return;
 		boolean home = MetroHomeFragment.TAG.equals(mTag);
 		View bar = findViewById(R.id.app_bar);
 		if (bar != null) bar.setVisibility(home ? View.GONE : View.VISIBLE);
@@ -285,6 +299,7 @@ public class MainActivity extends AppCompatActivity implements
 		super.onSaveInstanceState(outState);
 		// Serialize the current dropdown position.
 		outState.putString(STATE_SELECTED_NAVIGATION_ITEM, mTag);
+		if (mPanorama != null) mPanorama.save(outState);
 	}
 	
     /* Called whenever we call invalidateOptionsMenu() */
@@ -326,7 +341,13 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void startActivity(Intent intent) {      
+    public void startActivity(Intent intent) {
+        // Metro panorama: the player is the "now playing" section here
+        if (mPanorama != null && intent.getComponent() != null
+                && MediaPlayerActivity.class.getName().equals(intent.getComponent().getClassName())) {
+            mPanorama.showNowPlaying();
+            return;
+        }
         // check if search intent
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
         	Fragment fragment = getSupportFragmentManager().findFragmentByTag(mTag);
@@ -391,7 +412,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
-        getSupportActionBar().setTitle(mTitle);
+        if (getSupportActionBar() != null) getSupportActionBar().setTitle(mTitle);
     }
 
     /**
@@ -515,6 +536,10 @@ public class MainActivity extends AppCompatActivity implements
 	
 	@Override
 	public void browseToUri(Uri uri) {
+		if (mPanorama != null) {
+			mPanorama.browse(uri.toString());
+			return;
+		}
 		leaveMetroHome();
 		mCurrentSelectedPosition = 1;
 		
@@ -582,6 +607,16 @@ public class MainActivity extends AppCompatActivity implements
 			new androidx.activity.OnBackPressedCallback(false) {
 		@Override
 		public void handleOnBackPressed() {
+			if (mPanorama != null) {
+				if (mPanorama.wantsBack()) {
+					mPanorama.back();
+				} else {
+					setEnabled(false);
+					getOnBackPressedDispatcher().onBackPressed();
+				}
+				refreshBackCallback();
+				return;
+			}
 			DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 			Fragment fragment = getSupportFragmentManager().findFragmentByTag(mTag);
 			if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
@@ -599,7 +634,11 @@ public class MainActivity extends AppCompatActivity implements
 		}
 	};
 
-	private void refreshBackCallback() {
+	void refreshBackCallback() {
+		if (mPanorama != null) {
+			mBackCallback.setEnabled(mPanorama.wantsBack());
+			return;
+		}
 		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		Fragment fragment = getSupportFragmentManager().findFragmentByTag(mTag);
 		boolean busy = (drawer != null && drawer.isDrawerOpen(GravityCompat.START))
@@ -610,35 +649,56 @@ public class MainActivity extends AppCompatActivity implements
 
 	// ---- Metro: swipe from the station list to the player (panorama style) ----
 
-	private net.sourceforge.servestream.utils.MetroSwipe mSwipe;
-	/** For tests: what the last swipe on the list did. */
+	/** For tests: what the last swipe on the player did. */
 	public static volatile String sLastSwipe = "none";
 
-	private void setUpMetroSwipe() {
-		if (!isMetro()) return;
-		mSwipe = new net.sourceforge.servestream.utils.MetroSwipe(getWindow().getDecorView());
+	/** Metro panorama (null with the other themes). */
+	private MetroPanorama mPanorama;
+
+	/** For tests: the panorama section shown (-1 = not the panorama). */
+	public int metroSection() {
+		return mPanorama == null ? -1 : MetroPanorama.sShown;
 	}
 
-	private void onMetroSwipe(int direction) {
-		if (direction != net.sourceforge.servestream.utils.MetroSwipe.LEFT) return;
-		if (!"0".equals(mTag)) { sLastSwipe = "section " + mTag; return; }
-		if (MetroHomeFragment.currentStation() == null) { sLastSwipe = "nothing playing"; return; }
-		sLastSwipe = "opened";
-		startActivity(new Intent(MainActivity.this, MediaPlayerActivity.class));
-		overridePendingTransition(R.anim.metro_slide_in_right, R.anim.metro_slide_out_left);
+	/** For tests and the explore rows. */
+	public void metroShow(int section) {
+		if (mPanorama != null) mPanorama.show(section, 0);
+	}
+
+	@Override
+	public void metroSearchStations() {
+		if (mPanorama != null) mPanorama.search(true);
+	}
+
+	@Override
+	public void metroShowFavorites() {
+		if (mPanorama != null) mPanorama.showFavorites();
+	}
+
+	/**
+	 * Panorama screens dropped when the theme is no longer Metro (the activity
+	 * is redrawn with the normal layout, which has none of their places).
+	 */
+	private void dropPanoramaSections() {
+		FragmentManager fm = getSupportFragmentManager();
+		FragmentTransaction ft = fm.beginTransaction();
+		boolean any = false;
+		for (String tag : new String[] {MetroPanorama.STATIONS_TAG, MetroPanorama.ALARMS_TAG, MetroPanorama.BROWSE_TAG,
+				net.sourceforge.servestream.fragment.MetroNowPlayingFragment.TAG,
+				net.sourceforge.servestream.fragment.MetroRowsFragment.EXPLORE_TAG,
+				net.sourceforge.servestream.fragment.MetroRowsFragment.SETTINGS_TAG}) {
+			Fragment f = fm.findFragmentByTag(tag);
+			if (f != null) {
+				ft.remove(f);
+				any = true;
+			}
+		}
+		if (any) ft.commitNow();
 	}
 
 	@Override
 	public boolean dispatchTouchEvent(android.view.MotionEvent ev) {
-		if (mSwipe != null) {
-			if (ev.getActionMasked() == android.view.MotionEvent.ACTION_DOWN) {
-				// tabs scroll sideways themselves
-				mSwipe = new net.sourceforge.servestream.utils.MetroSwipe(getWindow().getDecorView(),
-						findViewById(R.id.metro_tabs));
-			}
-			int d = mSwipe.onTouchEvent(ev);
-			if (d != net.sourceforge.servestream.utils.MetroSwipe.NONE) onMetroSwipe(d);
-		}
+		if (mPanorama != null) mPanorama.onTouch(ev);
 		return super.dispatchTouchEvent(ev);
 	}
 

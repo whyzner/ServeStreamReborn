@@ -314,5 +314,21 @@
     <string name="metro_empty_favorites">Tippe auf den Stern, um einen Favoriten hinzuzufügen</string>
     <string name="metro_empty_recent">Noch keine Sender gespielt</string>
     <string name="metro_empty_search">Keine passenden Sender</string>
+    <string name="metro_live">LIVE</string>
+    <string name="metro_np_hint">Tippe auf einen Sender, um ihn abzuspielen</string>
+    <string name="metro_more">Weitere Optionen</string>
+    <string name="metro_volume">Lautstärke</string>
+    <string name="metro_explore_add_sub">Neuen Sender hinzufügen</string>
+    <string name="metro_explore_search_sub">Nach Name oder Adresse suchen</string>
+    <string name="metro_explore_fav_sub">Gespeicherte Sender</string>
+    <string name="metro_by">von %1$s</string>
+    <string name="metro_set_display_sub">Design, Sprache</string>
+    <string name="metro_set_general_sub">URLs automatisch speichern</string>
+    <string name="metro_set_playback_sub">Player, FFmpeg, WLAN, Metadaten</string>
+    <string name="metro_set_bluetooth_sub">Metadaten, Bluetooth-Optionen</string>
+    <string name="metro_set_social_sub">Last.fm-Scrobbling</string>
+    <string name="metro_set_backup_sub">JSON-Sicherung und -Wiederherstellung</string>
+    <string name="metro_set_about_sub">Version und Lizenzen</string>
+    <string name="metro_searching">Suche</string>
 </resources>
 

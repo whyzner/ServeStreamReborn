@@ -303,5 +303,21 @@
     <string name="metro_empty_favorites">Нажмите на звезду, чтобы добавить в избранное</string>
     <string name="metro_empty_recent">Станции ещё не воспроизводились</string>
     <string name="metro_empty_search">Нет подходящих станций</string>
+    <string name="metro_live">ЭФИР</string>
+    <string name="metro_np_hint">Нажмите на станцию, чтобы слушать</string>
+    <string name="metro_more">Ещё</string>
+    <string name="metro_volume">Громкость</string>
+    <string name="metro_explore_add_sub">Добавить станцию</string>
+    <string name="metro_explore_search_sub">Поиск по названию или адресу</string>
+    <string name="metro_explore_fav_sub">Сохранённые станции</string>
+    <string name="metro_by">%1$s</string>
+    <string name="metro_set_display_sub">Тема, язык</string>
+    <string name="metro_set_general_sub">Автосохранение адресов</string>
+    <string name="metro_set_playback_sub">Плеер, FFmpeg, Wi-Fi, метаданные</string>
+    <string name="metro_set_bluetooth_sub">Метаданные, настройки Bluetooth</string>
+    <string name="metro_set_social_sub">Скробблинг Last.fm</string>
+    <string name="metro_set_backup_sub">Резервная копия JSON</string>
+    <string name="metro_set_about_sub">Версия и лицензии</string>
+    <string name="metro_searching">Поиск</string>
 </resources>
 
