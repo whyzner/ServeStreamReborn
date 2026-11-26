@@ -95,7 +95,11 @@ else
   echo "CHECK backup & restore item found: FAIL"; RESULT=FAIL
 fi
 # back with predictive back turned on (no opt-out): the drawer closes first, the app stays
-adb shell am start -W -n $PKG/net.sourceforge.servestream.activity.MainActivity >/dev/null; sleep 2
+# (settings may still be open after the restore: back out to the list)
+for i in 1 2 3 4; do
+  adb shell dumpsys activity activities | grep -m1 "topResumedActivity" | grep -q "activity.MainActivity" && break
+  adb shell input keyevent KEYCODE_BACK; sleep 2
+done
 adb logcat -c
 if tap 'content-desc="Open navigation drawer"'; then
   sleep 2
