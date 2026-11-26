@@ -42,15 +42,15 @@ jobs:
         run: |
           yes | sdkmanager --licenses || true
           sdkmanager \
-            "platforms;android-35" \
+            "platforms;android-36" \
             "build-tools;35.0.0" \
-            "ndk;22.1.7171670"
+            "ndk;27.2.12479018"
 
       - name: Cache FFmpeg build
         uses: actions/cache@v4
         with:
           path: app/src/main/jni/ffmpeg/ffmpeg
-          key: ffmpeg-${{ hashFiles('app/src/main/ffmpeg/build_ffmpeg_modern.sh') }}
+          key: ffmpeg-ndk27.2-x86_64-${{ hashFiles('app/src/main/ffmpeg/build_ffmpeg_modern.sh') }}
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -60,6 +60,9 @@ jobs:
 
       - name: Build debug APK
         run: gradle assembleDebug --stacktrace
+
+      - name: Check 16 KB page alignment
+        run: bash .github/scripts/check16k.sh
 
       - name: Upload APK
         if: success()
@@ -124,6 +127,8 @@ jobs:
           cp "$src" "$file"
           REPO="${{ github.repository }}"
           gh release delete "classic-v$ver" --repo "$REPO" --cleanup-tag --yes || true
-          printf 'ServeStream Classic %s\n\nThe app as it was right before the new look (Material 3 and later): the Before of a Before & After.\nInstalls next to ServeStream (package net.sourceforge.servestream.classic).\n\nBuild commit %s\n' "$ver" "${GITHUB_SHA::7}" > notes.md
+          # this version's section of CHANGELOG.md as the release notes
+          awk -v v="## $ver " 'index($0,v)==1{f=1;next} /^## /{f=0} f' CHANGELOG.md > notes.md
+          printf '\n---\nServeStream Classic: Material 3 개편 직전 화면 그대로, 버그만 고침. ServeStream과 따로 설치됨 (net.sourceforge.servestream.classic). 빌드 커밋 %s\n' "${GITHUB_SHA::7}" >> notes.md
           gh release create "classic-v$ver" "$file" --repo "$REPO" --target "$GITHUB_SHA" \
             --title "ServeStream Classic $ver" --notes-file notes.md --latest=false

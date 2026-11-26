@@ -135,11 +135,49 @@ public class UrlListFragment extends ListFragment implements
 		mStreamdb = new StreamDatabase(getActivity());
     }
 	
+    // list scroll position kept across rotation, folding/unfolding and resizing:
+    // the list reloads asynchronously, so the system cannot restore it by itself
+    private int mScrollPos = -1;
+    private int mScrollTop;
+    private static final String STATE_SCROLL_POS = "list_scroll_pos";
+    private static final String STATE_SCROLL_TOP = "list_scroll_top";
+
+    private void rememberScroll() {
+        if (getView() == null) {
+            return;
+        }
+        android.widget.ListView list = getListView();
+        if (list.getCount() == 0) {
+            return;
+        }
+        mScrollPos = list.getFirstVisiblePosition();
+        View first = list.getChildAt(0);
+        mScrollTop = first == null ? 0 : first.getTop() - list.getPaddingTop();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        rememberScroll();
+        outState.putInt(STATE_SCROLL_POS, mScrollPos);
+        outState.putInt(STATE_SCROLL_TOP, mScrollTop);
+    }
+
+    @Override
+    public void onDestroyView() {
+        rememberScroll();
+        super.onDestroyView();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         setRetainInstance(true);
+        if (savedInstanceState != null && mScrollPos < 0) {
+            mScrollPos = savedInstanceState.getInt(STATE_SCROLL_POS, -1);
+            mScrollTop = savedInstanceState.getInt(STATE_SCROLL_TOP, 0);
+        }
     }
 	
 	@Override
@@ -265,9 +303,8 @@ public class UrlListFragment extends ListFragment implements
 				Editor ed = mPreferences.edit();
 				ed.putInt(PreferenceConstants.RATE_APPLICATION_FLAG, rateApplicationFlag);
 				ed.commit();
-				if (rateApplicationFlag == 10) {
-					showDialog(RATE_DIALOG);
-				}
+				// The rating prompt opened the original ServeStream's Play Store page,
+				// which is not this app: it stays off.
 			}
 		}
 	}
@@ -492,10 +529,36 @@ public class UrlListFragment extends ListFragment implements
 
 	@Override
 	public void onLoadFinished(Loader<List<UriBean>> loader, List<UriBean> data) {
+		// keep the scroll position: a saved one after the screen was recreated,
+		// otherwise the current one (the list reloads every time it comes back)
+		final android.widget.ListView list = getView() != null ? getListView() : null;
+		int keepPos = -1;
+		int keepTop = 0;
+		if (mScrollPos >= 0) {
+			keepPos = mScrollPos;
+			keepTop = mScrollTop;
+		} else if (list != null && list.getChildCount() > 0 && mAdapter.getCount() > 0) {
+			keepPos = list.getFirstVisiblePosition();
+			keepTop = list.getChildAt(0).getTop() - list.getPaddingTop();
+		}
+
 		// Set the new data in the adapter.
         mAdapter.clear();
 		for (int i = 0; i < data.size(); i++) {
 			mAdapter.add(data.get(i));
+		}
+
+		if (list != null && keepPos >= 0 && data.size() > 0) {
+			final int pos = Math.min(keepPos, data.size() - 1);
+			final int top = keepTop;
+			list.setSelectionFromTop(pos, top);
+			// once more after the list has been laid out with the new items
+			list.post(new Runnable() {
+				public void run() {
+					list.setSelectionFromTop(pos, top);
+					mScrollPos = -1;
+				}
+			});
 		}
 	}
 

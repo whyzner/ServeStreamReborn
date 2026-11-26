@@ -44,6 +44,11 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        if ("android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED".equals(intent.getAction())) {
+            // the user allowed exact alarms: schedule the next one precisely
+            Alarms.setNextAlert(context);
+            return;
+        }
         if (Alarms.ALARM_KILLED.equals(intent.getAction())) {
             // The alarm has been killed, update the notification
             updateNotification(context, (Alarm)

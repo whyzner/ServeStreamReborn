@@ -1019,6 +1019,7 @@ public class MediaPlayerActivity extends ActionBarActivity implements MusicUtils
     }
 
     private long refreshNow() {
+        setPauseButtonImage();
         if(mService == null)
             return 500;
         try {

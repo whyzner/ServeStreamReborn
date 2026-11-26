@@ -265,6 +265,18 @@ public class MediaPlaybackService extends Service implements
                     setNextTrack();
                     break;
                 case TRACK_ENDED:
+                    if (shouldReconnect()) {
+                        mReconnectAttempts++;
+                        Log.i(LOGTAG, "Live stream ended, reconnecting (" + mReconnectAttempts + ")");
+                        mMediaplayerHandler.postDelayed(new Runnable() {
+                            public void run() {
+                                if (mIsSupposedToBePlaying) {
+                                    openCurrentAndNext();
+                                }
+                            }
+                        }, 2000L * mReconnectAttempts);
+                        break;
+                    }
                     if (mRepeatMode == REPEAT_CURRENT) {
                         seek(0);
                         play();
@@ -273,6 +285,7 @@ public class MediaPlaybackService extends Service implements
                     }
                     break;
                 case PREPARED:
+                    mReconnectAttempts = 0;
                     Intent i = new Intent("android.media.action.OPEN_AUDIO_EFFECT_CONTROL_SESSION");
                     i.putExtra("android.media.extra.AUDIO_SESSION", getAudioSessionId());
                     i.putExtra("android.media.extra.PACKAGE_NAME", getPackageName());
@@ -322,6 +335,9 @@ public class MediaPlaybackService extends Service implements
                     switch (msg.arg1) {
                         case AudioManager.AUDIOFOCUS_LOSS:
                             Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS");
+                            if (!pauseOnFocusLoss()) {
+                                break;
+                            }
                             if(isPlaying()) {
                                 mPausedByTransientLossOfFocus = false;
                             }
@@ -333,10 +349,16 @@ public class MediaPlaybackService extends Service implements
                             break;
                         case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                             Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS_TRANSIENT");
+                            if (!pauseOnFocusLoss()) {
+                                break;
+                            }
                             if(isPlaying()) {
                                 mPausedByTransientLossOfFocus = true;
                             }
+                            // stay a foreground service so playback can resume from the background
+                            mKeepForegroundOnPause = true;
                             pause(true);
+                            mKeepForegroundOnPause = false;
                             break;
                         case AudioManager.AUDIOFOCUS_GAIN:
                             Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_GAIN");
@@ -450,7 +472,9 @@ public class MediaPlaybackService extends Service implements
             } else if (CMDPAUSE.equals(cmd) || PAUSE_ACTION.equals(action)) {
             	boolean wasPlaying = mIsSupposedToBePlaying;
             	
+                mKeepForegroundOnPause = intent.getBooleanExtra("from_connectivity_receiver", false);
                 pause(true);
+                mKeepForegroundOnPause = false;
                 mPausedByTransientLossOfFocus = false;
                 
                 if (wasPlaying != mIsSupposedToBePlaying) {
@@ -476,6 +500,7 @@ public class MediaPlaybackService extends Service implements
 
         @Override
         public boolean onMediaButtonEvent(Intent intent) {
+            if (mPlayer == null) return false;
             if (intent != null) {
                 String action = intent.getAction();
                 String cmd = intent.getStringExtra("command");
@@ -499,7 +524,10 @@ public class MediaPlaybackService extends Service implements
                 } else if (CMDPAUSE.equals(cmd) || PAUSE_ACTION.equals(action)) {
                     boolean wasPlaying = mIsSupposedToBePlaying;
 
+                    // a network drop pauses only briefly: keep the foreground service for the resume
+                    mKeepForegroundOnPause = intent.getBooleanExtra("from_connectivity_receiver", false);
                     pause(true);
+                    mKeepForegroundOnPause = false;
                     mPausedByTransientLossOfFocus = false;
 
                     if (wasPlaying != mIsSupposedToBePlaying) {
@@ -522,6 +550,39 @@ public class MediaPlaybackService extends Service implements
 
             return super.onMediaButtonEvent(intent);
         }
+
+        // System media controls (quick panel, lock screen, Bluetooth) use these.
+        @Override
+        public void onPlay() {
+            if (mPlayer == null) return;
+            play();
+        }
+
+        @Override
+        public void onPause() {
+            if (mPlayer == null) return;
+            pause(true);
+            mPausedByTransientLossOfFocus = false;
+        }
+
+        @Override
+        public void onSkipToNext() {
+            if (mPlayer == null) return;
+            gotoNext(true);
+        }
+
+        @Override
+        public void onSkipToPrevious() {
+            if (mPlayer == null) return;
+            prev();
+        }
+
+        @Override
+        public void onStop() {
+            if (mPlayer == null) return;
+            pause(true);
+            mPausedByTransientLossOfFocus = false;
+        }
     };
 
     private OnAudioFocusChangeListener mAudioFocusListener = new OnAudioFocusChangeListener() {
@@ -531,6 +592,52 @@ public class MediaPlaybackService extends Service implements
     };
 
     public MediaPlaybackService() {
+    }
+
+    private boolean mKeepForegroundOnPause = false;
+    private int mReconnectAttempts = 0;
+    private static final int MAX_RECONNECT_ATTEMPTS = 10;
+
+    /** A live network stream (no duration) that stopped by itself while it should play. */
+    private boolean shouldReconnect() {
+        if (!mIsSupposedToBePlaying || mReconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+            return false;
+        }
+        String path = mFileToPlay != null ? mFileToPlay : getMediaUri();
+        if (path == null || !(path.startsWith("http") || path.startsWith("mms") || path.startsWith("rtsp"))) {
+            return false;
+        }
+        try {
+            return mPlayer == null || mPlayer.duration() <= 0;
+        } catch (RuntimeException e) {
+            return true;
+        }
+    }
+
+    private boolean pauseOnFocusLoss() {
+        return mPreferences == null
+                || mPreferences.getBoolean(PreferenceConstants.PAUSE_ON_FOCUS_LOSS, true);
+    }
+
+    private Intent scoped(Intent intent) {
+        String action = intent.getAction();
+        if (action != null && !action.startsWith("android.")
+                && intent.getPackage() == null && intent.getComponent() == null) {
+            intent.setPackage(getPackageName());
+        }
+        return intent;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void sendStickyBroadcast(Intent intent) {
+        super.sendStickyBroadcast(scoped(intent));
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void removeStickyBroadcast(Intent intent) {
+        super.removeStickyBroadcast(scoped(intent));
     }
 
     @Override
@@ -687,6 +794,17 @@ public class MediaPlaybackService extends Service implements
         i.putExtra("android.media.extra.AUDIO_SESSION", getAudioSessionId());
         i.putExtra("android.media.extra.PACKAGE_NAME", getPackageName());
         sendBroadcast(i);
+
+        // Close the media session first: otherwise Bluetooth / headset / lock screen
+        // buttons still reach this destroyed service and find no player.
+        try {
+            mediaSession.setCallback(null);
+            mediaSession.setActive(false);
+            mediaSession.release();
+        } catch (RuntimeException e) {
+            Log.w(LOGTAG, "media session release failed", e);
+        }
+
         mPlayer.release();
         mPlayer = null;
 
@@ -1127,6 +1245,7 @@ public class MediaPlaybackService extends Service implements
         i.putExtra("track", getTrackName());
         i.putExtra("playing", isPlaying());
         sendStickyBroadcast(i);
+        sendBroadcast(new Intent(i));
         
         bluetoothNotifyChange(what);
 
@@ -1510,7 +1629,12 @@ public class MediaPlaybackService extends Service implements
             Log.i(LOGTAG, "Opening: " + mFileToPlay);
             
             sendStickyBroadcast(new Intent(START_DIALOG));
-            
+
+            // Become a foreground service now, while the user is still in the app.
+            // Starting it later (when preparing finishes in the background) is not
+            // allowed on Android 12+ and would stop playback.
+            updateNotification(false);
+
             boolean isLocalFile = mPreferences.getBoolean(PreferenceConstants.PROGRESSIVE_DOWNLOAD, false);
             boolean useFFmpegPlayer = mPreferences.getBoolean(PreferenceConstants.USE_FFMPEG_PLAYER, false);   	
             if (isLocalFile) {
@@ -1525,6 +1649,10 @@ public class MediaPlaybackService extends Service implements
      * Starts playback of a previously opened file.
      */
     public void play() {
+        if (mPlayer == null) {
+            // service already shut down (late button press): nothing to play
+            return;
+        }
         mAudioManager.requestAudioFocus(mAudioFocusListener, AudioManager.STREAM_MUSIC,
                 AudioManager.AUDIOFOCUS_GAIN);
         MediaButtonHelper.registerMediaButtonEventReceiverCompat(
@@ -1634,7 +1762,13 @@ public class MediaPlaybackService extends Service implements
         builder.setStyle(style);
 
         if (!updateNotification) {
-            startForeground(PLAYBACKSERVICE_STATUS, builder.build());
+            try {
+                startForeground(PLAYBACKSERVICE_STATUS, builder.build());
+            } catch (RuntimeException e) {
+                Log.w(LOGTAG, "startForeground not allowed now", e);
+                ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE))
+                        .notify(PLAYBACKSERVICE_STATUS, builder.build());
+            }
         } else {
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(PLAYBACKSERVICE_STATUS, builder.build());
@@ -1693,12 +1827,14 @@ public class MediaPlaybackService extends Service implements
             mMediaplayerHandler.removeMessages(FADEUP);
             if (isPlaying()) {
                 mPlayer.pause();
-                if (remove_status_icon) {
+                mIsSupposedToBePlaying = false;
+                if (mKeepForegroundOnPause) {
+                    updateNotification(true);
+                } else if (remove_status_icon) {
                     gotoIdleState();
                 } else {
                     stopForeground(false);
                 }
-                mIsSupposedToBePlaying = false;
                 notifyChange(PLAYSTATE_CHANGED);
             }
             mPausedByConnectivityReceiver = false;
@@ -2087,12 +2223,80 @@ public class MediaPlaybackService extends Service implements
     }
 
     public String getTrackName() {
+        String title;
+        String uri;
         synchronized (this) {
             if (mCursor == null) {
                 return null;
             }
-            return mCursor.getString(mCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
+            title = mCursor.getString(mCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
+            uri = mCursor.getString(mCursor.getColumnIndexOrThrow(Media.MediaColumns.URI));
         }
+        // Streams have no title of their own: show the name the user saved.
+        if (title == null || title.length() == 0 || title.equals(Media.UNKNOWN_STRING) || title.equals(uri)) {
+            String name = getStationName(uri);
+            if (name != null) {
+                return name;
+            }
+        }
+        return title;
+    }
+
+    private String mStationUri;
+    private String mStationName;
+
+    private synchronized String getStationName(String uri) {
+        if (uri == null) {
+            return null;
+        }
+        if (uri.equals(mStationUri)) {
+            return mStationName;
+        }
+        String name = null;
+        net.sourceforge.servestream.database.StreamDatabase db = null;
+        try {
+            db = new net.sourceforge.servestream.database.StreamDatabase(this);
+            android.net.Uri target = android.net.Uri.parse(uri);
+            for (net.sourceforge.servestream.bean.UriBean bean : db.getUris()) {
+                String nick = bean.getNickname();
+                if (nick != null && nick.trim().length() > 0 && sameStream(bean.getUri(), target)) {
+                    name = nick.trim();
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            Log.w(LOGTAG, "station name lookup failed", e);
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        mStationUri = uri;
+        mStationName = name;
+        return name;
+    }
+
+    private static int effectivePort(android.net.Uri u) {
+        int port = u.getPort();
+        if (port != -1) return port;
+        String s = u.getScheme();
+        if ("https".equalsIgnoreCase(s)) return 443;
+        if ("http".equalsIgnoreCase(s)) return 80;
+        return -1;
+    }
+
+    private static String normPath(String p) {
+        if (p == null || p.length() == 0) return "/";
+        return p;
+    }
+
+    private static boolean sameStream(android.net.Uri a, android.net.Uri b) {
+        if (a == null || b == null) return false;
+        return a.getScheme() != null && a.getScheme().equalsIgnoreCase(b.getScheme())
+                && a.getHost() != null && a.getHost().equalsIgnoreCase(b.getHost())
+                && effectivePort(a) == effectivePort(b)
+                && normPath(a.getPath()).equals(normPath(b.getPath()))
+                && String.valueOf(a.getQuery()).equals(String.valueOf(b.getQuery()));
     }
 
     public int getDuration() {

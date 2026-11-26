@@ -145,7 +145,13 @@ public class MediaPlayerFragment extends Fragment implements CoverViewListener {
                 // but also if the audio ID is valid but the service is paused.
                 if (mService.getAudioId() >= 0 || mService.isPlaying() ||
                         mService.getPath() != null) {
-                    // something is playing now, we're done
+                    // something is playing now: show its info right away, since
+                    // after a rotation or fold no META_CHANGED broadcast follows
+                    updateTrackInfo();
+                    mAlbumArtHandler.removeMessages(GET_ALBUM_ART);
+                    Message message = mAlbumArtHandler.obtainMessage(GET_ALBUM_ART);
+                    message.obj = mService.getTrackId();
+                    mAlbumArtHandler.sendMessage(message);
                     return;
                 }
             } catch (RemoteException ex) {

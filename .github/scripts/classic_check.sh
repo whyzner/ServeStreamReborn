@@ -31,9 +31,16 @@ if echo "$top" | grep -q "$PKG/net.sourceforge.servestream.activity.MediaPlayerA
 else
   echo "CHECK playing a stream opens the player: FAIL ($top)"; RESULT=FAIL
 fi
+# keeps playing in the background
+adb shell input keyevent KEYCODE_HOME
+sleep 20
+if adb shell dumpsys activity services $PKG | grep -q "isForeground=true"; then echo "CHECK keeps playing in the background: PASS"; else echo "CHECK keeps playing in the background: FAIL"; RESULT=FAIL; fi
+# media buttons (lock screen / Bluetooth) reach the player; no crash
+adb shell input keyevent KEYCODE_MEDIA_PAUSE; sleep 2
+adb shell input keyevent KEYCODE_MEDIA_PLAY; sleep 3
+if adb logcat -d | grep -q "FATAL EXCEPTION"; then echo "CHECK media buttons: FAIL"; RESULT=FAIL; adb logcat -d | grep -A15 "FATAL EXCEPTION" | head -30; else echo "CHECK media buttons: PASS"; fi
 adb shell am start -W -n $PKG/net.sourceforge.servestream.activity.MainActivity
 sleep 2
-adb shell input keyevent KEYCODE_MENU
 sleep 4
 adb shell screencap -p /sdcard/classic_settings.png
 for n in classic_main classic_player classic_settings; do

@@ -112,11 +112,30 @@ void clear_l(State **ps)
 	state->decoder_started = 0;
 }
 
+/* Stops the prepare and decoder threads (if running) before the state is touched. */
+static void stop_threads(State *state)
+{
+	if (!state) {
+		return;
+	}
+	state->abort_request = 1;
+	if (state->prepare_started) {
+		pthread_join(state->prepare_thread, NULL);
+		state->prepare_started = 0;
+	}
+	if (state->decoder_started) {
+		pthread_join(state->decoder_thread, NULL);
+		state->decoder_started = 0;
+	}
+}
+
 void disconnect(State **ps)
 {
 	State *state = *ps;
 	        
 	if (state) {
+		stop_threads(state);
+		close_audio(state);
 		if (state->pFormatCtx) {
 			avformat_close_input(&state->pFormatCtx);
 	    }
@@ -519,15 +538,17 @@ int stream_component_open(State *s, int stream_index, int from_thread)
 	return SUCCESS;
 }
 
-int player_prepare(State **ps, int from_thread)
+static int player_prepare_state(State *state, int from_thread)
 {
 	int audio_index = -1;
 	int video_index = -1;
 	int i;
 
-	State *state = *ps;
+	if (!state) {
+		return FAILURE;
+	}
 	
-	if (state && state->pFormatCtx) {
+	if (state->pFormatCtx) {
 		avformat_close_input(&state->pFormatCtx);
 	}
 	close_audio(state);
@@ -544,13 +565,24 @@ int player_prepare(State **ps, int from_thread)
     av_dict_set(&options, "user-agent", "FFmpegMediaPlayer", 0);
     av_dict_set(&options, "rw_timeout", "15000000", 0);
     av_dict_set(&options, "reconnect", "1", 0);
+    av_dict_set(&options, "reconnect_streamed", "1", 0);
+    av_dict_set(&options, "reconnect_on_network_error", "1", 0);
+    av_dict_set(&options, "reconnect_delay_max", "30", 0);
     
     if (state->headers[0]) {
     	av_dict_set(&options, "headers", state->headers, 0);
     }
     
+    // Allocate the context up front so the interrupt callback can abort a
+    // blocking open/read when the player is reset.
+    state->pFormatCtx = avformat_alloc_context();
+    if (!state->pFormatCtx) {
+        av_dict_free(&options);
+        return FAILURE;
+    }
+    state->pFormatCtx->interrupt_callback.callback = decode_interrupt_cb;
+    state->pFormatCtx->interrupt_callback.opaque = state;
     if (state->offset > 0) {
-        state->pFormatCtx = avformat_alloc_context();
         state->pFormatCtx->skip_initial_bytes = state->offset;
     }
     
@@ -558,7 +590,7 @@ int player_prepare(State **ps, int from_thread)
     av_dict_free(&options);
     if (open_ret != 0) {
 	    __android_log_print(ANDROID_LOG_ERROR, "TAG", "avformat_open_input failed: %d", open_ret);
-	    state->notify_callback(state->clazz, MEDIA_ERROR, MEDIA_ERROR_UNKNOWN, open_ret, from_thread);
+	    if (!state->abort_request) state->notify_callback(state->clazz, MEDIA_ERROR, MEDIA_ERROR_UNKNOWN, open_ret, from_thread);
     	return FAILURE;
     }
 
@@ -566,7 +598,7 @@ int player_prepare(State **ps, int from_thread)
 	if (info_ret < 0) {
 	    __android_log_print(ANDROID_LOG_ERROR, "TAG", "avformat_find_stream_info failed: %d", info_ret);
 	    avformat_close_input(&state->pFormatCtx);
-	    state->notify_callback(state->clazz, MEDIA_ERROR, MEDIA_ERROR_UNKNOWN, info_ret, from_thread);
+	    if (!state->abort_request) state->notify_callback(state->clazz, MEDIA_ERROR, MEDIA_ERROR_UNKNOWN, info_ret, from_thread);
     	return FAILURE;
 	}
 
@@ -599,13 +631,10 @@ int player_prepare(State **ps, int from_thread)
 	    __android_log_print(ANDROID_LOG_ERROR, "TAG", "no playable audio stream");
 	    avformat_close_input(&state->pFormatCtx);
 	    close_audio(state);
-	    state->notify_callback(state->clazz, MEDIA_ERROR, MEDIA_ERROR_UNKNOWN, -1, from_thread);
+	    if (!state->abort_request) state->notify_callback(state->clazz, MEDIA_ERROR, MEDIA_ERROR_UNKNOWN, -1, from_thread);
 		return FAILURE;
 	}
 
-	state->pFormatCtx->interrupt_callback.callback = decode_interrupt_cb;
-	state->pFormatCtx->interrupt_callback.opaque = state;
-	
     // fill the inital buffer
 	AVPacket *packet = av_packet_alloc();
 	int ret;
@@ -625,12 +654,19 @@ int player_prepare(State **ps, int from_thread)
 	}
 
 	av_packet_free(&packet);
-		
-	*ps = state;
+
+	if (state->abort_request) {
+		return FAILURE;
+	}
 
 	state->notify_callback(state->clazz, MEDIA_PREPARED, 0, 0, from_thread);
 
 	return SUCCESS;
+}
+
+int player_prepare(State **ps, int from_thread)
+{
+	return player_prepare_state(*ps, from_thread);
 }
 
 int prepareAsync_l(State **ps)
@@ -647,16 +683,31 @@ int prepare(State **ps)
 
 void *player_prepare_thread(void *data)
 {
-	State ** ps = (State **) data;
-	player_prepare(ps, FROM_THREAD);
+	State *state = (State *) data;
+	player_prepare_state(state, FROM_THREAD);
+	state->preparing = 0;
 	return NULL;
 }
 
 int prepareAsync(State **ps)
 {
-    pthread_t prepare_thread;
-    pthread_create(&prepare_thread, NULL, player_prepare_thread, ps);
-    pthread_detach(prepare_thread);
+    State *state = *ps;
+    if (!state) {
+        return FAILURE;
+    }
+    // a previous prepare must be finished before this state is reused
+    if (state->prepare_started) {
+        state->abort_request = 1;
+        pthread_join(state->prepare_thread, NULL);
+        state->prepare_started = 0;
+    }
+    state->abort_request = 0;
+    state->preparing = 1;
+    if (pthread_create(&state->prepare_thread, NULL, player_prepare_thread, state) == 0) {
+        state->prepare_started = 1;
+    } else {
+        state->preparing = 0;
+    }
     return SUCCESS;
 }
 
@@ -723,6 +774,10 @@ int getVideoHeight(int *h)
 int getCurrentPosition(State **ps, int *msec)
 {
 	State *state = *ps;
+	if (!state) {
+		*msec = 0;
+		return 0;
+	}
 	*msec = state->audio_clock * 1000;
     return 0;
 }
@@ -730,7 +785,9 @@ int getCurrentPosition(State **ps, int *msec)
 int getDuration(State **ps, int *msec)
 {
 	State *state = *ps;
-	if (state->pFormatCtx && (state->pFormatCtx->duration != AV_NOPTS_VALUE)) {
+	// pFormatCtx is only safe to read once preparing has finished
+	if (state && !state->preparing && state->pFormatCtx
+			&& (state->pFormatCtx->duration != AV_NOPTS_VALUE)) {
 		*msec = (state->pFormatCtx->duration / AV_TIME_BASE) * 1000;
 	} else {
 		*msec = 0;
@@ -763,13 +820,7 @@ int reset(State **ps)
 	
     pthread_mutex_lock(lock);
 
-    if (state) {
-    	state->abort_request = 1;
-    	if (state->decoder_started) {
-    		pthread_join(state->decoder_thread, NULL);
-    		state->decoder_started = 0;
-    	}
-    }
+    stop_threads(state);
     
     pthread_mutex_unlock(lock);
 	

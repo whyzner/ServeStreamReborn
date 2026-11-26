@@ -327,5 +327,9 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="exact_alarm_title">Ring at the exact time?</string>
+    <string name="exact_alarm_message">Without the \"Alarms &amp; reminders\" permission Android may ring the radio alarm a few minutes late. Allow it in the next screen.</string>
+    <string name="exact_alarm_allow">Allow</string>
+    <string name="bluetooth_permission_needed">Allow \"Nearby devices\" to choose Bluetooth devices here.</string>
 </resources>
 

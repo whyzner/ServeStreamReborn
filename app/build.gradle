@@ -2,19 +2,19 @@ apply plugin: 'com.android.application'
 
 android {
     namespace 'net.sourceforge.servestream'
-    compileSdk 35
-    ndkVersion '22.1.7171670'
+    compileSdk 36
+    ndkVersion '27.2.12479018'
 
     defaultConfig {
         // ServeStream Classic: the app as it was right before the new look
         // (Material 3 and later). Its own package, so it installs next to ServeStream.
         applicationId "net.sourceforge.servestream.classic"
         minSdk 21
-        targetSdk 35
-        versionName "1.0.0"
-        versionCode 1
+        targetSdk 36
+        versionName "1.0.1"
+        versionCode 2
         ndk {
-            abiFilters "arm64-v8a", "armeabi-v7a"
+            abiFilters "arm64-v8a", "armeabi-v7a", "x86_64"
         }
     }
 
@@ -78,7 +78,7 @@ def ndkDir = android.ndkDirectory
 tasks.register('buildFFmpeg', Exec) {
     description = 'Compile FFmpeg and OpenSSL via NDK'
     commandLine 'bash', file('src/main/ffmpeg/build_ffmpeg_modern.sh').absolutePath,
-            ndkDir.absolutePath, 'arm64-v8a', 'armeabi-v7a'
+            ndkDir.absolutePath, 'arm64-v8a', 'armeabi-v7a', 'x86_64'
 }
 
 tasks.register('buildNative', Exec) {

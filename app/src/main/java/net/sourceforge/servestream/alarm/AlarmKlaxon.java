@@ -108,13 +108,22 @@ public class AlarmKlaxon extends Service implements ServiceConnection,
     public void onCreate() {
         mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         // Listen for incoming calls to kill the alarm.
+        // No phone permission needed: Android 12+ reports calls through the audio
+        // mode, older versions allow the call state listener without permission.
         mTelephonyManager =
                 (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        try {
-            mTelephonyManager.listen(
-                    mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-        } catch (SecurityException e) {
-            Log.v(TAG, "No phone state permission: " + e);
+        if (android.os.Build.VERSION.SDK_INT >= 31) {
+            android.media.AudioManager am = (android.media.AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            if (am != null) {
+                am.addOnModeChangedListener(getMainExecutor(), mModeListener);
+            }
+        } else {
+            try {
+                mTelephonyManager.listen(
+                        mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+            } catch (SecurityException e) {
+                Log.v(TAG, "No phone state permission: " + e);
+            }
         }
         AlarmAlertWakeLock.acquireCpuWakeLock(this);
     }
@@ -123,9 +132,16 @@ public class AlarmKlaxon extends Service implements ServiceConnection,
     public void onDestroy() {
         stop();
         // Stop listening for incoming calls.
-        try {
-            mTelephonyManager.listen(mPhoneStateListener, 0);
-        } catch (SecurityException ignored) {
+        if (android.os.Build.VERSION.SDK_INT >= 31) {
+            android.media.AudioManager am = (android.media.AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            if (am != null && mModeListener != null) {
+                am.removeOnModeChangedListener(mModeListener);
+            }
+        } else {
+            try {
+                mTelephonyManager.listen(mPhoneStateListener, 0);
+            } catch (SecurityException ignored) {
+            }
         }
         AlarmAlertWakeLock.releaseCpuLock();
         
@@ -357,12 +373,38 @@ public class AlarmKlaxon extends Service implements ServiceConnection,
 	}
 
     private int callState() {
+        if (android.os.Build.VERSION.SDK_INT >= 31) {
+            android.media.AudioManager am = (android.media.AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            return am != null && inCallMode(am.getMode())
+                    ? TelephonyManager.CALL_STATE_OFFHOOK : TelephonyManager.CALL_STATE_IDLE;
+        }
         try {
             return mTelephonyManager.getCallState();
         } catch (SecurityException e) {
             return TelephonyManager.CALL_STATE_IDLE;
         }
     }
+
+    private static boolean inCallMode(int mode) {
+        return mode == android.media.AudioManager.MODE_IN_CALL
+                || mode == android.media.AudioManager.MODE_IN_COMMUNICATION
+                || mode == android.media.AudioManager.MODE_RINGTONE
+                || (android.os.Build.VERSION.SDK_INT >= 33
+                        && mode == android.media.AudioManager.MODE_CALL_SCREENING);
+    }
+
+    /** Android 12+: a call starting (ringing or answered) stops the alarm, like the phone listener did. */
+    private final android.media.AudioManager.OnModeChangedListener mModeListener =
+            android.os.Build.VERSION.SDK_INT >= 31 ? new android.media.AudioManager.OnModeChangedListener() {
+                @Override
+                public void onModeChanged(int mode) {
+                    int state = inCallMode(mode) ? TelephonyManager.CALL_STATE_OFFHOOK : TelephonyManager.CALL_STATE_IDLE;
+                    if (state != TelephonyManager.CALL_STATE_IDLE && state != mInitialCallState) {
+                        sendKillBroadcast(mCurrentAlarm);
+                        stopSelf();
+                    }
+                }
+            } : null;
 
 	public void onServiceDisconnected(ComponentName name) {
 				

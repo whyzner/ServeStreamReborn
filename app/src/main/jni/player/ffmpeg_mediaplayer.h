@@ -69,6 +69,9 @@ typedef struct State {
 	int swr_in_channels;
 	int swr_out_channels;
 	int decoder_started;
+	pthread_t prepare_thread;
+	int prepare_started;
+	volatile int preparing;
 	int loop;
 
 	pthread_t decoder_thread;
