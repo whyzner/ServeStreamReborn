@@ -63,7 +63,7 @@ public class AppWidgetOneProvider extends AppWidgetProvider {
                 AppWidgetOneProvider.CMDAPPWIDGETUPDATE);
         updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
         updateIntent.addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY);
-        context.sendBroadcast(updateIntent);
+        net.sourceforge.servestream.utils.Compat.sendInternal(context, updateIntent);
     }
     
     /**

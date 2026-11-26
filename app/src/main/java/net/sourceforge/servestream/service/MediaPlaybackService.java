@@ -534,6 +534,19 @@ public class MediaPlaybackService extends Service implements
     }
 
     @Override
+    public void sendBroadcast(Intent intent) {
+        // Android 14+: keep app-internal broadcasts package-scoped so the
+        // not-exported receivers of our screens receive them (the "Opening URL"
+        // box closes when playback starts) and ServeStream does not hear ours.
+        String action = intent.getAction();
+        if (action != null && !action.startsWith("android.")
+                && intent.getPackage() == null && intent.getComponent() == null) {
+            intent.setPackage(getPackageName());
+        }
+        super.sendBroadcast(intent);
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
 

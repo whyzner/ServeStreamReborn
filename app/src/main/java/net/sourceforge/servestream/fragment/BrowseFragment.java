@@ -211,7 +211,7 @@ public class BrowseFragment extends ListFragment implements
 					.setPositiveButton(R.string.confirm_label, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
                             saveUri(uri);
-                            BrowseFragment.this.getActivity().sendBroadcast(new Intent(UrlListFragment.UPDATE_LIST));
+                            net.sourceforge.servestream.utils.Compat.sendInternal(BrowseFragment.this.getActivity(), new Intent(UrlListFragment.UPDATE_LIST));
 						}
 						})
 					.setNegativeButton(android.R.string.cancel, null).create().show();
@@ -489,7 +489,7 @@ public class BrowseFragment extends ListFragment implements
 			switch (item.getItemId()) {
 				case R.id.menu_item_save:
 					saveUri(mSelectedMenuItem);
-                    BrowseFragment.this.getActivity().sendBroadcast(new Intent(UrlListFragment.UPDATE_LIST));
+                    net.sourceforge.servestream.utils.Compat.sendInternal(BrowseFragment.this.getActivity(), new Intent(UrlListFragment.UPDATE_LIST));
 					return true;
 				case R.id.menu_item_view_url:
 					final String streamURL = mSelectedMenuItem.getUri().toString();

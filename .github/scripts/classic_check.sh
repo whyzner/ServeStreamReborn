@@ -20,6 +20,8 @@ if adb shell cat /sdcard/ui.xml | grep -q 'text="ServeStream"'; then echo "CHECK
 adb shell am start -W -a android.intent.action.VIEW -d "https://stream1.rcast.net/73730" -t audio/mpeg -n $PKG/net.sourceforge.servestream.activity.MainActivity
 sleep 15
 adb shell screencap -p /sdcard/classic_player.png
+adb shell uiautomator dump /sdcard/ui2.xml >/dev/null 2>&1
+if adb shell cat /sdcard/ui2.xml | grep -q "Opening URL"; then echo "CHECK Opening URL box closed: FAIL"; RESULT=FAIL; else echo "CHECK Opening URL box closed: PASS"; fi
 echo "--- resumed after playing:"; adb shell dumpsys activity activities | grep -E "ResumedActivity|topResumed" | head -3
 echo "--- crashes:"; adb logcat -d | grep -E "FATAL EXCEPTION|AndroidRuntime|Process: net.sourceforge|ActivityTaskManager.*(START|Displayed)|PLAYBACK" | head -60
 pid=$(adb shell pidof $PKG | tr -d '\r')

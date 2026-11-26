@@ -35,6 +35,12 @@ public final class Compat {
         return PendingIntent.getService(c, requestCode, intent, immutable(flags));
     }
 
+    /** Sends an app-internal broadcast; package-scoped so not-exported receivers get it. */
+    public static void sendInternal(Context c, Intent intent) {
+        intent.setPackage(c.getPackageName());
+        c.sendBroadcast(intent);
+    }
+
     /** Registers a receiver for app-internal and system broadcasts. */
     public static Intent register(Context c, BroadcastReceiver receiver, IntentFilter filter) {
         return ContextCompat.registerReceiver(c, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);

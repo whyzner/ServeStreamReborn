@@ -83,7 +83,7 @@ public class ConnectivityReceiver extends BroadcastReceiver {
 				mIsConnected = false;
 				Intent i = new Intent(MediaPlaybackService.PAUSE_ACTION);
 				i.putExtra("from_connectivity_receiver", true);
-				context.sendBroadcast(i);
+				net.sourceforge.servestream.utils.Compat.sendInternal(context, i);
 			} else if (!mIsConnected) {
 				ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 			    NetworkInfo info = manager.getActiveNetworkInfo();
@@ -91,7 +91,7 @@ public class ConnectivityReceiver extends BroadcastReceiver {
 				if (info != null && (mIsConnected = (info.getState() == State.CONNECTED))) {
 					Intent i = new Intent(MediaPlaybackService.TOGGLEPAUSE_ACTION);
 					i.putExtra("from_connectivity_receiver", true);
-					context.sendBroadcast(i);
+					net.sourceforge.servestream.utils.Compat.sendInternal(context, i);
 				}
 			}
 		}
