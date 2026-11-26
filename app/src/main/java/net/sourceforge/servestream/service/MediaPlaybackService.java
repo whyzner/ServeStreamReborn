@@ -201,6 +201,14 @@ public class MediaPlaybackService extends Service implements
     
     // interval after which we stop the service when idle
     private static final int IDLE_DELAY = 60000;
+    private static final long BLUETOOTH_AUTOSTART_DELAY = 8000;
+    private Runnable mBluetoothAutostart;
+
+    /** True while the phone is in car mode (Android Auto turns it on). */
+    private boolean isInCarMode() {
+        android.app.UiModeManager ui = (android.app.UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+        return ui != null && ui.getCurrentModeType() == android.content.res.Configuration.UI_MODE_TYPE_CAR;
+    }
 
     // our RemoteControlClient object, which will use remote control APIs available in
     // SDK level >= 14, if they're available.
@@ -855,6 +863,9 @@ public class MediaPlaybackService extends Service implements
             Log.e(LOGTAG, "Service being destroyed while still playing.");
         }
         
+        if (mBluetoothAutostart != null) {
+            mMediaplayerHandler.removeCallbacks(mBluetoothAutostart);
+        }
         mAppWidgetProvider.notifyChange(this, PLAYER_CLOSED);
         
         mConnectivityManager.cleanup();
@@ -1185,15 +1196,26 @@ public class MediaPlaybackService extends Service implements
                 mPausedByTransientLossOfFocus = false;
                 seek(0);
             } else if (BLUETOOTH_DEVICE_PAIRED.equals(action)) {
-        		Uri uri = TransportFactory.getUri(intent.getStringExtra("uri"));
+        		final Uri uri = TransportFactory.getUri(intent.getStringExtra("uri"));
 
         		if (uri != null) {
-        			UriBean uriBean = TransportFactory.getTransport(uri.getScheme()).createUri(uri);
-        			
-        			AbsTransport transport = TransportFactory.getTransport(uriBean.getProtocol());
-        			transport.setUri(uriBean);
-        	   
-        			new DetermineActionTask(this, uriBean, this).execute();
+        			// A car's Android Auto starts a few seconds after its Bluetooth
+        			// connects, and car apps must not start playing on their own:
+        			// wait, then skip the autostart in car mode.
+        			mMediaplayerHandler.removeCallbacks(mBluetoothAutostart);
+        			mBluetoothAutostart = new Runnable() {
+        				public void run() {
+        					if (isInCarMode()) {
+        						Log.i(LOGTAG, "Bluetooth autostart skipped: car mode / Android Auto");
+        						return;
+        					}
+        					UriBean uriBean = TransportFactory.getTransport(uri.getScheme()).createUri(uri);
+        					AbsTransport transport = TransportFactory.getTransport(uriBean.getProtocol());
+        					transport.setUri(uriBean);
+        					new DetermineActionTask(MediaPlaybackService.this, uriBean, MediaPlaybackService.this).execute();
+        				}
+        			};
+        			mMediaplayerHandler.postDelayed(mBluetoothAutostart, BLUETOOTH_AUTOSTART_DELAY);
         		}
             }
         }
