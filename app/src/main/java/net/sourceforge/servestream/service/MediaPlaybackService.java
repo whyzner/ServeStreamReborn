@@ -614,6 +614,81 @@ public class MediaPlaybackService extends Service implements
         }
     }
 
+    // ---- pause during phone and VoIP calls (no audio focus is held, see play()) ----
+
+    private boolean mPausedForCall = false;
+    private Object mModeListener;
+    private android.telephony.PhoneStateListener mCallListener;
+
+    private static boolean isCallMode(int mode) {
+        return mode == AudioManager.MODE_RINGTONE || mode == AudioManager.MODE_IN_CALL
+                || mode == AudioManager.MODE_IN_COMMUNICATION;
+    }
+
+    private void onCallStateChanged(final boolean inCall) {
+        mMediaplayerHandler.post(new Runnable() {
+            public void run() {
+                if (inCall) {
+                    if (isPlaying()) {
+                        mPausedForCall = true;
+                        mKeepForegroundOnPause = true;
+                        pause(true);
+                        mKeepForegroundOnPause = false;
+                    }
+                } else if (mPausedForCall) {
+                    mPausedForCall = false;
+                    if (mPlayer != null && !isPlaying()) {
+                        play();
+                    }
+                }
+            }
+        });
+    }
+
+    @SuppressWarnings("deprecation")
+    private void startCallWatcher() {
+        try {
+            if (Build.VERSION.SDK_INT >= 31) {
+                AudioManager.OnModeChangedListener l = new AudioManager.OnModeChangedListener() {
+                    public void onModeChanged(int mode) {
+                        onCallStateChanged(isCallMode(mode));
+                    }
+                };
+                mAudioManager.addOnModeChangedListener(getMainExecutor(), l);
+                mModeListener = l;
+            } else {
+                // call state needs no permission before Android 12
+                mCallListener = new android.telephony.PhoneStateListener() {
+                    @Override
+                    public void onCallStateChanged(int state, String number) {
+                        MediaPlaybackService.this.onCallStateChanged(
+                                state != android.telephony.TelephonyManager.CALL_STATE_IDLE);
+                    }
+                };
+                ((android.telephony.TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE))
+                        .listen(mCallListener, android.telephony.PhoneStateListener.LISTEN_CALL_STATE);
+            }
+        } catch (RuntimeException e) {
+            Log.w(LOGTAG, "call watcher not available", e);
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void stopCallWatcher() {
+        try {
+            if (Build.VERSION.SDK_INT >= 31 && mModeListener != null) {
+                mAudioManager.removeOnModeChangedListener((AudioManager.OnModeChangedListener) mModeListener);
+            } else if (mCallListener != null) {
+                ((android.telephony.TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE))
+                        .listen(mCallListener, android.telephony.PhoneStateListener.LISTEN_NONE);
+            }
+        } catch (RuntimeException e) {
+            Log.w(LOGTAG, "call watcher stop failed", e);
+        }
+        mModeListener = null;
+        mCallListener = null;
+    }
+
     private boolean pauseOnFocusLoss() {
         return mPreferences == null
                 || mPreferences.getBoolean(PreferenceConstants.PAUSE_ON_FOCUS_LOSS, true);
@@ -676,6 +751,7 @@ public class MediaPlaybackService extends Service implements
     	mLockScreenImageFetcher.addImageCache(cacheParams);
     	
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        startCallWatcher();
         mMediaButtonReceiverComponent = new ComponentName(this, MediaButtonIntentReceiver.class);
 
         mMediaButtonReceiverComponent = new ComponentName(this, MediaButtonIntentReceiver.class);
@@ -809,6 +885,7 @@ public class MediaPlaybackService extends Service implements
         mPlayer = null;
 
         mAudioManager.abandonAudioFocus(mAudioFocusListener);
+        stopCallWatcher();
 
         // make sure there aren't any other messages coming
         mDelayedStopHandler.removeCallbacksAndMessages(null);
@@ -1653,8 +1730,10 @@ public class MediaPlaybackService extends Service implements
             // service already shut down (late button press): nothing to play
             return;
         }
-        mAudioManager.requestAudioFocus(mAudioFocusListener, AudioManager.STREAM_MUSIC,
-                AudioManager.AUDIOFOCUS_GAIN);
+        // Classic keeps the radio playing when other apps make sound: it does not
+        // take audio focus (on Android 12+ the system fades out and mutes an app
+        // that holds focus when another app takes it). Calls still pause it, see
+        // CallWatcher.
         MediaButtonHelper.registerMediaButtonEventReceiverCompat(
                 mAudioManager, mMediaButtonReceiverComponent);
 

@@ -41,6 +41,8 @@ if echo "$top" | grep -q "$PKG/net.sourceforge.servestream.activity.MediaPlayerA
 else
   echo "CHECK playing a stream opens the player: FAIL ($top)"; RESULT=FAIL
 fi
+# other apps' sound does not stop the radio: no audio focus held (Android 12+ would fade it out)
+if adb shell dumpsys audio | sed -n '/Audio Focus stack/,/^$/p' | grep -q "$PKG"; then echo "CHECK holds no audio focus (keeps playing with other apps): FAIL"; RESULT=FAIL; else echo "CHECK holds no audio focus (keeps playing with other apps): PASS"; fi
 # keeps playing in the background
 adb shell input keyevent KEYCODE_HOME
 sleep 20
