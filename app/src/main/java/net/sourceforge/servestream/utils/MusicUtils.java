@@ -329,7 +329,9 @@ public class MusicUtils {
             sService.open(list, force_shuffle ? -1 : position);
         } catch (RemoteException ex) {
         } finally {
+            // explicit: Android 14+ does not deliver implicit intents to the app's own non-exported screens
             Intent intent = new Intent("net.sourceforge.servestream.PLAYBACK_VIEWER")
+            	.setClass(context, net.sourceforge.servestream.activity.MediaPlayerActivity.class)
             	.setFlags(flags);
             context.startActivity(intent);
         }

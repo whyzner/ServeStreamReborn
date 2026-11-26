@@ -23,7 +23,12 @@ adb shell screencap -p /sdcard/classic_player.png
 echo "--- resumed after playing:"; adb shell dumpsys activity activities | grep -E "ResumedActivity|topResumed" | head -3
 echo "--- crashes:"; adb logcat -d | grep -E "FATAL EXCEPTION|AndroidRuntime|Process: net.sourceforge|ActivityTaskManager.*(START|Displayed)|PLAYBACK" | head -60
 pid=$(adb shell pidof $PKG | tr -d '\r')
-if [ -z "$pid" ]; then echo "CHECK playing a stream: FAIL"; RESULT=FAIL; adb logcat -d | grep -E "AndroidRuntime|FATAL" -A20 | head -60; else echo "CHECK playing a stream (app up): PASS"; fi
+top=$(adb shell dumpsys activity activities | grep -m1 "topResumedActivity")
+if echo "$top" | grep -q "$PKG/net.sourceforge.servestream.activity.MediaPlayerActivity" && ! adb logcat -d | grep -q "FATAL EXCEPTION"; then
+  echo "CHECK playing a stream opens the player: PASS"
+else
+  echo "CHECK playing a stream opens the player: FAIL ($top)"; RESULT=FAIL
+fi
 adb shell am start -W -n $PKG/net.sourceforge.servestream.activity.MainActivity
 sleep 2
 adb shell input keyevent KEYCODE_MENU
