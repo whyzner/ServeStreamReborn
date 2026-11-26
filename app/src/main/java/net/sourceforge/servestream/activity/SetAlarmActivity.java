@@ -33,6 +33,20 @@ public class SetAlarmActivity extends ActionBarActivity {
 		
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
+
+		// Back saves the alarm and closes, as before; via the dispatcher so
+		// it also works with the predictive back gesture.
+		getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+			@Override
+			public void handleOnBackPressed() {
+				SetAlarmFragment fragment = (SetAlarmFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
+				if (fragment != null) {
+					fragment.onBackPressed();
+				} else {
+					finish();
+				}
+			}
+		});
 		
 		if (savedInstanceState == null) {
 			FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -53,9 +67,4 @@ public class SetAlarmActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
     
-    @Override
-    public void onBackPressed() {
-    	SetAlarmFragment fragment = (SetAlarmFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
-    	fragment.onBackPressed();
-    }
 }

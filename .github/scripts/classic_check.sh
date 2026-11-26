@@ -94,7 +94,50 @@ if tap 'text="Backup &amp; restore"'; then
 else
   echo "CHECK backup & restore item found: FAIL"; RESULT=FAIL
 fi
-for n in classic_main classic_player classic_settings classic_backup classic_restore; do
+# back with predictive back turned on (no opt-out): the drawer closes first, the app stays
+adb shell am start -W -n $PKG/net.sourceforge.servestream.activity.MainActivity >/dev/null; sleep 2
+adb logcat -c
+if tap 'content-desc="Open navigation drawer"'; then
+  sleep 2
+  adb shell input keyevent KEYCODE_BACK; sleep 2
+  adb shell uiautomator dump /sdcard/u.xml >/dev/null 2>&1
+  top=$(adb shell dumpsys activity activities | grep -m1 "topResumedActivity")
+  if echo "$top" | grep -q "$PKG/net.sourceforge.servestream.activity.MainActivity" && adb shell cat /sdcard/u.xml | grep -q 'content-desc="Open navigation drawer"'; then
+    echo "CHECK back closes the drawer: PASS"
+  else
+    echo "CHECK back closes the drawer: FAIL ($top)"; RESULT=FAIL
+  fi
+else
+  echo "CHECK drawer button found: FAIL"; RESULT=FAIL
+fi
+# fold / unfold: the screen changes size while the list and the player are open
+pid1=$(adb shell pidof $PKG | tr -d '\r')
+adb shell wm size 1840x2208; sleep 5
+adb shell screencap -p /sdcard/classic_unfolded.png
+top=$(adb shell dumpsys activity activities | grep -m1 "topResumedActivity")
+if echo "$top" | grep -q "$PKG/net.sourceforge.servestream.activity.MainActivity" && ! adb logcat -d | grep -q "FATAL EXCEPTION"; then echo "CHECK list survives unfolding: PASS"; else echo "CHECK list survives unfolding: FAIL ($top)"; RESULT=FAIL; fi
+adb shell am start -W -a android.intent.action.VIEW -d "https://stream1.rcast.net/73730" -t audio/mpeg -n $PKG/net.sourceforge.servestream.activity.MainActivity >/dev/null
+sleep 12
+adb shell wm size reset; sleep 5
+adb shell screencap -p /sdcard/classic_folded_player.png
+pid2=$(adb shell pidof $PKG | tr -d '\r')
+top=$(adb shell dumpsys activity activities | grep -m1 "topResumedActivity")
+if echo "$top" | grep -q "$PKG/net.sourceforge.servestream.activity.MediaPlayerActivity" && [ "$pid1" = "$pid2" ] && ! adb logcat -d | grep -q "FATAL EXCEPTION"; then
+  echo "CHECK player survives folding: PASS"
+else
+  echo "CHECK player survives folding: FAIL ($top, pid $pid1 -> $pid2)"; RESULT=FAIL
+  adb logcat -d | grep -A15 "FATAL EXCEPTION" | head -30
+fi
+if adb shell dumpsys activity services $PKG | grep -q "isForeground=true"; then echo "CHECK still playing after folding: PASS"; else echo "CHECK still playing after folding: FAIL"; RESULT=FAIL; fi
+# back from the player to the list, then back at the top of the list leaves the app
+adb shell input keyevent KEYCODE_BACK; sleep 2
+top=$(adb shell dumpsys activity activities | grep -m1 "topResumedActivity")
+if echo "$top" | grep -q "$PKG/net.sourceforge.servestream.activity.MainActivity"; then echo "CHECK back from player goes to list: PASS"; else echo "CHECK back from player goes to list: FAIL ($top)"; RESULT=FAIL; fi
+adb shell input keyevent KEYCODE_BACK; sleep 2
+top=$(adb shell dumpsys activity activities | grep -m1 "topResumedActivity")
+if echo "$top" | grep -q "$PKG/"; then echo "CHECK back on the list leaves the app: FAIL ($top)"; RESULT=FAIL; else echo "CHECK back on the list leaves the app: PASS"; fi
+if adb logcat -d | grep -q "FATAL EXCEPTION"; then echo "CHECK back and resize without crash: FAIL"; RESULT=FAIL; adb logcat -d | grep -A15 "FATAL EXCEPTION" | head -30; else echo "CHECK back and resize without crash: PASS"; fi
+for n in classic_main classic_player classic_settings classic_backup classic_restore classic_unfolded classic_folded_player; do
   adb pull /sdcard/$n.png $n.png >/dev/null 2>&1
   echo "=====SHOT $n BEGIN====="; base64 -w 76 $n.png; echo "=====SHOT $n END====="
 done

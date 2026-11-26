@@ -76,7 +76,7 @@ public class AlarmAlert extends AlarmAlertFullScreen {
     }
 
     @Override
-    public void onBackPressed() {
+    protected void handleBack() {
         finish();
     }
 

@@ -80,6 +80,27 @@ public class MainActivity extends AppCompatActivity implements
 		//setTheme(UserPreferences.getTheme());
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		// Back handling through the dispatcher so it keeps working when
+		// Android delivers back only as a gesture (predictive back). Same
+		// behaviour as before: close the drawer, go up one folder, or leave.
+		getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+			@Override
+			public void handleOnBackPressed() {
+				DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+				if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
+					drawer.closeDrawer(GravityCompat.START);
+					return;
+				}
+				Fragment fragment = getSupportFragmentManager().findFragmentByTag(mTag);
+				if (fragment instanceof BrowseFragment) {
+					((BrowseFragment) fragment).onBackKeyPressed();
+					return;
+				}
+				setEnabled(false);
+				getOnBackPressedDispatcher().onBackPressed();
+				setEnabled(true);
+			}
+		});
 		if (savedInstanceState == null) {
 			net.sourceforge.servestream.utils.CrashReporter.showIfAny(this);
 		}
@@ -198,18 +219,6 @@ public class MainActivity extends AppCompatActivity implements
         super.startActivity(intent);
     }
     
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-	    	Fragment fragment = getSupportFragmentManager().findFragmentByTag(mTag);
-			if (fragment != null && fragment instanceof BrowseFragment) {
-				((BrowseFragment) fragment).onBackKeyPressed();
-				return true;
-			}
-		}
-		
-		return super.onKeyDown(keyCode, event);
-	}
     
     @Override
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -435,15 +444,6 @@ public class MainActivity extends AppCompatActivity implements
 		return mCurrentSelectedPosition;
 	}
 
-	@Override
-	public void onBackPressed() {
-		DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-		if (drawer.isDrawerOpen(GravityCompat.START)) {
-			drawer.closeDrawer(GravityCompat.START);
-		} else {
-			super.onBackPressed();
-		}
-	}
 
 	@SuppressWarnings("StatementWithEmptyBody")
 	@Override

@@ -82,6 +82,7 @@ public class AlarmAlertFullScreen extends Activity {
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+        registerBackCallback();
 
         mAlarm = getIntent().getParcelableExtra(Alarms.ALARM_INTENT_EXTRA);
 
@@ -297,8 +298,29 @@ public class AlarmAlertFullScreen extends Activity {
 
     @Override
     public void onBackPressed() {
-        // Don't allow back to dismiss. This method is overriden by AlarmAlert
-        // so that the dialog is dismissed.
-        return;
+        // Android 12L and older deliver back here.
+        handleBack();
+    }
+
+    /**
+     * Don't allow back to dismiss the full screen alarm. AlarmAlert
+     * overrides this so that the dialog is dismissed.
+     */
+    protected void handleBack() {
+    }
+
+    private void registerBackCallback() {
+        // Android 13 and newer deliver back to this callback instead of
+        // onBackPressed() once the app opts in to predictive back.
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    new android.window.OnBackInvokedCallback() {
+                        @Override
+                        public void onBackInvoked() {
+                            handleBack();
+                        }
+                    });
+        }
     }
 }
