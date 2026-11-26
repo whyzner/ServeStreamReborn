@@ -52,6 +52,8 @@ if adb logcat -d | grep -q "FATAL EXCEPTION"; then echo "CHECK media buttons: FA
 adb shell am start -W -n $PKG/net.sourceforge.servestream.activity.MainActivity
 sleep 2
 # settings: no Donate item; backup opens the system file picker
+# (the player is on top of the list: back to the list first)
+adb shell input keyevent KEYCODE_BACK; sleep 2
 tap 'content-desc="More options"'; sleep 2
 tap 'text="Settings"'; sleep 3
 adb shell screencap -p /sdcard/classic_settings.png
