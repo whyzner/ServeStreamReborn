@@ -116,7 +116,7 @@
     <string name="theme_dark">다크</string>
     <string name="theme_classic">클래식 (90년대 PC)</string>
     <string name="theme_platinum">플래티넘 (90년대 Mac 풍)</string>
-    <string name="theme_metro_dark">메트로 다크 (권장)</string>
+    <string name="theme_metro_dark">메트로 다크</string>
     <string name="theme_metro_light">메트로 라이트</string>
     <string name="theme_real">리얼 (90년대 스트리밍 플레이어 풍)</string>
     <string name="real_label_title">제목:</string>

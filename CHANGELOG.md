@@ -5,6 +5,9 @@
 
 최신 버전 받기: https://github.com/whyzner/ServeStreamReborn/releases/latest
 
+## 2.9.4 (2026-11-26)
+- 테마 이름 "Metro Dark (권장)" → "Metro Dark" (11개 언어, 사용자 요청)
+
 ## 2.9.3 (2026-11-26)
 - Metro 파노라마 settings를 한 화면으로 통합 (사용자 요청)
   - 그룹 목록을 누르면 설정 창이 따로 뜨던 방식 → settings 섹션 안에 모든 설정(화면·일반·재생·블루투스·소셜·백업·기타)이 바로 나옴

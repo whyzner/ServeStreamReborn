@@ -117,7 +117,7 @@
     <string name="theme_dark">어두운색</string>
     <string name="theme_classic">고전식 (90년대 콤퓨터)</string>
     <string name="theme_platinum">백금식 (90년대 Mac 풍)</string>
-    <string name="theme_metro_dark">메트로 어두운색 (권장)</string>
+    <string name="theme_metro_dark">메트로 어두운색</string>
     <string name="theme_metro_light">메트로 밝은색</string>
     <string name="theme_real">리얼 (90년대 흐름재생기 풍)</string>
     <string name="real_label_title">제목:</string>
