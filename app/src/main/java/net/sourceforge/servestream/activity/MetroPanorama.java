@@ -332,6 +332,9 @@ class MetroPanorama {
     private void buildAppBar() {
         LinearLayout bar = mActivity.findViewById(R.id.metro_appbar);
         bar.removeAllViews();
+        // settings needs no bar: everything (about included) is in the list itself
+        bar.setVisibility(mSection == SETTINGS ? View.GONE : View.VISIBLE);
+        if (mSection == SETTINGS) return;
         boolean listShown = mSection == STATIONS || (mWide && dual(mSection));
         if (listShown) {
             addBarButton(bar, R.drawable.ic_m3_add, R.string.add_new_url_label, new View.OnClickListener() {

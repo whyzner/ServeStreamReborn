@@ -547,6 +547,13 @@ public class ClassicThemeTest {
             assertEquals(theme + ": settings section", 4, section(main));
             // the settings themselves, not a list of groups that open another window
             assertTrue(theme + ": settings not shown in the panorama", widgets[0] > 0 && widgets[1] > 0);
+            final boolean[] bar = new boolean[1];
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    bar[0] = shown(main, R.id.metro_appbar);
+                }
+            });
+            assertTrue(theme + ": round-icon bar still shown under settings", !bar[0]);
 
             // back: to stations, then the screen closes (predictive back dispatcher)
             inst.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);
