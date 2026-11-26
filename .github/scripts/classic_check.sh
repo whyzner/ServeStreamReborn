@@ -27,7 +27,7 @@ sleep 4
 adb shell screencap -p /sdcard/classic_settings.png
 for n in classic_main classic_player classic_settings; do
   adb pull /sdcard/$n.png $n.png >/dev/null 2>&1
-  echo "=====SHOT $n BEGIN====="; base64 -w 0 $n.png; echo; echo "=====SHOT $n END====="
+  echo "=====SHOT $n BEGIN====="; base64 -w 76 $n.png; echo "=====SHOT $n END====="
 done
 echo "RESULT $RESULT"
 [ "$RESULT" = PASS ]
