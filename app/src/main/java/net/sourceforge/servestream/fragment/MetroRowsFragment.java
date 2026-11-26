@@ -24,6 +24,7 @@ import net.sourceforge.servestream.activity.SettingsActivity;
  *
  * explore: add a URL, search stations, favourites.
  * settings: the groups of the settings screen (each opens it), app info.
+ *   Not used since 2.9.3: the settings section shows the settings themselves.
  */
 public class MetroRowsFragment extends Fragment {
 

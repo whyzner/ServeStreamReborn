@@ -684,6 +684,7 @@ public class MainActivity extends AppCompatActivity implements
 		FragmentTransaction ft = fm.beginTransaction();
 		boolean any = false;
 		for (String tag : new String[] {MetroPanorama.STATIONS_TAG, MetroPanorama.ALARMS_TAG, MetroPanorama.BROWSE_TAG,
+				MetroPanorama.SETTINGS_TAG,
 				net.sourceforge.servestream.fragment.MetroNowPlayingFragment.TAG,
 				net.sourceforge.servestream.fragment.MetroRowsFragment.EXPLORE_TAG,
 				net.sourceforge.servestream.fragment.MetroRowsFragment.SETTINGS_TAG}) {

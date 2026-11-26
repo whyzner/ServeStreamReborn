@@ -536,8 +536,17 @@ public class ClassicThemeTest {
             showSection(main, 3);
             screenshot(theme + "_pano_alarms");
             showSection(main, 4);
+            SystemClock.sleep(800);
+            final int[] widgets = new int[2];
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    countMetroWidgets(main.findViewById(R.id.metro_single), widgets);
+                }
+            });
             screenshot(theme + "_pano_settings");
             assertEquals(theme + ": settings section", 4, section(main));
+            // the settings themselves, not a list of groups that open another window
+            assertTrue(theme + ": settings not shown in the panorama", widgets[0] > 0 && widgets[1] > 0);
 
             // back: to stations, then the screen closes (predictive back dispatcher)
             inst.sendKeyDownUpSync(android.view.KeyEvent.KEYCODE_BACK);

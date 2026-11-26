@@ -53,6 +53,8 @@ class MetroPanorama {
     static final String STATIONS_TAG = "metro_sec_stations";
     static final String ALARMS_TAG = "metro_sec_alarms";
     static final String BROWSE_TAG = "metro_sec_browse";
+    /** The whole settings screen, right in the panorama (one settings window). */
+    static final String SETTINGS_TAG = "metro_sec_prefs";
     private static final String STATE_SECTION = "metro_section";
     private static final String STATE_SEARCH = "metro_search";
 
@@ -76,7 +78,8 @@ class MetroPanorama {
         // screens restored from before the panorama (or from another theme) are dropped
         FragmentTransaction drop = mFm.beginTransaction();
         boolean any = false;
-        for (String tag : new String[] {"0", "1", "2", "metro_home", "metro_rail", "metro_now"}) {
+        // (2.9.1 - 2.9.2 had a list of settings groups here instead of the settings themselves)
+        for (String tag : new String[] {"0", "1", "2", "metro_home", "metro_rail", "metro_now", MetroRowsFragment.SETTINGS_TAG}) {
             Fragment f = mFm.findFragmentByTag(tag);
             if (f != null) {
                 drop.remove(f);
@@ -137,14 +140,15 @@ class MetroPanorama {
         String singleTag = null;
         if (!dual(section)) {
             singleTag = section == EXPLORE ? (mFm.findFragmentByTag(BROWSE_TAG) != null ? BROWSE_TAG : MetroRowsFragment.EXPLORE_TAG)
-                    : section == ALARMS ? ALARMS_TAG : MetroRowsFragment.SETTINGS_TAG;
+                    : section == ALARMS ? ALARMS_TAG : SETTINGS_TAG;
             if (mFm.findFragmentByTag(singleTag) == null) {
                 Fragment f = section == EXPLORE ? MetroRowsFragment.explore()
-                        : section == ALARMS ? new AlarmClockFragment() : MetroRowsFragment.settings();
+                        : section == ALARMS ? new AlarmClockFragment()
+                        : new net.sourceforge.servestream.fragment.SettingsFragment();
                 ft.add(R.id.metro_single, f, singleTag);
             }
         }
-        for (String tag : new String[] {MetroRowsFragment.EXPLORE_TAG, BROWSE_TAG, ALARMS_TAG, MetroRowsFragment.SETTINGS_TAG}) {
+        for (String tag : new String[] {MetroRowsFragment.EXPLORE_TAG, BROWSE_TAG, ALARMS_TAG, SETTINGS_TAG}) {
             Fragment f = mFm.findFragmentByTag(tag);
             if (f == null) continue;
             if (tag.equals(singleTag)) ft.show(f); else ft.hide(f);
