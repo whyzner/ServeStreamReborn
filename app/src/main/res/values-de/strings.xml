@@ -41,10 +41,6 @@
   <string name="unknown_album_name">Unbekanntes Album</string>
   <string name="url_not_opened_message">Die URL konnte nicht geöffnet werden.</string>
   <string name="find_barcode_scanner_message">Dieses Feature erfordert den ZXing Barcode-Scanner. Diese Anwendung im Markt suchen?</string>
-  <string name="donation_successful_message">Vielen Dank für die Spende!</string>
-  <string name="rate_application">Möchten sie diese Anwendung im Android Markt bewerten? Feedback ist erwünscht.</string>
-  <string name="rate_pos">Ja, in den Markt weiterleiten.</string>
-  <string name="rate_neg">Nein, und nicht wieder fragen.</string>
   <string name="list_menu_backup">Sicherung</string>
   <string name="list_menu_effects">Equalizer</string>
   <string name="list_menu_refresh">Aktualisieren</string>
@@ -97,7 +93,6 @@
   <string name="pref_bluetooth_category">Bluetooth</string>
   <string name="pref_bluetooth_options">Bluetooth Einstellungen</string>
   <string name="pref_restore">Von einer Datei wiederherstellen</string>
-  <string name="pref_donate">Spenden</string>
   <string name="pref_general_settings_category">Allgemeine Einstellungen</string>
   <string name="pref_playback_category">Wiedergabe Einstellungen</string>
   <string name="pref_network_category">Netzwerk</string>
@@ -239,7 +234,6 @@
   <string name="drawer_close">Schließe Schublade</string>
 
   <!-- Donation amounts -->
-  <string name="donation_amount">Spendenbetrag wählen</string>
   <string name="one_dollar">"1 US$"</string>
   <string name="four_dollars">"4 US$"</string>
   <string name="eight_dollars">"8 US$"</string>

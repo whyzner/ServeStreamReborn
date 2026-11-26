@@ -38,9 +38,6 @@
    	<string name="opening_url_message">Ouverture de l\'URL&#8230;</string>
     <string name="url_not_opened_message">L\'URL saisie ne peut être ouverte.</string>
     <string name="find_barcode_scanner_message">Cette fonctionnalité requière le scanner de code barre ZXing. Chercher cette application ?</string>
-   	<string name="rate_application">&quot;Voulez-vous rédiger un avis sur Google Play ? Les commentaires sont appréciés.&quot;</string>
-	<string name="rate_pos">&quot;Oui, donner un avis sur le Google Play&quot;</string>
-	<string name="rate_neg">"Non, et ne pas demander à nouveau"</string>
    	<string name="list_menu_backup">Sauvegarde</string>
 	<string name="list_menu_effects">Effets sonores</string>
 	<string name="list_menu_refresh">Rafraîchir</string>
@@ -91,7 +88,6 @@
     <string name="pref_backup_and_restore">Sauvegarde et restauration</string>
     <string name="pref_backup">Sauvegarder au format JSON</string>
     <string name="pref_restore">Restaurer depuis un fichier JSON</string>
-    <string name="pref_donate">Faire un don</string>
 	<string name="pref_general_settings_category">Paramètres gérénaux</string>
 	<string name="pref_playback_category">Paramètres de lecture</string>
 	<string name="pref_network_category">Réseau</string>

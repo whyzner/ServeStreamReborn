@@ -17,13 +17,10 @@
 
 package net.sourceforge.servestream.utils;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,7 +36,9 @@ import org.json.JSONObject;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Environment;
+import android.net.Uri;
+
+import net.sourceforge.servestream.R;
 
 public class BackupUtils {
 
@@ -48,9 +47,9 @@ public class BackupUtils {
 	private static final String BACKUP_DIRECTORY_PATH = "/ServeStream/backup/";
 	
 	private static void showBackupDialog(final Context context, String message) {
-    	AlertDialog.Builder builder;
-    	AlertDialog alertDialog;
-    	builder = new AlertDialog.Builder(context);
+    	androidx.appcompat.app.AlertDialog.Builder builder;
+    	androidx.appcompat.app.AlertDialog alertDialog;
+    	builder = new com.google.android.material.dialog.MaterialAlertDialogBuilder(context);
     	builder.setMessage(message)
     		.setCancelable(true)
     		.setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -62,100 +61,78 @@ public class BackupUtils {
     	alertDialog.show();
 	}
 	
-	public synchronized static void backup(Context context) {
-		boolean success = true;
-		String message = "Backup failed";
-		
-		File backupFile = getBackupFile();
-		
-		if (backupFile == null) {
-			success = false;
-		} else {
-			BufferedWriter out = null;
-			StreamDatabase streamdb = new StreamDatabase(context);
-			List<UriBean> uris = streamdb.getUris();
-			streamdb.close();
-			
-			if (uris.size() > 0) {
-				try {
-					String json = writeJSON(uris);
-					out = new BufferedWriter(new FileWriter(backupFile));
-					out.write(json);
-				} catch (FileNotFoundException e) {
-					success = false;
-				} catch (IOException e) {
-					success = false;
-				} catch (JSONException e) {
-					success = false;
-				} finally {
-					try {
-						out.close();
-					} catch (IOException e) {
-					}
-				}
-			} else {
-				success = false;
-				message = "No data available to backup.";
-			}
-		}
-		
-		if (success) {
-			message = "Backup was successful, file is: \"" + backupFile + "\"";
-		}
-		
-		showBackupDialog(context, message);
-	}
-	
-	public synchronized static void restore(Context context) {
-		boolean success = true;
-		String message = "Restore failed";
-		
-		StreamDatabase streamdb = new StreamDatabase(context);
-		
-		File backupFile = getBackupFile();
-		
-		if (backupFile == null || !backupFile.exists()) {
-			success = false;
-			message = "Restore failed, make sure \"" + Environment.getExternalStorageDirectory() + BACKUP_DIRECTORY_PATH + BACKUP_FILE + "\" exists.";
-		} else {
-			try {
-				List<UriBean> uris = parseBackupFile(backupFile);
-			
-				for (int i = 0; i < uris.size(); i++) {
-					if (TransportFactory.findUri(streamdb, uris.get(i).getUri()) == null) {
-						streamdb.saveUri(uris.get(i));
-					}
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-				success = false;
-			} catch (JSONException e) {
-				e.printStackTrace();
-				success = false;
-			}
-		}
-		
-		if (success) {
-			message = "Restore was successful";
-		}
-		
-		streamdb.close();
-		
-		showBackupDialog(context, message);
-	}
-	
-	private static File getBackupFile() {
-		File file = new File(Environment.getExternalStorageDirectory() + BACKUP_DIRECTORY_PATH);
+	/** File name suggested in the system "save" dialog. */
+	public static final String SUGGESTED_NAME = "servestream-backup.json";
 
-	    if (!file.exists() && !file.mkdirs()) {
-	    	return null;
-	    }
-	    
-		file = new File(Environment.getExternalStorageDirectory() + BACKUP_DIRECTORY_PATH, BACKUP_FILE);
-		
-	    return file;
+	public synchronized static void backup(Context context, Uri target) {
+		String message;
+		StreamDatabase streamdb = new StreamDatabase(context);
+		List<UriBean> uris = streamdb.getUris();
+		streamdb.close();
+
+		if (uris.size() == 0) {
+			message = context.getString(R.string.backup_no_data);
+		} else {
+			OutputStream out = null;
+			try {
+				out = context.getContentResolver().openOutputStream(target, "wt");
+				if (out == null) {
+					throw new IOException("Cannot open " + target);
+				}
+				out.write(writeJSON(uris).getBytes("UTF-8"));
+				message = context.getString(R.string.backup_done, uris.size());
+			} catch (Exception e) {
+				message = context.getString(R.string.backup_failed) + "\n" + e.getMessage();
+			} finally {
+				try {
+					if (out != null) out.close();
+				} catch (IOException ignored) {
+				}
+			}
+		}
+
+		showBackupDialog(context, message);
 	}
-	
+
+	public synchronized static void restore(Context context, Uri source) {
+		String message;
+		StreamDatabase streamdb = new StreamDatabase(context);
+		InputStream in = null;
+
+		try {
+			in = context.getContentResolver().openInputStream(source);
+			if (in == null) {
+				throw new IOException("Cannot open " + source);
+			}
+			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+			byte[] chunk = new byte[8192];
+			int n;
+			while ((n = in.read(chunk)) > 0) {
+				buffer.write(chunk, 0, n);
+			}
+
+			List<UriBean> uris = parseBackup(buffer.toString("UTF-8"));
+			int added = 0;
+			for (int i = 0; i < uris.size(); i++) {
+				if (TransportFactory.findUri(streamdb, uris.get(i).getUri()) == null) {
+					streamdb.saveUri(uris.get(i));
+					added++;
+				}
+			}
+			message = context.getString(R.string.restore_done, added);
+		} catch (Exception e) {
+			message = context.getString(R.string.restore_failed) + "\n" + e.getMessage();
+		} finally {
+			try {
+				if (in != null) in.close();
+			} catch (IOException ignored) {
+			}
+			streamdb.close();
+		}
+
+		showBackupDialog(context, message);
+	}
+
 	private static String writeJSON(List<UriBean> uris) throws JSONException {		
 		JSONObject root = new JSONObject();
 		JSONArray array = new JSONArray();
@@ -185,20 +162,10 @@ public class BackupUtils {
 		return root.toString();
 	}
 	
-	private static List<UriBean> parseBackupFile(File backupFile) throws IOException, JSONException {
-		BufferedReader br = null;
-		String line;
-		StringBuffer buffer = new StringBuffer();
+	private static List<UriBean> parseBackup(String json) throws JSONException {
 		List<UriBean> uris = new ArrayList<UriBean>();
-		
-		try {
-			br = new BufferedReader(new FileReader(backupFile));
-			
-			while ((line = br.readLine()) != null) {
-				buffer.append(line);
-			}
-		 
-			JSONObject js = new JSONObject(buffer.toString());
+		{
+			JSONObject js = new JSONObject(json);
 			JSONArray tableRows = js.getJSONObject(ROOT_JSON_ELEMENT).getJSONArray(UriBean.BEAN_NAME);
 			
 			for (int i = 0; i < tableRows.length(); i++) {
@@ -236,10 +203,8 @@ public class BackupUtils {
 	      		
 				uris.add(uriBean);
 			}
-		} finally {
-			Utils.closeBufferedReader(br);
 		}
-		
+
 		return uris;
 	}
 }

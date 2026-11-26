@@ -41,10 +41,6 @@
     <string name="unknown_album_name">Nieznany album</string>
     <string name="url_not_opened_message">Adres nie mógł zostać otwarty.</string>
 	<string name="find_barcode_scanner_message">Ta funkcja wymaga skanera kodów kreskowych ZXing. Czy chcesz znaleźć tą aplikację?</string>
-	<string name="donation_successful_message">Dziękujemy za twoją wpłatę!</string>
-    <string name="rate_application">Czy chciałbyś ocenić tą aplikację w sklepie Play? Uwagi mile widziane.</string>
-	<string name="rate_pos">"Tak, zabierz mnie do sklepu"</string>
-	<string name="rate_neg">"Nie i nie pytaj ponownie"</string>
     <string name="list_menu_backup">Kopia zapasowa</string>
     <string name="list_menu_effects">Efekty dźwiękowe</string>
 	<string name="list_menu_refresh">Odśwież</string>
@@ -98,7 +94,6 @@
     <string name="pref_bluetooth_category">Bluetooth</string>
     <string name="pref_bluetooth_options">Opcje bluetooth</string>
     <string name="pref_restore">Przywróć z pliku JSON</string>
-    <string name="pref_donate">Wspomóż</string>
 	<string name="pref_general_settings_category">Ustawienia ogólne</string>
 	<string name="pref_playback_category">Ustawienia odtwarzania</string>
 	<string name="pref_network_category">Sieć</string>
@@ -247,7 +242,6 @@
     <string name="drawer_close">Zamknij szufladę</string>
     
     <!-- Donation amounts -->
-    <string name="donation_amount">Wybierz kwotę, jaką chcesz podarować </string>
     
     <string name="one_dollar">"1 dolar"</string>
     <string name="four_dollars">"4 dolary"</string>

@@ -26,7 +26,6 @@ import net.sourceforge.servestream.utils.LoadingDialog;
 import net.sourceforge.servestream.utils.LoadingDialog.LoadingDialogListener;
 import net.sourceforge.servestream.utils.MusicUtils;
 import net.sourceforge.servestream.utils.OverflowClickListener;
-import net.sourceforge.servestream.utils.RateDialog;
 import net.sourceforge.servestream.utils.UriBeanLoader;
 import net.sourceforge.servestream.R;
 import net.sourceforge.servestream.activity.AddUrlActivity;
@@ -91,7 +90,6 @@ public class UrlListFragment extends ListFragment implements
     public static final String UPDATE_LIST = "net.sourceforge.servestream.updatelist";
 	
     private final static String LOADING_DIALOG = "loading_dialog";
-	private final static String RATE_DIALOG = "rate_dialog";
 	
 	public static final String ARG_TARGET_URI = "target_uri";
 	
@@ -295,17 +293,6 @@ public class UrlListFragment extends ListFragment implements
 			String targetUri = getArguments().getString(ARG_TARGET_URI);
 			processUri(targetUri);
 			getArguments().putString("target_uri", null);
-		} else {
-			// see if the user wants to rate the application after 5 uses
-			int rateApplicationFlag = mPreferences.getInt(PreferenceConstants.RATE_APPLICATION_FLAG, 0);
-			if (rateApplicationFlag != -1) {
-				rateApplicationFlag++;
-				Editor ed = mPreferences.edit();
-				ed.putInt(PreferenceConstants.RATE_APPLICATION_FLAG, rateApplicationFlag);
-				ed.commit();
-				// The rating prompt opened the original ServeStream's Play Store page,
-				// which is not this app: it stays off.
-			}
 		}
 	}
 	
@@ -409,8 +396,6 @@ public class UrlListFragment extends ListFragment implements
 		// Create and show the dialog.
 		if (tag.equals(LOADING_DIALOG)) {
 			newFragment = LoadingDialog.newInstance(this, getString(R.string.opening_url_message));
-		} else if (tag.equals(RATE_DIALOG)) {
-			newFragment = RateDialog.newInstance();
 		}
 
 		ft.add(0, newFragment, tag);

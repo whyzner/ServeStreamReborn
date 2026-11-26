@@ -146,11 +146,6 @@
 	    	android:key="about"
 			android:title="@string/about_pref" >
 		</Preference>
-	
-    	<Preference
-        	android:key="donate"
-			android:title="@string/pref_donate" >
-    	</Preference>
 
 	</PreferenceCategory>
     		

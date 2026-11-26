@@ -36,7 +36,6 @@ public final class PreferenceConstants {
 	public static final String RETRIEVE_SHOUTCAST_METADATA = "retrieveshoutcastmetadata";
 	public static final String SEND_SCROBBLER_INFO = "sendscrobblerinfo";
 	public static final String SEND_BLUETOOTH_METADATA = "sendbluetoothmetadata";
-	public static final String RATE_APPLICATION_FLAG = "rateapplicationflag";
 	public static final String THEME = "theme";
 	
 	/* Backup identifiers */

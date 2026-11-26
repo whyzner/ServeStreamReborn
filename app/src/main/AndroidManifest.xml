@@ -34,8 +34,6 @@
 	<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 	<!-- exact alarms are granted by the user ("Alarms & reminders"); without it the alarm may ring a little late -->
 	<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-	<!-- In-app billing permission  -->
-	<uses-permission android:name="com.android.vending.BILLING" />
 	<uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 	<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />

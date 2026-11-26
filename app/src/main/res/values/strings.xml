@@ -41,10 +41,6 @@
     <string name="unknown_album_name">Unknown album</string>
     <string name="url_not_opened_message">The url could not be opened.</string>
 	<string name="find_barcode_scanner_message">This feature requires the ZXing barcode scanner. Find this application?</string>
-	<string name="donation_successful_message">Thank you for your donation!</string>
-    <string name="rate_application">Would you like to rate this application in the Android market? Feedback is appreciated.</string>
-	<string name="rate_pos">"Yes, take me to the market"</string>
-	<string name="rate_neg">"No, and don\'t ask again"</string>
     <string name="list_menu_backup">Backup</string>
     <string name="list_menu_effects">Sound effects</string>
 	<string name="list_menu_refresh">Refresh</string>
@@ -98,7 +94,6 @@
     <string name="pref_bluetooth_category">Bluetooth</string>
     <string name="pref_bluetooth_options">Bluetooth options</string>
     <string name="pref_restore">Restore from JSON file</string>
-    <string name="pref_donate">Donate</string>
 	<string name="pref_general_settings_category">General settings</string>
 	<string name="pref_playback_category">Playback settings</string>
 	<string name="pref_network_category">Network</string>
@@ -245,7 +240,6 @@
     <string name="drawer_close">Close Drawer</string>
     
     <!-- Donation amounts -->
-    <string name="donation_amount">Select donation amount </string>
     
     <string name="one_dollar">"1 dollar"</string>
     <string name="four_dollars">"4 dollars"</string>
@@ -331,5 +325,10 @@
     <string name="exact_alarm_message">Without the \"Alarms &amp; reminders\" permission Android may ring the radio alarm a few minutes late. Allow it in the next screen.</string>
     <string name="exact_alarm_allow">Allow</string>
     <string name="bluetooth_permission_needed">Allow \"Nearby devices\" to choose Bluetooth devices here.</string>
+    <string name="backup_no_data">There are no stations to back up.</string>
+    <string name="backup_done">Backed up %d stations.</string>
+    <string name="backup_failed">Backup failed.</string>
+    <string name="restore_done">Restored %d new stations.</string>
+    <string name="restore_failed">Restore failed.</string>
 </resources>
 

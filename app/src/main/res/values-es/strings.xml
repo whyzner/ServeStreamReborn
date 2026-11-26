@@ -38,9 +38,6 @@
     <string name="opening_url_message">Abriendo URL&#8230;</string>
     <string name="url_not_opened_message">El URL no pudo abrir.</string>
 	<string name="find_barcode_scanner_message">Esta opción requiere un ZXing escáner de código de barras instalado. ¿Quiere buscar esta aplicación?</string>
-    <string name="rate_application">¿Quiere valorar esta aplicación en el mercado Android? Su opinión es bienvenida.</string>
-	<string name="rate_pos">"Sí, abrir el mercado"</string>
-	<string name="rate_neg">"No, y no preguntar de nuevo"</string>
     <string name="list_menu_backup">Recuperar</string>
     <string name="list_menu_effects">Efectos sonido</string>
 	<string name="list_menu_refresh">Refrescar</string>
@@ -90,7 +87,6 @@
     <string name="pref_backup_and_restore">Resguardar y Restaurar</string>
     <string name="pref_backup">Resguardar a archivo JSON</string>
     <string name="pref_restore">Restaurar desde archivo JSON</string>
-    <string name="pref_donate">Donar</string>
 	<string name="pref_general_settings_category">Configuración general</string>
 	<string name="pref_playback_category">Configuración de reproducción</string>
 	<string name="pref_network_category">Red</string>

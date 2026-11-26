@@ -38,9 +38,6 @@
     <string name="opening_url_message">Открываю URL&#8230;</string>
     <string name="url_not_opened_message">Не могу открыть этот URL.</string>
    	<string name="find_barcode_scanner_message">Эта особенность требует сканера штрих-кода ZXing. Найти это приложение?</string>
-  	<string name="rate_application">Хотите повлиять на рейтинг программы на Маркете? Ваш отзыв важен.</string>
-	<string name="rate_pos">"Да, переведите меня на Маркет"</string>
-	<string name="rate_neg">"Нет, и не спрашивать больше"</string>
     <string name="list_menu_backup">Сохранение</string>
 	<string name="list_menu_effects">Звуковые эффекты</string>
 	<string name="list_menu_refresh">Обновить</string>
@@ -90,7 +87,6 @@
     <string name="pref_backup_and_restore">Сохранить &amp; Восстановить</string>
     <string name="pref_backup">Сохранить в JSON файл</string>
     <string name="pref_restore">Восстановить из JSON файла</string>
-    <string name="pref_donate">Пожертвования</string>
 	<string name="pref_general_settings_category">Общие настройки</string>
 	<string name="pref_playback_category">Настройки воспроизведения</string>
 	<string name="pref_network_category">Сеть</string>

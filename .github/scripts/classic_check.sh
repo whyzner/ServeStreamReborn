@@ -1,6 +1,16 @@
 #!/bin/bash
 # ServeStream Classic: install, check the names, open it, make sure it stays up, take pictures.
 set -u
+
+# tap the first view whose attributes match a pattern (from a UI dump)
+tap() {
+  adb shell uiautomator dump /sdcard/u.xml >/dev/null 2>&1
+  local b
+  b=$(adb shell cat /sdcard/u.xml | tr '>' '\n' | grep -m1 -- "$1" | sed -E 's/.*bounds="\[([0-9]+),([0-9]+)\]\[([0-9]+),([0-9]+)\]".*/\1 \2 \3 \4/')
+  [ -z "$b" ] && return 1
+  set -- $b
+  adb shell input tap $(( ($1+$3)/2 )) $(( ($2+$4)/2 ))
+}
 PKG=net.sourceforge.servestream.classic
 APK=$(find apk -name '*.apk' | head -1)
 adb install -r -g "$APK"
@@ -41,9 +51,29 @@ adb shell input keyevent KEYCODE_MEDIA_PLAY; sleep 3
 if adb logcat -d | grep -q "FATAL EXCEPTION"; then echo "CHECK media buttons: FAIL"; RESULT=FAIL; adb logcat -d | grep -A15 "FATAL EXCEPTION" | head -30; else echo "CHECK media buttons: PASS"; fi
 adb shell am start -W -n $PKG/net.sourceforge.servestream.activity.MainActivity
 sleep 2
-sleep 4
+# settings: no Donate item; backup opens the system file picker
+tap 'content-desc="More options"'; sleep 2
+tap 'text="Settings"'; sleep 3
 adb shell screencap -p /sdcard/classic_settings.png
-for n in classic_main classic_player classic_settings; do
+for i in 1 2 3; do adb shell input swipe 540 1800 540 600 300; sleep 1; done
+adb shell uiautomator dump /sdcard/u.xml >/dev/null 2>&1
+if adb shell cat /sdcard/u.xml | grep -qi 'text="Donate'; then echo "CHECK no Donate item: FAIL"; RESULT=FAIL; else echo "CHECK no Donate item: PASS"; fi
+if tap 'text="Backup &amp; restore"'; then
+  sleep 2
+  tap 'text="Backup to JSON file"'; sleep 4
+  top=$(adb shell dumpsys activity activities | grep -m1 "topResumedActivity")
+  if echo "$top" | grep -qi "documentsui"; then echo "CHECK backup opens the file picker: PASS"; else echo "CHECK backup opens the file picker: FAIL ($top)"; RESULT=FAIL; fi
+  adb shell screencap -p /sdcard/classic_backup.png
+  adb shell input keyevent KEYCODE_BACK; sleep 2
+  tap 'text="Restore from JSON file"'; sleep 4
+  top=$(adb shell dumpsys activity activities | grep -m1 "topResumedActivity")
+  if echo "$top" | grep -qi "documentsui"; then echo "CHECK restore opens the file picker: PASS"; else echo "CHECK restore opens the file picker: FAIL ($top)"; RESULT=FAIL; fi
+  adb shell input keyevent KEYCODE_BACK; sleep 2
+  if adb logcat -d | grep -q "FATAL EXCEPTION"; then echo "CHECK backup screens without crash: FAIL"; RESULT=FAIL; adb logcat -d | grep -A15 "FATAL EXCEPTION" | head -30; else echo "CHECK backup screens without crash: PASS"; fi
+else
+  echo "CHECK backup & restore item found: FAIL"; RESULT=FAIL
+fi
+for n in classic_main classic_player classic_settings classic_backup; do
   adb pull /sdcard/$n.png $n.png >/dev/null 2>&1
   echo "=====SHOT $n BEGIN====="; base64 -w 76 $n.png; echo "=====SHOT $n END====="
 done
