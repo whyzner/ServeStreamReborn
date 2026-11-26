@@ -82,11 +82,6 @@ public class SettingsFragment extends net.sourceforge.servestream.preference.Pre
 
 					});
 
-							return true;
-						}
-
-					});
-			
 			/*findPreference(PreferenceConstants.THEME).setOnPreferenceChangeListener(
                     new OnPreferenceChangeListener() {
 
