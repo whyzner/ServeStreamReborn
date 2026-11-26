@@ -47,9 +47,9 @@ public class BackupUtils {
 	private static final String BACKUP_DIRECTORY_PATH = "/ServeStream/backup/";
 	
 	private static void showBackupDialog(final Context context, String message) {
-    	androidx.appcompat.app.AlertDialog.Builder builder;
-    	androidx.appcompat.app.AlertDialog alertDialog;
-    	builder = new com.google.android.material.dialog.MaterialAlertDialogBuilder(context);
+    	android.app.AlertDialog.Builder builder;
+    	android.app.AlertDialog alertDialog;
+    	builder = new android.app.AlertDialog.Builder(context);
     	builder.setMessage(message)
     		.setCancelable(true)
     		.setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {

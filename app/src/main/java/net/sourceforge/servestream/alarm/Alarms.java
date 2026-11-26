@@ -380,7 +380,7 @@ public class Alarms {
         if (activity.isFinishing()) {
             return;
         }
-        new com.google.android.material.dialog.MaterialAlertDialogBuilder(activity)
+        new android.app.AlertDialog.Builder(activity)
                 .setTitle(net.sourceforge.servestream.R.string.exact_alarm_title)
                 .setMessage(net.sourceforge.servestream.R.string.exact_alarm_message)
                 .setPositiveButton(net.sourceforge.servestream.R.string.exact_alarm_allow,

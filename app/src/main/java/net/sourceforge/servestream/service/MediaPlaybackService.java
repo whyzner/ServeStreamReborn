@@ -2232,13 +2232,8 @@ public class MediaPlaybackService extends Service implements
             title = mCursor.getString(mCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE));
             uri = mCursor.getString(mCursor.getColumnIndexOrThrow(Media.MediaColumns.URI));
         }
-        // Streams have no title of their own: show the name the user saved.
-        if (title == null || title.length() == 0 || title.equals(Media.UNKNOWN_STRING) || title.equals(uri)) {
-            String name = getStationName(uri);
-            if (name != null) {
-                return name;
-            }
-        }
+        // Classic: streams show their address, as the original app did
+        // (ServeStream shows the saved station name here instead).
         return title;
     }
 
