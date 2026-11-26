@@ -387,7 +387,7 @@ public class Alarms {
                 context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         try {
-            Intent show = new Intent(context, net.sourceforge.servestream.activity.AlarmClockActivity.class);
+            Intent show = new Intent(context, net.sourceforge.servestream.activity.MainActivity.class);
             am.setAlarmClock(new AlarmManager.AlarmClockInfo(atTimeInMillis,
                     net.sourceforge.servestream.utils.Compat.activity(context, 0, show, 0)), sender);
         } catch (SecurityException e) {

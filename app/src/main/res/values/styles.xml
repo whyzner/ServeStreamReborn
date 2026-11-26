@@ -118,4 +118,6 @@
 
     <style name="Theme.ServeStream.DarkActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <!-- full screen alarm: wallpaper behind, no title -->
+    <style name="Theme.ServeStream.Alarm" parent="@android:style/Theme.DeviceDefault.Wallpaper.NoTitleBar" />
 </resources>
