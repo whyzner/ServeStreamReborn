@@ -57,6 +57,7 @@ public class SettingsFragment extends net.sourceforge.servestream.preference.Pre
 		// Always (re)build: after the activity is recreated the restored fragment starts empty.
 		{
 			addPreferencesFromResource(R.xml.preferences);
+			setUpBackupItems();
 
 			findPreference(PREF_BLUETOOTH_OPTIONS).setOnPreferenceClickListener(
 					new OnPreferenceClickListener() {
@@ -118,22 +119,46 @@ public class SettingsFragment extends net.sourceforge.servestream.preference.Pre
 
 	@Override
 	public boolean onPreferenceTreeClick (PreferenceScreen preferenceScreen, Preference preference) {
-		if (preference.getKey() != null) {
-			if (preference.getKey().equals(PREF_BACKUP)) {
+		if (preference instanceof PreferenceScreen) {
+			// "Backup & restore" opens its own full-screen list: keep it below the status bar
+			final android.app.Dialog dialog = ((PreferenceScreen) preference).getDialog();
+			if (dialog != null && dialog.getWindow() != null) {
+				android.view.View content = dialog.getWindow().getDecorView();
+				androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(content, (v, insets) -> {
+					androidx.core.graphics.Insets bars = insets.getInsets(
+							androidx.core.view.WindowInsetsCompat.Type.systemBars()
+							| androidx.core.view.WindowInsetsCompat.Type.displayCutout());
+					v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+					return androidx.core.view.WindowInsetsCompat.CONSUMED;
+				});
+				androidx.core.view.ViewCompat.requestApplyInsets(content);
+			}
+		}
+		return false;
+	}
+
+	/** The backup and restore items sit in a nested screen: they get click listeners of their own. */
+	private void setUpBackupItems() {
+		findPreference(PREF_BACKUP).setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
 				Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT)
 						.addCategory(Intent.CATEGORY_OPENABLE)
 						.setType("application/json")
 						.putExtra(Intent.EXTRA_TITLE, BackupUtils.SUGGESTED_NAME);
 				startActivityForResult(intent, REQUEST_BACKUP);
-			} else if (preference.getKey().equals(PREF_RESTORE)) {
+				return true;
+			}
+		});
+		findPreference(PREF_RESTORE).setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
 				Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT)
 						.addCategory(Intent.CATEGORY_OPENABLE)
 						.setType("*/*");
 				startActivityForResult(intent, REQUEST_RESTORE);
-			} 
-		}
-		
-		return true;
+				return true;
+			}
+		});
 	}
-
 }
