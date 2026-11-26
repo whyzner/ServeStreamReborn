@@ -5,6 +5,11 @@
 
 최신 버전 받기: https://github.com/whyzner/ServeStreamReborn/releases/latest
 
+## 2.9.2 (2026-11-26)
+- Metro 파노라마 다듬기
+  - now playing: 재생 중이 아닐 때 라디오 그림이 칸에 꽉 차던 문제 (처음에 숨겨진 섹션이라 크기를 못 재던 것) 수정
+  - alarms: 아래 원형 바의 ⊕와 겹치던 파란 + 버튼 숨김
+
 ## 2.9.1 (2026-11-26)
 - Metro Dark / Metro Light 전면 개편: Windows Phone 7/8 Xbox Music 파노라마 (기획서 "Metro Panorama UI – Final Development Specification")
   - 맨 위 큰 가는 글씨 "ServeStream", 그 아래 섹션 제목 줄: stations · now playing · explore · alarms · settings

@@ -128,6 +128,12 @@ public class MetroNowPlayingFragment extends Fragment {
                 startActivity(new Intent(getActivity(), NowPlayingActivity.class));
             }
         });
+        // the radio placeholder sits in the middle of the picture square, at any size
+        mArt.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            public void onLayoutChange(View v, int l, int t, int r, int b, int ol, int ot, int or, int ob) {
+                if (r - l != or - ol) fitPlaceholder();
+            }
+        });
         mSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar bar, int progress, boolean fromUser) { }
             public void onStartTrackingTouch(SeekBar bar) {
@@ -222,22 +228,19 @@ public class MetroNowPlayingFragment extends Fragment {
             mArtUri = key;
             Bitmap picture = uri == null ? null : stationPicture(uri);
             if (picture != null) {
+                mPlaceholder = false;
                 mArt.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 mArt.clearColorFilter();
                 mArt.setPadding(0, 0, 0, 0);
                 mArt.setImageBitmap(picture);
             } else {
+                mPlaceholder = true;
                 mArt.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 android.util.TypedValue tv = new android.util.TypedValue();
                 requireContext().getTheme().resolveAttribute(com.google.android.material.R.attr.colorOnSurfaceVariant, tv, true);
                 mArt.setColorFilter(tv.data);
                 mArt.setImageResource(R.drawable.ic_m3_radio);
-                mArt.post(new Runnable() {
-                    public void run() {
-                        int p = mArt.getWidth() / 4;
-                        mArt.setPadding(p, p, p, p);
-                    }
-                });
+                fitPlaceholder();
             }
         }
     }
@@ -258,5 +261,19 @@ public class MetroNowPlayingFragment extends Fragment {
             db.close();
         }
         return null;
+    }
+
+    private boolean mPlaceholder;
+
+    private void fitPlaceholder() {
+        if (!mPlaceholder || mArt == null) return;
+        final int p = mArt.getWidth() / 4;
+        if (mArt.getPaddingLeft() != p) {
+            mArt.post(new Runnable() {
+                public void run() {
+                    mArt.setPadding(p, p, p, p);
+                }
+            });
+        }
     }
 }

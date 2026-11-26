@@ -114,6 +114,10 @@ public class AlarmClockFragment extends Fragment implements
                 addNewAlarm();
             }
         });
+        if (net.sourceforge.servestream.utils.AppearanceSettings.isMetro()) {
+            // Metro panorama: adding is on the round-icon bar at the bottom
+            mFab.setVisibility(View.GONE);
+        }
 
         getLoaderManager().initLoader(URL_LOADER, null, this);
 	}
