@@ -24,6 +24,7 @@
     </style>
 
     <style name="ThemeOverlay.ServeStream.Real" parent="">
+        <item name="settingsDropdownBackground">@drawable/settings_dropdown_box_square</item>
         <!-- colours: one grey, darker than the classic theme, for every screen -->
         <item name="colorPrimary">@color/real_title</item>
         <item name="colorOnPrimary">@color/real_light</item>

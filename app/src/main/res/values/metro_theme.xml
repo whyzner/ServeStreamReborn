@@ -33,6 +33,7 @@
 
     <!-- shared by both: shapes, widgets -->
     <style name="ThemeOverlay.ServeStream.MetroBase" parent="">
+        <item name="settingsDropdownBackground">@drawable/metro_dropdown_box</item>
         <item name="colorPrimary">@color/metro_accent</item>
         <item name="colorOnPrimary">@android:color/white</item>
         <item name="colorPrimaryContainer">@color/metro_accent</item>

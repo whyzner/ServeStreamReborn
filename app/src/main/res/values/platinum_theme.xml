@@ -19,6 +19,7 @@
     </style>
 
     <style name="ThemeOverlay.ServeStream.Platinum" parent="">
+        <item name="settingsDropdownBackground">@drawable/settings_dropdown_box_square</item>
         <item name="colorPrimary">@color/platinum_accent</item>
         <item name="colorOnPrimary">@color/platinum_white</item>
         <item name="colorPrimaryContainer">@color/platinum_highlight</item>

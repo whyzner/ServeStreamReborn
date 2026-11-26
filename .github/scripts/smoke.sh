@@ -119,6 +119,7 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
          "ClassicThemeTest#metroNowPlaying Metro: playing shows now playing (LIVE, pause, queue)" \
          "ClassicThemeTest#metroWideTwoPanes Metro: wide window list | now playing, other sections full width" \
          "ClassicThemeTest#metroSwipeAndFold Metro: swipe between sections, tab kept when unfolding" \
+         "ClassicThemeTest#settingsWidgetsInEveryTheme Settings: switches and drop-down boxes in every theme" \
          "ClassicThemeTest#metroStationTabsAndFavorites Metro: all / favourites / recent tabs, star, backup keeps it" \
          "ClassicThemeTest#realThemeIsApplied Theme: real look applied (status display, fields)" \
          "ClassicThemeTest#realPlayerOnUnfoldedScreen Theme: real player on unfolded screen (picture above fields)" \
@@ -138,7 +139,7 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
 done
 
 $T adb shell pm grant $PKG android.permission.BLUETOOTH_CONNECT
-for n in classic_main classic_settings classic_player platinum_main platinum_settings platinum_player metro_dark_main metro_dark_settings metro_light_main metro_light_settings metro_dark_list metro_dark_favorites metro_light_list metro_light_favorites metro_dark_wide_main real_main real_settings real_player real_player_unfolded metro_dark_pano_stations metro_dark_pano_now metro_dark_pano_explore metro_dark_pano_alarms metro_dark_pano_settings metro_dark_pano_playing metro_light_pano_stations metro_light_pano_now metro_light_pano_explore metro_light_pano_alarms metro_light_pano_settings metro_light_pano_playing metro_dark_wide_explore; do
+for n in classic_main classic_settings classic_player platinum_main platinum_settings platinum_player metro_dark_main metro_dark_settings metro_light_main metro_light_settings metro_dark_list metro_dark_favorites metro_light_list metro_light_favorites metro_dark_wide_main real_main real_settings real_player real_player_unfolded metro_dark_pano_stations metro_dark_pano_now metro_dark_pano_explore metro_dark_pano_alarms metro_dark_pano_settings metro_dark_pano_playing metro_light_pano_stations metro_light_pano_now metro_light_pano_explore metro_light_pano_alarms metro_light_pano_settings metro_light_pano_playing metro_dark_wide_explore settings_light settings_dark settings_classic settings_platinum settings_real; do
   $T adb exec-out cat /sdcard/Download/$n.png > /tmp/$n.png 2>/dev/null
   echo "=====SHOT $n BEGIN====="; base64 -w 3000 /tmp/$n.png; echo "=====SHOT $n END====="
 done

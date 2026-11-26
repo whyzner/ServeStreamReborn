@@ -81,9 +81,8 @@ public class SettingsFragment extends net.sourceforge.servestream.preference.Pre
 
 					});
 
-			if (net.sourceforge.servestream.utils.AppearanceSettings.isMetro()) {
-				metroWidgets(getPreferenceScreen());
-			}
+			// switches and drop-down boxes in every theme (first made for Metro)
+			metroWidgets(getPreferenceScreen());
 
 			android.preference.ListPreference themePref = (android.preference.ListPreference)
 					findPreference(net.sourceforge.servestream.utils.AppearanceSettings.KEY_THEME);
@@ -173,7 +172,7 @@ public class SettingsFragment extends net.sourceforge.servestream.preference.Pre
 	}
 
 
-	/** Metro look: switches instead of check boxes, drop-down boxes for theme and language. */
+	/** Switches instead of check boxes, drop-down boxes for theme and language (all themes). */
 	private static void metroWidgets(android.preference.PreferenceGroup group) {
 		for (int i = 0; i < group.getPreferenceCount(); i++) {
 			Preference p = group.getPreference(i);

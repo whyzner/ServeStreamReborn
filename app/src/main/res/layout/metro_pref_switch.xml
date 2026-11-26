@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Metro settings: on/off switch in place of the check box.
+<!-- Settings (all themes): on/off switch in place of the check box.
      Keeps the check box id so CheckBoxPreference drives it as before. -->
 <com.google.android.material.materialswitch.MaterialSwitch xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/checkbox"

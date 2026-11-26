@@ -4,6 +4,7 @@
     <!-- Material 3 base theme: follows the system light/dark mode and,
          on Android 12+, the wallpaper colours (dynamic colour). -->
     <style name="Base.Theme.ServeStream" parent="Theme.Material3.DayNight">
+        <item name="settingsDropdownBackground">@drawable/settings_dropdown_box</item>
         <item name="android:windowBackground">?attr/colorSurface</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>

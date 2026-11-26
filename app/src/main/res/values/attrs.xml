@@ -66,4 +66,6 @@
     <!-- Metro: panel colour (boxes, inactive tiles) and the selected list row -->
     <attr name="metroPanel" format="color" />
     <attr name="metroSelectedRow" format="color" />
+    <!-- settings screen: box behind the theme / language choice -->
+    <attr name="settingsDropdownBackground" format="reference" />
 </resources>

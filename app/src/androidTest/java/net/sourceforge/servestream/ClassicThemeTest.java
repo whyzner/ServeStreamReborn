@@ -682,4 +682,25 @@ public class ClassicThemeTest {
         }
         finish(resumed(MainActivity.class, 5000));
     }
+
+    /** The settings switches and drop-down boxes are in every theme, not only Metro. */
+    @Test
+    public void settingsWidgetsInEveryTheme() throws Exception {
+        for (final String theme : new String[] {"light", "dark", "classic", "platinum", "real"}) {
+            setTheme(theme);
+            final Activity settings = start(SettingsActivity.class);
+            inst.waitForIdleSync();
+            SystemClock.sleep(1200);
+            final int[] found = new int[2];
+            inst.runOnMainSync(new Runnable() {
+                public void run() {
+                    countMetroWidgets(settings.getWindow().getDecorView(), found);
+                }
+            });
+            screenshot("settings_" + theme);
+            finish(settings);
+            assertTrue(theme + ": no on/off switches", found[0] > 0);
+            assertTrue(theme + ": theme / language have no drop-down box", found[1] > 0);
+        }
+    }
 }

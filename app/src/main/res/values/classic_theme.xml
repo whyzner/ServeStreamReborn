@@ -16,6 +16,7 @@
     </style>
 
     <style name="ThemeOverlay.ServeStream.Classic" parent="">
+        <item name="settingsDropdownBackground">@drawable/settings_dropdown_box_square</item>
         <!-- colours -->
         <item name="colorPrimary">@color/classic_title</item>
         <item name="colorOnPrimary">@color/classic_white</item>

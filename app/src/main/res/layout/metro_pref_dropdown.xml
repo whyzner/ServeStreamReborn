@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Metro settings: the current choice in a drop-down style box -->
+<!-- Settings (all themes): the current choice in a drop-down style box.
+     The box itself comes from the theme (settingsDropdownBackground). -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="40dp"
     android:minWidth="170dp"
-    android:background="@drawable/metro_dropdown_box"
+    android:background="?attr/settingsDropdownBackground"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingStart="12dp"

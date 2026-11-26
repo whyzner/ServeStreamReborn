@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Settings drop-down box for the 90s themes: square, white field, dark outline -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#FFFFFF" />
+    <stroke android:width="1dp" android:color="#404040" />
+</shape>
