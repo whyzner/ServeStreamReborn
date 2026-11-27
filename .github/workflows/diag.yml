@@ -8,14 +8,9 @@ jobs:
     steps:
       - name: Probe
         run: |
-          M=$(curl -s -m 15 'https://sminiplay.imbc.com/aacplay.ashx?agent=webapp&channel=sfm' | tr -d '\r\n')
-          B=${M%%\?*}; B=${B%/*}; Q=${M#*\?}
-          curl -s -m 15 -A 'Mozilla/5.0 (Linux; Android 16) Chrome/131 Mobile Safari/537.36' "$M" | grep -v '^#'
-          curl -s -m 15 "$B/chunklist.m3u8?$Q" -o cl.m3u8; S=$(grep -v '^#' cl.m3u8 | tail -1)
-          echo "segment no token: $(curl -s -m 15 -o /dev/null -w '%{http_code}' "$B/$S")"
-          echo "segment with token: $(curl -s -m 15 -o seg -w '%{http_code} %{content_type} %{size_download}' "$B/$S?$Q")"
-          K=$(curl -s -m 15 'https://cfpwwwapi.kbs.co.kr/api/v1/landing/live/channel_code/24' | grep -o '"service_url":"[^"]*' | head -1 | cut -d'"' -f4)
-          KB=${K%%\?*}; KB=${KB%/*}; KQ=${K#*\?}
-          echo "kbs master: $(curl -s -m 15 -o k.m3u8 -w '%{http_code}' "$K")"; grep -v '^#' k.m3u8 | head -3 | sed 's/[?].*/?.../'
-          KC=$(grep -v '^#' k.m3u8 | head -1)
-          case "$KC" in http*) ;; *) echo "kbs child no token: $(curl -s -m 15 -o /dev/null -w '%{http_code}' "$KB/$KC")"; echo "kbs child with token: $(curl -s -m 15 -o /dev/null -w '%{http_code}' "$KB/$KC?$KQ")";; esac
+          for A in 'Lavf/61.7.100' 'Lavf53.32.100' 'Dalvik/2.1.0 (Linux; U; Android 16; SM-F981N)' 'stagefright/1.2 (Linux;Android 16)' 'curl/8' 'Mozilla/5.0' 'ServeStream' 'Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/131 Mobile Safari/537.36'; do
+            M=$(curl -s -m 15 'https://sminiplay.imbc.com/aacplay.ashx?agent=webapp&channel=sfm' | tr -d '\r\n')
+            C=$(curl -s -m 15 -A "$A" "$M" | grep -v '^#' | head -1)
+            B=${M%%\?*}; B=${B%/*}
+            echo "[$A] -> ${C:0:40} child=$(curl -s -m 15 -A "$A" -o /dev/null -w '%{http_code}' "$B/$C")"
+          done
