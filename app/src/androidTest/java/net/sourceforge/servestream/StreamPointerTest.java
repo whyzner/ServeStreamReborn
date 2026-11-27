@@ -163,6 +163,68 @@ public class StreamPointerTest {
         }
     }
 
+    /** Saves the address as a station and plays it through the service; returns the final state text. */
+    private static void playAddress(String address, String name) throws Exception {
+        final Context ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        StreamDatabase db = new StreamDatabase(ctx);
+        Uri u = Uri.parse(address);
+        UriBean station = TransportFactory.findUri(db, u);
+        if (station == null) {
+            station = TransportFactory.getTransport(u.getScheme()).createUri(u);
+            station.setNickname(name);
+            station = db.saveUri(station);
+        }
+        db.close();
+        final MediaBrowserCompat[] browser = new MediaBrowserCompat[1];
+        final CountDownLatch connected = new CountDownLatch(1);
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            public void run() {
+                browser[0] = new MediaBrowserCompat(ctx, new ComponentName(ctx, MediaPlaybackService.class),
+                        new MediaBrowserCompat.ConnectionCallback() {
+                            @Override
+                            public void onConnected() {
+                                connected.countDown();
+                            }
+                        }, null);
+                browser[0].connect();
+            }
+        });
+        assertTrue("media browser did not connect", connected.await(30, TimeUnit.SECONDS));
+        final MediaControllerCompat[] controller = new MediaControllerCompat[1];
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            public void run() {
+                controller[0] = new MediaControllerCompat(ctx, browser[0].getSessionToken());
+            }
+        });
+        try {
+            String id = AutoLibrary.mediaIdFor(station.getId());
+            controller[0].getTransportControls().playFromMediaId(id, null);
+            waitPlaying(controller[0], id);
+            SystemClock.sleep(8000);
+            PlaybackStateCompat s = controller[0].getPlaybackState();
+            assertEquals("stopped after starting", PlaybackStateCompat.STATE_PLAYING, s == null ? -1 : s.getState());
+            controller[0].getTransportControls().pause();
+        } finally {
+            InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+                public void run() {
+                    browser[0].disconnect();
+                }
+            });
+        }
+    }
+
+    /** A plain HLS radio stream (EBS FM, reachable from abroad). */
+    @Test
+    public void playsHlsRadio() throws Exception {
+        playAddress("https://ebsonair.ebs.co.kr/fmradiofamilypc/familypc1m/playlist.m3u8", "EBS FM test");
+    }
+
+    /** MBC answers with a tokenised HLS address as a one-line web page, like SBS (SBS itself is blocked abroad). */
+    @Test
+    public void playsTokenisedHlsFromAnApi() throws Exception {
+        playAddress("https://sminiplay.imbc.com/aacplay.ashx?agent=webapp&channel=sfm", "MBC FM test");
+    }
+
     private static void waitPlaying(MediaControllerCompat c, String id) {
         long end = SystemClock.elapsedRealtime() + 60000;
         String got = null;

@@ -128,7 +128,9 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
          "Tier3Test#listScrollPositionSurvivesRecreation Tier 3: list scroll position kept" \
          "Tier3Test#typedTextSurvivesRecreation Tier 3: typed text kept" \
          "StreamPointerTest#recognisesPointerReplies API address: text / JSON replies recognised, playlists left alone" \
-         "StreamPointerTest#playsTheStreamAnApiPointsTo API address: plays the stream it names, asks again each time"; do
+         "StreamPointerTest#playsTheStreamAnApiPointsTo API address: plays the stream it names, asks again each time" \
+         "StreamPointerTest#playsHlsRadio HLS radio (EBS) plays" \
+         "StreamPointerTest#playsTokenisedHlsFromAnApi API address with tokenised HLS (MBC) plays"; do
   set -- $t; m=$1; shift
   case "$m" in *#*) ;; *) m="AutoBrowseTest#$m" ;; esac
   case "$m" in *bluetoothOptions*) $T adb shell pm revoke $PKG android.permission.BLUETOOTH_CONNECT ;; esac
@@ -137,6 +139,7 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
   echo "$out" | tail -n 30
   res="FAIL"; echo "$out" | grep -q "^OK (1 test)" && res="PASS"
   echo "CHECK $*: -> $res"
+  case "$m" in *Hls*) if [ "$res" = FAIL ]; then $T adb logcat -d | grep -iE "MultiPlayer|FFmpeg|MediaPlaybackService|hls|Opening|Content-Type|Player error|Retrying" | sed "s/token=[^ &]*/token=X/g" | tail -80; fi ;; esac
   RESULTS="$RESULTS\n$res  $*"
 done
 
