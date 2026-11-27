@@ -264,9 +264,10 @@ public class AddUrlFragment extends Fragment implements LoadingDialogListener {
 				
 				net.sourceforge.servestream.utils.StreamPointer.Peek peek =
 						net.sourceforge.servestream.utils.StreamPointer.peek(transport.getContentType(), transport.getConnection());
-				if (peek.target != null) {
-					// an API address naming the real stream: save the API address itself
-					throw new IOException("stream pointer");
+				if (peek.playAsOne()) {
+					// an API address naming the real stream, or an HLS playlist:
+					// save the address itself, not its segments
+					throw new IOException("single stream");
 				}
 				parser.parse(mUri.getScrubbedUri().toString(), transport.getContentType(), peek.rest, playlist);
 				

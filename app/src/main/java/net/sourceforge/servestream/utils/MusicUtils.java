@@ -352,8 +352,10 @@ public class MusicUtils {
     	
     	// An API address that answers with the real stream address: keep the API
     	// address (its token expires), the player looks the stream up on each open.
+    	// An HLS playlist (.m3u8 live radio) is one stream too: the player follows
+    	// its segments; listing them as tracks would stop after a few seconds.
     	StreamPointer.Peek peek = StreamPointer.peek(contentType, is);
-    	if (peek.target != null) {
+    	if (peek.playAsOne()) {
     		Utils.closeInputStream(peek.rest);
     		return storeFile(context, uri);
     	}

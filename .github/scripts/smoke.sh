@@ -130,7 +130,9 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
          "StreamPointerTest#recognisesPointerReplies API address: text / JSON replies recognised, playlists left alone" \
          "StreamPointerTest#playsTheStreamAnApiPointsTo API address: plays the stream it names, asks again each time" \
          "StreamPointerTest#playsHlsRadio HLS radio (EBS) plays" \
-         "StreamPointerTest#playsTokenisedHlsFromAnApi API address with tokenised HLS (MBC) plays"; do
+         "StreamPointerTest#playsTokenisedHlsFromAnApi API address with tokenised HLS (MBC) plays" \
+         "StreamPointerTest#playsHlsFromAJsonApi JSON API address with signed HLS (KBS) plays" \
+         "StreamPointerTest#hlsIsOneStream HLS playlist is one stream, ordinary M3U stays a list"; do
   set -- $t; m=$1; shift
   case "$m" in *#*) ;; *) m="AutoBrowseTest#$m" ;; esac
   case "$m" in *bluetoothOptions*) $T adb shell pm revoke $PKG android.permission.BLUETOOTH_CONNECT ;; esac

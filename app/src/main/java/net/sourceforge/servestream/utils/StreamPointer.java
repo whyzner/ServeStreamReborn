@@ -90,34 +90,58 @@ public final class StreamPointer {
         return null;
     }
 
-    /** Result of {@link #peek}: the pointed-to address (or null) and the reply, still readable. */
+    /** Result of {@link #peek}: the pointed-to address (or null), whether the reply is HLS, and the reply, still readable. */
     public static final class Peek {
         public final String target;
+        /** An HLS playlist (live radio): play the address as one stream, never as a list of its segments. */
+        public final boolean hls;
         public final InputStream rest;
 
-        Peek(String target, InputStream rest) {
+        Peek(String target, boolean hls, InputStream rest) {
             this.target = target;
+            this.hls = hls;
             this.rest = rest;
         }
+
+        /** The address itself should be stored and played as one stream. */
+        public boolean playAsOne() {
+            return target != null || hls;
+        }
+    }
+
+    /** HLS playlists carry #EXT-X- tags (an ordinary M3U never does). */
+    public static boolean isHls(String body) {
+        return body != null && body.contains("#EXT-X-");
+    }
+
+    private static boolean mayBePlaylistText(String contentType) {
+        if (contentType == null) {
+            return true;
+        }
+        String ct = contentType.toLowerCase(Locale.US);
+        return isPointerType(ct) || ct.contains("mpegurl") || ct.contains("octet-stream");
     }
 
     /**
      * Looks at the start of a reply. When it is a pointer, {@code target} is the
-     * stream address; otherwise {@code rest} still yields the whole reply.
+     * stream address; when it is an HLS playlist, {@code hls} is set; either way
+     * {@code rest} still yields the whole reply.
      */
     public static Peek peek(String contentType, InputStream is) {
-        if (is == null || !isPointerType(contentType)) {
-            return new Peek(null, is);
+        if (is == null || !mayBePlaylistText(contentType)) {
+            return new Peek(null, false, is);
         }
         try {
             byte[] head = readUpTo(is, MAX_BODY + 1);
             InputStream rest = new SequenceInputStream(new ByteArrayInputStream(head), is);
-            if (head.length > MAX_BODY) {
-                return new Peek(null, rest);
+            String text = new String(head, "UTF-8");
+            boolean hls = isHls(text);
+            if (hls || head.length > MAX_BODY || !isPointerType(contentType)) {
+                return new Peek(null, hls, rest);
             }
-            return new Peek(parse(new String(head, "UTF-8")), rest);
+            return new Peek(parse(text), false, rest);
         } catch (IOException e) {
-            return new Peek(null, is);
+            return new Peek(null, false, is);
         }
     }
 

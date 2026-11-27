@@ -219,6 +219,23 @@ public class StreamPointerTest {
         playAddress("https://ebsonair.ebs.co.kr/fmradiofamilypc/familypc1m/playlist.m3u8", "EBS FM test");
     }
 
+    /** KBS answers with JSON holding a signed HLS address (channel_item[0].service_url). */
+    @Test
+    public void playsHlsFromAJsonApi() throws Exception {
+        playAddress("https://cfpwwwapi.kbs.co.kr/api/v1/landing/live/channel_code/24", "KBS 2FM test");
+    }
+
+    @Test
+    public void hlsIsOneStream() throws Exception {
+        String master = "#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-STREAM-INF:BANDWIDTH=65733\nchunklist.m3u8\n";
+        StreamPointer.Peek p = StreamPointer.peek("application/vnd.apple.mpegurl",
+                new java.io.ByteArrayInputStream(master.getBytes("UTF-8")));
+        assertTrue(p.hls && p.playAsOne());
+        p = StreamPointer.peek("audio/x-mpegurl",
+                new java.io.ByteArrayInputStream("#EXTM3U\n#EXTINF:-1,Radio\nhttp://a/b\n".getBytes("UTF-8")));
+        assertTrue("an ordinary M3U stays a playlist", !p.playAsOne());
+    }
+
     /** MBC answers with a tokenised HLS address as a one-line web page, like SBS (SBS itself is blocked abroad). */
     @Test
     public void playsTokenisedHlsFromAnApi() throws Exception {
