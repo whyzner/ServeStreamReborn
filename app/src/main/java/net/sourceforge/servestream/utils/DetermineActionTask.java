@@ -70,7 +70,14 @@ public class DetermineActionTask extends AsyncTask<Void, Void, Void> {
 			if (transport.getContentType() == null) {
 				mAction = URL_ACTION_UNDETERMINED;
 			} else if (transport.getContentType().contains("text/html")) {
-				mAction = URL_ACTION_BROWSE;
+				// an API address that answers with the stream address (even when
+				// labelled as a web page) is played, not browsed
+				if (StreamPointer.peek(transport.getContentType(), transport.getConnection()).target != null) {
+					mAction = URL_ACTION_PLAY;
+					mList = MusicUtils.storeFile(mContext, getUri().getScrubbedUri().toString());
+				} else {
+					mAction = URL_ACTION_BROWSE;
+				}
 			} else {
 				mAction = URL_ACTION_PLAY;
 				if (transport.isPotentialPlaylist()) {

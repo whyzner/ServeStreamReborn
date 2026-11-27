@@ -42,7 +42,10 @@ public final class StreamPointer {
         if (ct.contains("mpegurl") || ct.contains("scpls") || ct.contains("audio/") || ct.contains("video/")) {
             return false;
         }
-        return ct.contains("text/plain") || ct.contains("json") || ct.contains("javascript");
+        // some APIs (SBS) label the one-line reply as a web page (text/html);
+        // a real page starts with "<" and is never taken for a pointer
+        return ct.contains("text/plain") || ct.contains("text/html")
+                || ct.contains("json") || ct.contains("javascript");
     }
 
     /**
@@ -53,7 +56,7 @@ public final class StreamPointer {
         if (body == null) {
             return null;
         }
-        String t = body.trim();
+        String t = body.replace("\uFEFF", "").trim();
         if (t.length() == 0 || t.length() > MAX_BODY) {
             return null;
         }

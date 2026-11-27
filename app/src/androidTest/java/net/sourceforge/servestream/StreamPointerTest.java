@@ -59,12 +59,14 @@ public class StreamPointerTest {
         assertNull(StreamPointer.parse("http://a/one\nhttp://a/two\n"));
         assertTrue(StreamPointer.isPointerType("text/plain;charset=UTF-8"));
         assertTrue(StreamPointer.isPointerType("application/json"));
+        assertTrue(StreamPointer.isPointerType("text/html;charset=UTF-8"));
+        assertNull(StreamPointer.parse("\n  <!DOCTYPE html><html><body>https://a/b</body></html>"));
         assertTrue(!StreamPointer.isPointerType("audio/x-mpegurl"));
         assertTrue(!StreamPointer.isPointerType("application/vnd.apple.mpegurl"));
         assertTrue(!StreamPointer.isPointerType("audio/mpeg"));
     }
 
-    /** A tiny local "broadcaster API": every request answers with the stream address. */
+    /** A tiny local "broadcaster API": every request answers with the stream address, labelled text/html like SBS. */
     private static final class PointerServer extends Thread {
         final ServerSocket socket;
         final AtomicInteger hits = new AtomicInteger();
@@ -84,7 +86,7 @@ public class StreamPointerTest {
                     hits.incrementAndGet();
                     byte[] body = (STREAM + "\n").getBytes("UTF-8");
                     OutputStream out = s.getOutputStream();
-                    out.write(("HTTP/1.1 200 OK\r\nContent-Type: text/plain;charset=UTF-8\r\n"
+                    out.write(("HTTP/1.1 200 OK\r\nContent-Type: text/html;charset=UTF-8\r\n"
                             + "Content-Length: " + body.length + "\r\nConnection: close\r\n\r\n").getBytes("UTF-8"));
                     out.write(body);
                     out.flush();

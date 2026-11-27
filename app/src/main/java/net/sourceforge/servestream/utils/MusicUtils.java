@@ -222,7 +222,12 @@ public class MusicUtils {
 			try { 
 				transport.connect();
 			
-				if (transport.getContentType() != null && !transport.getContentType().contains("text/html")) {
+				if (transport.getContentType() != null && transport.getContentType().contains("text/html")) {
+					// only an API reply naming the stream is playable here
+					if (StreamPointer.peek(transport.getContentType(), transport.getConnection()).target != null) {
+						list = MusicUtils.storeFile(mContext, mUri.getScrubbedUri().toString());
+					}
+				} else if (transport.getContentType() != null) {
 					list = MusicUtils.getFilesInPlaylist(mContext, mUri.getScrubbedUri().toString(), transport.getContentType(), transport.getConnection());
 				}
 			} catch (Exception e) {

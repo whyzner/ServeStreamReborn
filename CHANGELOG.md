@@ -5,6 +5,12 @@
 
 최신 버전 받기: https://github.com/whyzner/ServeStreamReborn/releases/latest
 
+## 2.9.8 (2026-11-27)
+- 2.9.7 API 주소 재생 보완: SBS API가 응답을 "웹페이지(text/html)"로 표시해서 재생 대신 탐색(explore)으로 넘어가던 문제 수정 (사용자 보고)
+  - 웹페이지로 표시돼도 내용이 방송 주소 한 줄(또는 주소가 든 JSON)이면 재생. 진짜 웹페이지(<로 시작)는 예전처럼 탐색
+  - 응답 맨 앞의 보이지 않는 BOM 문자도 무시
+- 자동 테스트: 가짜 API가 SBS처럼 text/html로 답해도 재생되는지, 진짜 웹페이지는 주소로 보지 않는지
+
 ## 2.9.7 (2026-11-27)
 - 방송사 API 주소로도 재생 (사용자 요청, 예: SBS 파워FM `apis.sbs.co.kr/play-api/1.0/livestream/powerfm/powerfm?protocol=hls&ssl=Y`)
   - 이런 주소는 방송 대신 "진짜 방송 주소"(12시간마다 바뀌는 토큰이 붙은 .m3u8)를 글자로 돌려줌 → 그 주소를 꺼내 재생
