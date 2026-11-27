@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Metro: square outline around an icon (explore / settings rows) -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <stroke android:width="2dp" android:color="?attr/colorOnSurface" />
-</shape>

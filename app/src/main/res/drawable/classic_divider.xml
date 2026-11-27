@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Etched line: grey over white -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:height="2dp"><shape><solid android:color="@color/classic_white" /><size android:height="2dp" /></shape></item>
-    <item android:height="1dp" android:bottom="1dp"><shape><solid android:color="@color/classic_shadow" /><size android:height="1dp" /></shape></item>
-</layer-list>

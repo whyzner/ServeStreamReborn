@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Sunken white text field (Title / Artist / Clip) -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item><shape><solid android:color="@color/real_shadow" /></shape></item>
-    <item android:left="1dp" android:top="1dp"><shape><solid android:color="@color/real_light" /></shape></item>
-    <item android:left="1dp" android:top="1dp" android:right="1dp" android:bottom="1dp"><shape><solid android:color="@color/real_dark" /></shape></item>
-    <item android:left="2dp" android:top="2dp" android:right="1dp" android:bottom="1dp"><shape><solid android:color="@color/real_face" /></shape></item>
-    <item android:left="2dp" android:top="2dp" android:right="2dp" android:bottom="2dp"><shape><solid android:color="#DCDCDC" /></shape></item>
-</layer-list>

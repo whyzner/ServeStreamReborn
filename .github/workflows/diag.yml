@@ -1,0 +1,23 @@
+name: SBS diag
+on:
+  push:
+    branches: [diag-sbs]
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe
+        run: |
+          set -x
+          API='https://apis.sbs.co.kr/play-api/1.0/livestream/powerfm/powerfm?protocol=hls&ssl=Y'
+          curl -sS -m 20 -D - -A 'Dalvik/2.1.0 (Linux; U; Android 16)' "$API" -o body.txt; echo; head -c 600 body.txt | od -c | head -8; echo
+          U=$(tr -d '\r\n\xef\xbb\xbf' < body.txt); echo "URL=${U%%token=*}token=..."
+          curl -sS -m 20 -D - -A 'Dalvik/2.1.0 (Linux; U; Android 16)' "$U" -o pl.m3u8; cat pl.m3u8 | sed 's/token=[^&"]*/token=XXX/g'
+          C=$(grep -v '^#' pl.m3u8 | head -1)
+          case "$C" in http*) CU="$C";; *) CU="${U%/*}/$C";; esac
+          echo "chunklist: ${CU%%token=*}"
+          curl -sS -m 20 -D - -A 'Dalvik/2.1.0' "$CU" -o cl.m3u8; sed 's/token=[^&"]*/token=XXX/g' cl.m3u8 | head -20
+          S=$(grep -v '^#' cl.m3u8 | head -1)
+          case "$S" in http*) SU="$S";; *) SU="${CU%/*}/$S";; esac
+          curl -sS -m 20 -D - -A 'Dalvik/2.1.0' "$SU" -o seg.bin | head -12; ls -l seg.bin; file seg.bin || true
+          which ffprobe && timeout 40 ffprobe -hide_banner -user_agent 'Lavf' "$U" 2>&1 | sed 's/token=[^&" ]*/token=XXX/g' | tail -25 || true

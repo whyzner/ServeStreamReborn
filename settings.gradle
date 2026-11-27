@@ -1,2 +1,0 @@
-include ':app', ':dslv'
-project(':dslv').projectDir = new File('drag-sort-listview/dslv')

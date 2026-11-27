@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Title bar: fine horizontal pinstripes with a dark rule underneath -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item><shape><solid android:color="@color/platinum_shadow" /></shape></item>
-    <item android:bottom="1dp" android:drawable="@drawable/platinum_stripes" />
-</layer-list>

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Black information pane in a sunken frame -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item><shape><solid android:color="@color/classic_shadow" /></shape></item>
-    <item android:left="1dp" android:top="1dp"><shape><solid android:color="@color/classic_white" /></shape></item>
-    <item android:left="1dp" android:top="1dp" android:right="1dp" android:bottom="1dp"><shape><solid android:color="@color/classic_black" /></shape></item>
-</layer-list>

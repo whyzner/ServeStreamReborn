@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Metro player: round accent play button -->
-<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="#33FFFFFF">
-    <item><shape android:shape="oval"><solid android:color="@color/metro_accent" /></shape></item>
-</ripple>

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Metro: accent line under the selected section title -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:gravity="bottom" android:height="3dp">
-        <shape><solid android:color="?attr/colorPrimary" /></shape>
-    </item>
-</layer-list>
