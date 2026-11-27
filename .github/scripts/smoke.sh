@@ -126,7 +126,9 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
          "FixesTest#themeChangeDoesNotCloseTheApp Theme change keeps the app open (icon switched after leaving)" \
          "FixesTest#bluetoothOptionsWithoutPermission Bluetooth options without permission: no crash" \
          "Tier3Test#listScrollPositionSurvivesRecreation Tier 3: list scroll position kept" \
-         "Tier3Test#typedTextSurvivesRecreation Tier 3: typed text kept"; do
+         "Tier3Test#typedTextSurvivesRecreation Tier 3: typed text kept" \
+         "StreamPointerTest#recognisesPointerReplies API address: text / JSON replies recognised, playlists left alone" \
+         "StreamPointerTest#playsTheStreamAnApiPointsTo API address: plays the stream it names, asks again each time"; do
   set -- $t; m=$1; shift
   case "$m" in *#*) ;; *) m="AutoBrowseTest#$m" ;; esac
   case "$m" in *bluetoothOptions*) $T adb shell pm revoke $PKG android.permission.BLUETOOTH_CONNECT ;; esac

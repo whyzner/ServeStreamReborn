@@ -345,6 +345,15 @@ public class MusicUtils {
     		return sEmptyList;
     	}
     	
+    	// An API address that answers with the real stream address: keep the API
+    	// address (its token expires), the player looks the stream up on each open.
+    	StreamPointer.Peek peek = StreamPointer.peek(contentType, is);
+    	if (peek.target != null) {
+    		Utils.closeInputStream(peek.rest);
+    		return storeFile(context, uri);
+    	}
+    	is = peek.rest;
+    	
         AutoDetectParser parser = new AutoDetectParser(); // Should auto-detect!
         Playlist playlist = new Playlist();
         

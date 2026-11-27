@@ -36,18 +36,34 @@ public class HTTPRequestTask implements Runnable {
         mListener = listener;
     }
 
+	/** Where the stream really is: mUri, or the address a pointer reply named. */
+	private String mTarget;
+	private String mPointerTarget;
+
 	@Override
     public void run() {
-		onPostExecute(processUri());
+		mTarget = mUri;
+		String contentType = processUri(mUri);
+		if (mPointerTarget != null) {
+			// an API address that answers with the stream address (token
+			// renewed on every open): play what it points to
+			mTarget = mPointerTarget;
+			mPointerTarget = null;
+			contentType = processUri(mTarget);
+			if (contentType != null && StreamPointer.isPointerType(contentType)) {
+				contentType = "";
+			}
+		}
+		onPostExecute(contentType);
 	}
 
-	private String processUri() {
+	private String processUri(String address) {
 		UriBean uriBean = null;
 		AbsTransport transport = null;
 		String contentType = null;
 		
 		try {
-			Uri uri = TransportFactory.getUri(mUri);
+			Uri uri = TransportFactory.getUri(address);
 		
 			if (uri != null) {
 				uriBean = TransportFactory.getTransport(uri.getScheme()).createUri(uri);
@@ -58,6 +74,9 @@ public class HTTPRequestTask implements Runnable {
 				transport.setUri(uriBean);
 				transport.connect();
 				contentType = transport.getContentType();
+				if (address.equals(mUri) && StreamPointer.isPointerType(contentType)) {
+					mPointerTarget = StreamPointer.peek(contentType, transport.getConnection()).target;
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -76,9 +95,9 @@ public class HTTPRequestTask implements Runnable {
 	
     private void onPostExecute(String result) {
     	if (result == null) {
-    		mListener.onHTTPRequestError(mUri, mUseFFmpegPlayer);
+    		mListener.onHTTPRequestError(mTarget, mUseFFmpegPlayer);
     	} else {
-    		mListener.onContentTypeObtained(mUri, mUseFFmpegPlayer, result);
+    		mListener.onContentTypeObtained(mTarget, mUseFFmpegPlayer, result);
     	}
     }
 	

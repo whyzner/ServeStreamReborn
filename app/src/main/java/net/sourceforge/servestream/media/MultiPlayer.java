@@ -325,6 +325,9 @@ public final class MultiPlayer implements HTTPRequestListener {
 	@Override
 	public void onContentTypeObtained(String path, boolean useFFmpegPlayer, 
 			String contentType) {
+		// path may be the stream an API address pointed to: a retry with the
+		// other player must use that, not the API address
+		mStreamPath = path;
 		if (contentType.equalsIgnoreCase("video/x-ms-asf") || 
 				contentType.equalsIgnoreCase("application/vnd.ms-asf")) {
 			path = path.replace(HTTP.getProtocolName(), MMSH.getProtocolName());
@@ -344,6 +347,7 @@ public final class MultiPlayer implements HTTPRequestListener {
 
 	@Override
 	public void onHTTPRequestError(String path, boolean useFFmpegPlayer) {
+		mStreamPath = path;
 		debugToast("Could not read the stream content type");
 		setDataSource(null, path, -1, false, useFFmpegPlayer, "");
 	}
