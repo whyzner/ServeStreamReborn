@@ -124,6 +124,16 @@ public class SettingsFragment extends net.sourceforge.servestream.preference.Pre
 			final android.app.Dialog dialog = ((PreferenceScreen) preference).getDialog();
 			if (dialog != null && dialog.getWindow() != null) {
 				android.view.View content = dialog.getWindow().getDecorView();
+				// the nested screen is a window of its own: give its status and
+				// navigation bars the same dark-on-light icons as the activities
+				// (otherwise white icons disappear on the light background)
+				boolean night = (getResources().getConfiguration().uiMode
+						& android.content.res.Configuration.UI_MODE_NIGHT_MASK)
+						== android.content.res.Configuration.UI_MODE_NIGHT_YES;
+				androidx.core.view.WindowInsetsControllerCompat controller =
+						androidx.core.view.WindowCompat.getInsetsController(dialog.getWindow(), content);
+				controller.setAppearanceLightStatusBars(!night);
+				controller.setAppearanceLightNavigationBars(!night);
 				androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(content, (v, insets) -> {
 					androidx.core.graphics.Insets bars = insets.getInsets(
 							androidx.core.view.WindowInsetsCompat.Type.systemBars()

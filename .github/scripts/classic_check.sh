@@ -70,6 +70,16 @@ adb shell uiautomator dump /sdcard/u.xml >/dev/null 2>&1
 if adb shell cat /sdcard/u.xml | grep -qi 'text="Donate'; then echo "CHECK no Donate item: FAIL"; RESULT=FAIL; else echo "CHECK no Donate item: PASS"; fi
 if tap 'text="Backup &amp; restore"'; then
   sleep 2
+  adb shell screencap -p /sdcard/classic_backup_screen.png
+  # status bar icons must be dark on the light nested screen (the focused window)
+  focus=$(adb shell dumpsys window | grep -m1 "mCurrentFocus" | grep -oE "Window\{[0-9a-f]+" | head -1)
+  block=$(adb shell dumpsys window windows | awk -v f="$focus" '/^  Window #/{on=index($0,f)>0} on')
+  echo "--- focused window: $focus"; echo "$block" | grep -E "Window #|apr=|ty=" | head -4
+  if [ -n "$focus" ] && echo "$block" | grep -q "LIGHT_STATUS_BARS"; then
+    echo "CHECK backup screen status bar icons visible: PASS"
+  else
+    echo "CHECK backup screen status bar icons visible: FAIL"; RESULT=FAIL
+  fi
   tap 'text="Backup to JSON file"'; sleep 4
   top=$(adb shell dumpsys activity activities | grep -m1 "topResumedActivity")
   if echo "$top" | grep -qi "documentsui"; then echo "CHECK backup opens the file picker: PASS"; else echo "CHECK backup opens the file picker: FAIL ($top)"; RESULT=FAIL; fi
@@ -141,7 +151,7 @@ adb shell input keyevent KEYCODE_BACK; sleep 2
 top=$(adb shell dumpsys activity activities | grep -m1 "topResumedActivity")
 if echo "$top" | grep -q "$PKG/"; then echo "CHECK back on the list leaves the app: FAIL ($top)"; RESULT=FAIL; else echo "CHECK back on the list leaves the app: PASS"; fi
 if adb logcat -d | grep -q "FATAL EXCEPTION"; then echo "CHECK back and resize without crash: FAIL"; RESULT=FAIL; adb logcat -d | grep -A15 "FATAL EXCEPTION" | head -30; else echo "CHECK back and resize without crash: PASS"; fi
-for n in classic_main classic_player classic_settings classic_backup classic_restore classic_unfolded classic_folded_player; do
+for n in classic_main classic_player classic_settings classic_backup_screen classic_backup classic_restore classic_unfolded classic_folded_player; do
   adb pull /sdcard/$n.png $n.png >/dev/null 2>&1
   echo "=====SHOT $n BEGIN====="; base64 -w 76 $n.png; echo "=====SHOT $n END====="
 done
