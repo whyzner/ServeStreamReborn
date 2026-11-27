@@ -28,6 +28,7 @@
 #include "Errors.h"  // for int
 
 extern "C" {
+    #include "libavutil/log.h"
     #include "libavcodec/avcodec.h"
     #include "libavformat/avformat.h"
 }
@@ -1035,6 +1036,17 @@ static int register_net_sourceforge_servestream_media_FFmpegMediaPlayer(JNIEnv *
     return ret;
 }
 
+/* FFmpeg's own warnings and errors go to logcat (tag "FFmpeg") */
+static void ffmpeg_log_to_logcat(void *avcl, int level, const char *fmt, va_list vl)
+{
+    if (level > AV_LOG_WARNING) {
+        return;
+    }
+    char line[1024];
+    vsnprintf(line, sizeof(line), fmt, vl);
+    __android_log_print(level <= AV_LOG_ERROR ? ANDROID_LOG_ERROR : ANDROID_LOG_WARN, "FFmpeg", "%s", line);
+}
+
 jint JNI_OnLoad(JavaVM* vm, void* reserved)
 {
     m_vm = vm;
@@ -1051,6 +1063,8 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved)
         //__android_log_print(ANDROID_LOG_ERROR, LOG_TAG, "ERROR: FFmpegMediaPlayer native registration failed\n");
         //goto bail;
     }
+
+    av_log_set_callback(ffmpeg_log_to_logcat);
 
     /* success -- return valid version number */
     result = JNI_VERSION_1_6;

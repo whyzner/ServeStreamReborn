@@ -200,7 +200,7 @@ public class StreamPointerTest {
             String id = AutoLibrary.mediaIdFor(station.getId());
             controller[0].getTransportControls().playFromMediaId(id, null);
             waitPlaying(controller[0], id);
-            SystemClock.sleep(8000);
+            SystemClock.sleep(30000); // past the live window (a few segments)
             PlaybackStateCompat s = controller[0].getPlaybackState();
             assertEquals("stopped after starting", PlaybackStateCompat.STATE_PLAYING, s == null ? -1 : s.getState());
             controller[0].getTransportControls().pause();

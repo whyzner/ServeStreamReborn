@@ -134,12 +134,13 @@ for t in "a_stationListShowsSavedStationsWithImages Android Auto: station list w
   set -- $t; m=$1; shift
   case "$m" in *#*) ;; *) m="AutoBrowseTest#$m" ;; esac
   case "$m" in *bluetoothOptions*) $T adb shell pm revoke $PKG android.permission.BLUETOOTH_CONNECT ;; esac
+  case "$m" in *Hls*) $T adb logcat -c ;; esac
   out=$(timeout 180 adb shell am instrument -w -e class net.sourceforge.servestream.$m \
         $PKG.test/androidx.test.runner.AndroidJUnitRunner 2>&1)
   echo "$out" | tail -n 30
   res="FAIL"; echo "$out" | grep -q "^OK (1 test)" && res="PASS"
   echo "CHECK $*: -> $res"
-  case "$m" in *Hls*) if [ "$res" = FAIL ]; then $T adb logcat -d | grep -iE "MultiPlayer|FFmpeg|MediaPlaybackService|hls|Opening|Content-Type|Player error|Retrying" | sed "s/token=[^ &]*/token=X/g" | tail -80; fi ;; esac
+  case "$m" in *Hls*) if true; then $T adb logcat -d | grep -v "writeAudio" | grep -iE "read ended|FFmpeg  |E FFmpeg|W FFmpeg|MultiPlayer|MediaPlaybackService|hls|Opening|Content-Type|Player error|Retrying" | sed "s/token=[^ &]*/token=X/g" | tail -80; fi ;; esac
   RESULTS="$RESULTS\n$res  $*"
 done
 

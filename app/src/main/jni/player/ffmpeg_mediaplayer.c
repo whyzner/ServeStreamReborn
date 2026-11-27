@@ -459,6 +459,7 @@ void *player_decode(void *data)
 				usleep(1000);
 				continue;
 			}
+			__android_log_print(ANDROID_LOG_WARN, "FFmpegMediaPlayer", "read ended: %d (%s)", ret, av_err2str(ret));
 			eof = 1;
 			break;
 		}
