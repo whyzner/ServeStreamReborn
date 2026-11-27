@@ -8,19 +8,10 @@ jobs:
     steps:
       - name: Probe
         run: |
-          set -x
-          API='https://apis.sbs.co.kr/play-api/1.0/livestream/powerfm/powerfm?protocol=hls&ssl=Y'
-          curl -sS -m 20 -D - -A 'Dalvik/2.1.0 (Linux; U; Android 16)' "$API" -o body.txt; echo; head -c 600 body.txt | od -c | head -8; echo
-          U=$(tr -d '\r\n' < body.txt); echo "URL=${U%%token=*}token=..."
-          for R in "" "https://play.sbs.co.kr/" "https://www.sbs.co.kr/"; do for A in 'Dalvik/2.1.0 (Linux; U; Android 16)' 'Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/131 Mobile Safari/537.36' 'Lavf/61.7.100'; do echo "ref=[$R] ua=[${A%% *}] -> $(curl -s -m 15 -o /dev/null -w '%{http_code}' -A "$A" ${R:+-e "$R"} ${R:+-H "Origin: ${R%/}"} "$U")"; done; done
-          curl -s -m 15 -o /dev/null -w 'mbc api %{http_code} %{content_type}\n' 'https://sminiplay.imbc.com/aacplay.ashx?agent=webapp&channel=sfm'
-          curl -s -m 15 -o /dev/null -w 'ebs fixed %{http_code}\n' 'https://ebsonair.ebs.co.kr/fmradiofamilypc/familypc1m/playlist.m3u8'
-          curl -sS -m 20 -D - -A 'Dalvik/2.1.0 (Linux; U; Android 16)' "$U" -o pl.m3u8; cat pl.m3u8 | sed 's/token=[^&"]*/token=XXX/g'
-          C=$(grep -v '^#' pl.m3u8 | head -1)
-          case "$C" in http*) CU="$C";; *) CU="${U%/*}/$C";; esac
-          echo "chunklist: ${CU%%token=*}"
-          curl -sS -m 20 -D - -A 'Dalvik/2.1.0' "$CU" -o cl.m3u8; sed 's/token=[^&"]*/token=XXX/g' cl.m3u8 | head -20
-          S=$(grep -v '^#' cl.m3u8 | head -1)
-          case "$S" in http*) SU="$S";; *) SU="${CU%/*}/$S";; esac
-          curl -sS -m 20 -D - -A 'Dalvik/2.1.0' "$SU" -o seg.bin | head -12; ls -l seg.bin; file seg.bin || true
-          which ffprobe && timeout 40 ffprobe -hide_banner -user_agent 'Lavf' "$U" 2>&1 | sed 's/token=[^&" ]*/token=XXX/g' | tail -25 || true
+          M=$(curl -s -m 15 'https://sminiplay.imbc.com/aacplay.ashx?agent=webapp&channel=sfm' | tr -d '\r\n')
+          echo "mbc -> ${M%%\?*}"
+          echo "mbc stream $(curl -s -m 15 -o mbc.m3u8 -w '%{http_code} %{content_type}' "$M")"; sed 's/[?].*//' mbc.m3u8 | head
+          E='https://ebsonair.ebs.co.kr/fmradiofamilypc/familypc1m/playlist.m3u8'
+          curl -s -m 15 "$E" | head
+          K=$(curl -s -m 15 'https://cfpwwwapi.kbs.co.kr/api/v1/landing/live/channel_code/21' | head -c 400); echo "kbs: $(echo "$K" | sed 's/Signature=[^&"]*/Signature=X/g' | head -c 300)"
+          which ffprobe && for u in "$E" "$M"; do timeout 40 ffprobe -hide_banner "$u" 2>&1 | grep -E "Input|Stream|Duration|error|Error" | sed 's/[?][^ ]*//' | head -8; done || true
