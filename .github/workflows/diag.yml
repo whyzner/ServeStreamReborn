@@ -8,13 +8,14 @@ jobs:
     steps:
       - name: Probe
         run: |
-          sudo apt-get install -y -qq ffmpeg >/dev/null 2>&1 || true
           M=$(curl -s -m 15 'https://sminiplay.imbc.com/aacplay.ashx?agent=webapp&channel=sfm' | tr -d '\r\n')
-          B=${M%%\?*}; B=${B%/*}
-          curl -s -m 15 -c jar -D h1 -o m.m3u8 "$M"; grep -i "set-cookie\|location" h1 | sed 's/=.*/=.../' || true
-          echo "chunklist no token: $(curl -s -m 15 -o cl.m3u8 -w '%{http_code}' "$B/chunklist.m3u8")"; head -8 cl.m3u8 | sed 's/[?].*/?.../'
-          echo "chunklist with cookie: $(curl -s -m 15 -b jar -o cl2.m3u8 -w '%{http_code}' "$B/chunklist.m3u8")"; head -8 cl2.m3u8 | sed 's/[?].*/?.../'
-          Q=${M#*\?}; echo "chunklist with token: $(curl -s -m 15 -o cl3.m3u8 -w '%{http_code}' "$B/chunklist.m3u8?$Q")"; head -8 cl3.m3u8 | sed 's/[?].*/?.../'
-          E='https://ebsonair.ebs.co.kr/fmradiofamilypc/familypc1m/playlist.m3u8'
-          for u in "$E" "$M"; do echo "== ffprobe ${u%%\?*}"; timeout 40 ffprobe -hide_banner -v info "$u" 2>&1 | grep -E "Input|Stream|error|Error|HTTP|403" | sed 's/[?][^ ]*//' | head -8; done
-          ffprobe -version | head -1
+          B=${M%%\?*}; B=${B%/*}; Q=${M#*\?}
+          curl -s -m 15 -A 'Mozilla/5.0 (Linux; Android 16) Chrome/131 Mobile Safari/537.36' "$M" | grep -v '^#'
+          curl -s -m 15 "$B/chunklist.m3u8?$Q" -o cl.m3u8; S=$(grep -v '^#' cl.m3u8 | tail -1)
+          echo "segment no token: $(curl -s -m 15 -o /dev/null -w '%{http_code}' "$B/$S")"
+          echo "segment with token: $(curl -s -m 15 -o seg -w '%{http_code} %{content_type} %{size_download}' "$B/$S?$Q")"
+          K=$(curl -s -m 15 'https://cfpwwwapi.kbs.co.kr/api/v1/landing/live/channel_code/24' | grep -o '"service_url":"[^"]*' | head -1 | cut -d'"' -f4)
+          KB=${K%%\?*}; KB=${KB%/*}; KQ=${K#*\?}
+          echo "kbs master: $(curl -s -m 15 -o k.m3u8 -w '%{http_code}' "$K")"; grep -v '^#' k.m3u8 | head -3 | sed 's/[?].*/?.../'
+          KC=$(grep -v '^#' k.m3u8 | head -1)
+          case "$KC" in http*) ;; *) echo "kbs child no token: $(curl -s -m 15 -o /dev/null -w '%{http_code}' "$KB/$KC")"; echo "kbs child with token: $(curl -s -m 15 -o /dev/null -w '%{http_code}' "$KB/$KC?$KQ")";; esac
