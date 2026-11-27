@@ -12,6 +12,9 @@ jobs:
           API='https://apis.sbs.co.kr/play-api/1.0/livestream/powerfm/powerfm?protocol=hls&ssl=Y'
           curl -sS -m 20 -D - -A 'Dalvik/2.1.0 (Linux; U; Android 16)' "$API" -o body.txt; echo; head -c 600 body.txt | od -c | head -8; echo
           U=$(tr -d '\r\n' < body.txt); echo "URL=${U%%token=*}token=..."
+          for R in "" "https://play.sbs.co.kr/" "https://www.sbs.co.kr/"; do for A in 'Dalvik/2.1.0 (Linux; U; Android 16)' 'Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/131 Mobile Safari/537.36' 'Lavf/61.7.100'; do echo "ref=[$R] ua=[${A%% *}] -> $(curl -s -m 15 -o /dev/null -w '%{http_code}' -A "$A" ${R:+-e "$R"} ${R:+-H "Origin: ${R%/}"} "$U")"; done; done
+          curl -s -m 15 -o /dev/null -w 'mbc api %{http_code} %{content_type}\n' 'https://sminiplay.imbc.com/aacplay.ashx?agent=webapp&channel=sfm'
+          curl -s -m 15 -o /dev/null -w 'ebs fixed %{http_code}\n' 'https://ebsonair.ebs.co.kr/fmradiofamilypc/familypc1m/playlist.m3u8'
           curl -sS -m 20 -D - -A 'Dalvik/2.1.0 (Linux; U; Android 16)' "$U" -o pl.m3u8; cat pl.m3u8 | sed 's/token=[^&"]*/token=XXX/g'
           C=$(grep -v '^#' pl.m3u8 | head -1)
           case "$C" in http*) CU="$C";; *) CU="${U%/*}/$C";; esac
